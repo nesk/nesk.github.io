@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+        <meta property="og:title" content="Johann Pardanaud">
+        <meta property="og:description" content="I'm a full-stack developer and I develop technical solutions for back-end, front-end and mobile environments.">
+        <meta property="og:image" content="http://johann.pardanaud.com/assets/background@2x.jpg">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@neskeii">
+        <meta name="twitter:creator" content="@neskeii">
+        <meta name="twitter:title" content="Johann Pardanaud">
+        <meta name="twitter:description" content="I'm a full-stack developer and I develop technical solutions for back-end, front-end and mobile environments.">
+        <meta name="twitter:image" content="http://johann.pardanaud.com/assets/background.jpg">
+
+        <title>Johann Pardanaud</title>
+
+        <link rel="stylesheet" href="/assets/font-awesome.min.css">
+
+        <style>
+            *, *::before, *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                width: 100vw;
+                height: 100vh;
+                background: #333 url('/assets/background.jpg') center bottom no-repeat;
+                background-size: cover;
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 15px;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+                line-height: 1.5;
+                color: #fff;
+            }
+
+            h1 {
+                margin-bottom: 50px;
+                font-size: 40px;
+            }
+
+            a {
+                text-decoration: none;
+                color: #fff;
+            }
+
+            .grid {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .grid-vertical {
+                flex-direction: column;
+            }
+
+            .grid-justify-around {
+                justify-content: space-around;
+            }
+
+            .grid-justify-between {
+                justify-content: space-between;
+            }
+
+            .grid-align-self-start {
+                align-self: flex-start;
+            }
+
+            .grid-align-self-end {
+                align-self: flex-end;
+            }
+
+            .text-center {
+                text-align: center;
+            }
+
+            .hide {
+                display: none;
+            }
+
+            .container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.4);
+            }
+
+            .content {
+                width: 700px;
+            }
+
+            .content-narrow {
+                width: 400px;
+                height: 100vh;
+            }
+
+            .fa {
+                margin: 2px;
+            }
+
+            @media (min-width: 1300px), (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+                body {
+                    background-image: url('/assets/background@2x.jpg');
+                }
+            }
+
+            @media (max-width: 768px) {
+                h1 {
+                    margin-bottom: 30px;
+                    font-size: 25px;
+                }
+
+                .content {
+                    width: 80vw;
+                }
+            }
+        </style>
+    </head>
+
+    <body konami>
+
+        <section class="container grid grid-vertical grid-justify-around" konami-hide>
+            <div class="content">
+                <h1 class="text-center">Hi, my name is Johann Pardanaud.</h1>
+
+                <blockquote>
+                    <p>
+                        I'm a full-stack developer and I develop technical solutions for back-end, front-end and mobile
+                        environments. I love the open source philosophy and try to contribute whenever I have time. Although
+                        my skills are mainly in web development, sometimes I work with other technologies, like Swift or
+                        Kotlin.
+                    </p>
+                </blockquote>
+            </div>
+
+            <div class="content grid grid-justify-between">
+                <a href="https://github.com/nesk" class="float-left text-center">
+                    <i class="fa fa-3x fa-github-square" aria-hidden="true"></i> <br>
+                    My projects <br>
+                    on Github
+                </a>
+
+                <a href="https://twitter.com/neskeii" class="float-right text-center">
+                    <i class="fa fa-3x fa-twitter-square" aria-hidden="true"></i> <br>
+                    My thoughts <br>
+                    on Twitter
+                </a>
+            </div>
+        </section>
+
+        <section class="container grid hide" konami-show>
+            <div class="content content-narrow grid grid-vertical grid-justify-around">
+                <span class="grid-align-self-start hide" konami-item="0">Nano! Nano! Nano!</span>
+                <span class="grid-align-self-end hide" konami-item="1">Hakase! Hakase! Hakase!</span>
+                <span class="grid-align-self-start hide" konami-item="2">Nano! Nano! Nano!</span>
+                <span class="grid-align-self-end hide" konami-item="3">Hakase! Hakase! Hakase!</span>
+                <span class="grid-align-self-start hide" konami-item="4">Nano! Nano! Nano!</span>
+            </div>
+        </section>
+
+        <script src="/assets/cheet.min.js"></script>
+
+        <script>
+            Array.from = Array.from || Array.prototype.slice.call;
+
+            (function() {
+
+                'use strict';
+
+                function $(selector) {
+                    return document.querySelector(selector);
+                }
+
+                function $$(selector) {
+                    return Array.from(document.querySelectorAll(selector));
+                }
+
+                var visibleItems = 0;
+
+                function konamiNext(str, key, index) {
+                    if (index !== undefined && (index - 1) % 2 !== 0) return;
+
+                    visibleItems++;
+                    (new Image).src = '/konami.jpg';
+
+                    $('[konami-show]').classList.remove('hide');
+                    $('[konami-hide]').classList.add('hide');
+
+                    $$('[konami-item]')
+                        .slice(0, visibleItems)
+                        .forEach(function(item) {
+                            item.classList.remove('hide');
+                        });
+                }
+
+                function konamiDone() {
+                    visibleItems = 0;
+                    $('[konami]').style.backgroundImage = 'url("/assets/konami.jpg")';
+                }
+
+                function konamiClear() {
+                    visibleItems = 0;
+
+                    $('[konami]').style.backgroundImage = '';
+                    $('[konami-hide]').classList.remove('hide');
+
+                    $$('[konami-show], [konami-item]').forEach(function(item) {
+                        item.classList.add('hide');
+                    });
+                }
+
+                cheet('↑ ↑ ↓ ↓ ← → ← → b a', {
+                    next: konamiNext,
+                    done: konamiDone,
+                    fail: konamiClear,
+                });
+
+                $('[konami]').addEventListener('click', konamiClear);
+
+                if (location.hostname === 'moe.pardanaud.com') {
+                    visibleItems = $$('[konami-item]').length;
+                    konamiNext();
+                    konamiDone();
+                }
+
+            })();
+        </script>
+
+    </body>
+</html>
