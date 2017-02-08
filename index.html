@@ -31,6 +31,7 @@
                 height: 100vh;
                 background: #333 url('/assets/background.jpg') center bottom no-repeat;
                 background-size: cover;
+                background-attachment: fixed;
                 font-family:
                     -apple-system, BlinkMacSystemFont, "Segoe UI",
                     Roboto, Helvetica, Arial, sans-serif,
@@ -69,6 +70,10 @@
                 justify-content: space-between;
             }
 
+            .grid-align-start {
+                align-items: flex-start;
+            }
+
             .grid-align-self-start {
                 align-self: flex-start;
             }
@@ -101,6 +106,20 @@
             .content-narrow {
                 width: 400px;
                 height: 100vh;
+            }
+
+            .scrollable {
+                border: 1px solid transparent;
+                transition: all 100ms linear;
+
+                overflow: scroll;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .network-link {
+                margin: 0 20px;
+                text-align: center;
+                white-space: nowrap;
             }
 
             .fa {
@@ -142,14 +161,20 @@
                 </blockquote>
             </div>
 
-            <div class="content grid grid-justify-between">
-                <a href="https://github.com/nesk" class="float-left text-center">
+            <div class="content scrollable grid grid-justify-between grid-align-start">
+                <a href="https://github.com/nesk" class="network-link">
                     <i class="fa fa-3x fa-github-square" aria-hidden="true"></i> <br>
                     My projects <br>
                     on Github
                 </a>
 
-                <a href="https://twitter.com/neskeii" class="float-right text-center">
+                <a href="https://www.linkedin.com/in/johann-pardanaud/" class="network-link">
+                    <i class="fa fa-3x fa-linkedin-square" aria-hidden="true"></i> <br>
+                    My professional career <br>
+                    on LinkedIn
+                </a>
+
+                <a href="https://twitter.com/neskeii" class="network-link">
                     <i class="fa fa-3x fa-twitter-square" aria-hidden="true"></i> <br>
                     My thoughts <br>
                     on Twitter
@@ -231,6 +256,35 @@
                     konamiNext();
                     konamiDone();
                 }
+
+                function updateScrollableView(node) {
+                    node.style.borderLeftColor = 'transparent';
+                    node.style.borderRightColor = 'transparent';
+
+                    if (node.scrollWidth > node.offsetWidth - 2) {
+                        if (node.scrollLeft > 0) {
+                            node.style.borderLeftColor = '#fff';
+                        }
+
+                        if (node.scrollLeft + node.offsetWidth - 2 < node.scrollWidth) {
+                            node.style.borderRightColor = '#fff';
+                        }
+                    }
+                }
+
+                Array.from($$('.scrollable')).forEach(function(node) {
+                    updateScrollableView(node);
+
+                    node.addEventListener('scroll', function() {
+                        updateScrollableView(node);
+                    });
+                });
+
+                window.addEventListener('resize', function() {
+                    Array.from($$('.scrollable')).forEach(function(node) {
+                        updateScrollableView(node);
+                    });
+                });
 
             })();
         </script>
