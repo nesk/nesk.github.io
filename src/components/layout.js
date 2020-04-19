@@ -11,6 +11,7 @@ const Container = styled.div`
 const Header = styled.header`
     flex: 0 0 auto;
     padding: var(--content-spacing);
+    background: var(--grey-200);
     text-transform: uppercase;
     font-size: 1.1rem;
     font-weight: 500;

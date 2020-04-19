@@ -1,4 +1,13 @@
 :root {
     --device-desktop-max: 768px;
     --content-spacing: 1rem;
+
+    --grey-100: hsl(206, 10%, 95%);
+    --grey-200: hsl(206, 10%, 91%);
+    --grey-800: hsl(206, 10%, 29%);
+
+    --primary-500: hsl(206, 90%, 50%);
+    --primary-700: hsl(206, 90%, 40%);
+
+    --shadow: hsla(206, 10%, 29%, 25%);
 }

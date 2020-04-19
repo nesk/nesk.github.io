@@ -7,17 +7,36 @@ const About = styled.article`
     max-width: min(300px, 100%);
 `
 
-const Avatar = styled.img`
-    display: block;
+const AvatarContainer = styled.div`
+    position: relative;
     margin: 0 auto var(--content-spacing);
     width: 80%;
     border-radius: 9999px;
+    overflow: hidden;
+
+    &::after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 9999px;
+        box-shadow: inset 0 0 20px var(--shadow);
+        content: '';
+    }
+`
+
+const Avatar = styled.img`
+    display: block;
+    width: 100%;
 `
 
 export default () => (
     <Layout>
         <About>
-            <Avatar src={johann} alt="Johann Pardanaud"></Avatar>
+            <AvatarContainer>
+                <Avatar src={johann} alt="Johann Pardanaud"></Avatar>
+            </AvatarContainer>
 
             <p>
                 I'm a developer working at <a href="https://batch.com">Batch</a>
