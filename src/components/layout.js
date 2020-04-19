@@ -21,7 +21,6 @@ const Body = styled.section`
     flex: 1 0 auto;
     padding: var(--content-spacing);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
 `

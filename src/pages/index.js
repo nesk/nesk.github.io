@@ -5,12 +5,28 @@ import johann from '../../static/images/johann.jpg'
 
 const About = styled.article`
     max-width: min(300px, 100%);
+
+    @media (min-width: 768px) {
+        display: flex;
+        align-items: center;
+        max-width: none;
+        width: 45rem;
+    }
+
+    @media (min-width: 992px) {
+        width: 52rem;
+        font-size: 1.4rem;
+    }
+`
+
+const Avatar = styled.img`
+    display: block;
+    width: 100%;
 `
 
 const AvatarContainer = styled.div`
     position: relative;
-    margin: 0 auto var(--content-spacing);
-    width: 80%;
+    margin: 0 calc(var(--content-spacing) * 2) calc(var(--content-spacing) * 2);
     border-radius: 9999px;
     overflow: hidden;
 
@@ -24,11 +40,19 @@ const AvatarContainer = styled.div`
         box-shadow: inset 0 0 20px var(--shadow);
         content: '';
     }
+
+    @media (min-width: 768px) {
+        margin: 0 calc(var(--content-spacing) * 3) 0 0;
+        flex: 0 0 14rem;
+    }
 `
 
-const Avatar = styled.img`
-    display: block;
-    width: 100%;
+const Speech = styled.p`
+    font-size: 1.2rem;
+
+    @media (min-width: 992px) {
+        font-size: 1.4rem;
+    }
 `
 
 export default () => (
@@ -38,14 +62,15 @@ export default () => (
                 <Avatar src={johann} alt="Johann Pardanaud"></Avatar>
             </AvatarContainer>
 
-            <p>
-                I'm a developer working at <a href="https://batch.com">Batch</a>
-                . I develop technical solutions for back-end and front-end. I
-                love the open source philosophy and try to contribute whenever I
-                have time (and motivation 😅). Although my skills are mainly in
-                web development, I appreciate working sometime with other
+            <Speech>
+                I'm <em>Johann Pardanaud</em>, developer at{' '}
+                <a href="https://batch.com">Batch</a>. I develop technical
+                solutions for back-end and front-end. I love the open source
+                philosophy and try to contribute whenever I have time (and
+                motivation 😅). Although my skills are mainly in web
+                development, I appreciate working sometimes with other
                 environments and new languages.
-            </p>
+            </Speech>
         </About>
     </Layout>
 )
