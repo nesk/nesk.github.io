@@ -1,20 +1,18 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Layout } from '../components/layout'
+import { Layout, Content } from '../components/layout'
 import johann from '../../static/images/johann.jpg'
 
-const About = styled.article`
+const About = styled(Content)`
     max-width: min(300px, 100%);
 
     @media (min-width: 768px) {
         display: flex;
         align-items: center;
         max-width: none;
-        width: 45rem;
     }
 
     @media (min-width: 992px) {
-        width: 52rem;
         font-size: 1.4rem;
     }
 `
