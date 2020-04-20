@@ -5,14 +5,27 @@ import johann from '../../static/images/johann.jpg'
 
 const About = styled(Content)`
     max-width: min(300px, 100%);
+    display: grid;
+    grid-template-rows: [avatar-start] auto [avatar-end speech-start] auto [speech-end];
+    grid-template-columns: 1fr;
+    justify-items: center;
+    align-items: center;
+
+    @media (max-width: 767.98px) {
+        grid-row-gap: calc(var(--content-spacing) * 2);
+    }
 
     @media (min-width: 768px) {
-        display: flex;
-        align-items: center;
         max-width: none;
+        height: 100%;
+        grid-template-rows: 1fr [avatar-start speech-start] auto [avatar-end speech-end] 1fr;
+        grid-template-columns: 1fr [avatar-start] 11rem [avatar-end speech-start] 29rem [speech-end] 1fr;
+        grid-column-gap: calc(var(--content-spacing) * 2);
     }
 
     @media (min-width: 992px) {
+        grid-template-columns: 1fr [avatar-start] 14rem [avatar-end speech-start] 36rem [speech-end] 1fr;
+        grid-column-gap: calc(var(--content-spacing) * 3);
         font-size: 1.4rem;
     }
 `
@@ -23,10 +36,14 @@ const Avatar = styled.img`
 `
 
 const AvatarContainer = styled.div`
+    grid-area: avatar;
     position: relative;
-    margin: 0 calc(var(--content-spacing) * 2) calc(var(--content-spacing) * 2);
     border-radius: 9999px;
     overflow: hidden;
+
+    @media (max-width: 767.98px) {
+        width: calc(100% - 4rem);
+    }
 
     &::after {
         position: absolute;
@@ -38,14 +55,10 @@ const AvatarContainer = styled.div`
         box-shadow: inset 0 0 20px var(--shadow);
         content: '';
     }
-
-    @media (min-width: 768px) {
-        margin: 0 calc(var(--content-spacing) * 3) 0 0;
-        flex: 0 0 14rem;
-    }
 `
 
 const Speech = styled.p`
+    grid-area: speech;
     font-size: 1.2rem;
 
     @media (min-width: 992px) {
