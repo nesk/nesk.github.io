@@ -10,3 +10,14 @@
 
     --shadow: hsla(206, 10%, 29%, 25%);
 }
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --grey-100: hsl(206, 10%, 10%);
+        --grey-200: hsl(206, 10%, 15%);
+        --grey-800: hsl(206, 10%, 80%);
+
+        --primary-500: hsl(206, 100%, 55%);
+        --primary-700: hsl(206, 100%, 43%);
+    }
+}
