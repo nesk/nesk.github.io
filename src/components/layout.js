@@ -17,6 +17,12 @@ const Header = styled.header`
     font-weight: 500;
 `
 
+const H1 = styled.h1`
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+`
+
 const Body = styled.section`
     flex: 1 0 auto;
     padding: var(--content-spacing);
@@ -27,7 +33,9 @@ const Body = styled.section`
 
 export const Layout = ({ children }) => (
     <Container>
-        <Header>Johann Pardanaud</Header>
+        <Header>
+            <H1>Johann Pardanaud</H1>
+        </Header>
         <Body>{children}</Body>
     </Container>
 )
