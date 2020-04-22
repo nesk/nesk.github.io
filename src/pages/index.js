@@ -19,12 +19,12 @@ const About = styled(Content)`
         max-width: none;
         height: 100%;
         grid-template-rows: 1fr [avatar-start speech-start] auto [avatar-end speech-end social-start] auto [social-end] 1fr;
-        grid-template-columns: 1fr [avatar-start social-start] 11rem [avatar-end social-end speech-start] 29rem [speech-end] 1fr;
+        grid-template-columns: [avatar-start social-start] 11rem [avatar-end social-end speech-start] 29rem [speech-end];
         grid-column-gap: calc(var(--content-spacing) * 2);
     }
 
     @media (min-width: 992px) {
-        grid-template-columns: 1fr [avatar-start social-start] 14rem [avatar-end social-end speech-start] 36rem [speech-end] 1fr;
+        grid-template-columns: [avatar-start social-start] 14rem [avatar-end social-end speech-start] 36rem [speech-end];
         grid-row-gap: calc(var(--content-spacing) * 2);
         grid-column-gap: calc(var(--content-spacing) * 3);
         font-size: 1.4rem;
