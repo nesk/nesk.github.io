@@ -2,29 +2,30 @@ import React from 'react'
 import styled from 'styled-components'
 import { Layout, Content } from '../components/layout'
 import johann from '../../static/images/johann.jpg'
+import GithubIcon from '../../static/icons/github.svg'
+import TwitterIcon from '../../static/icons/twitter.svg'
+import LinkedInIcon from '../../static/icons/linkedin.svg'
 
 const About = styled(Content)`
     max-width: min(300px, 100%);
     display: grid;
-    grid-template-rows: [avatar-start] auto [avatar-end speech-start] auto [speech-end];
+    grid-template-rows: [avatar-start] auto [avatar-end social-start] auto [social-end speech-start] auto [speech-end];
     grid-template-columns: 1fr;
+    grid-row-gap: calc(var(--content-spacing) * 1);
     justify-items: center;
     align-items: center;
-
-    @media (max-width: 767.98px) {
-        grid-row-gap: calc(var(--content-spacing) * 2);
-    }
 
     @media (min-width: 768px) {
         max-width: none;
         height: 100%;
-        grid-template-rows: 1fr [avatar-start speech-start] auto [avatar-end speech-end] 1fr;
-        grid-template-columns: 1fr [avatar-start] 11rem [avatar-end speech-start] 29rem [speech-end] 1fr;
+        grid-template-rows: 1fr [avatar-start speech-start] auto [avatar-end speech-end social-start] auto [social-end] 1fr;
+        grid-template-columns: 1fr [avatar-start social-start] 11rem [avatar-end social-end speech-start] 29rem [speech-end] 1fr;
         grid-column-gap: calc(var(--content-spacing) * 2);
     }
 
     @media (min-width: 992px) {
-        grid-template-columns: 1fr [avatar-start] 14rem [avatar-end speech-start] 36rem [speech-end] 1fr;
+        grid-template-columns: 1fr [avatar-start social-start] 14rem [avatar-end social-end speech-start] 36rem [speech-end] 1fr;
+        grid-row-gap: calc(var(--content-spacing) * 2);
         grid-column-gap: calc(var(--content-spacing) * 3);
         font-size: 1.4rem;
     }
@@ -57,6 +58,44 @@ const AvatarContainer = styled.div`
     }
 `
 
+const Social = styled.div`
+    grid-area: social;
+    display: flex;
+    justify-content: space-evenly;
+
+    @media (max-width: 767.98px) {
+        width: calc(100% - 4rem);
+    }
+
+    @media (min-width: 768px) {
+        justify-self: stretch;
+    }
+`
+
+const IconLink = styled.a`
+    color: inherit;
+
+    &:visited {
+        color: inherit;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+        color: var(--primary-700);
+    }
+
+    svg {
+        width: 1.4rem;
+    }
+
+    @media (min-width: 992px) {
+        svg {
+            width: 1.8rem;
+        }
+    }
+`
+
 const Speech = styled.p`
     grid-area: speech;
     font-size: 1.2rem;
@@ -82,6 +121,30 @@ export default () => (
                 development, I appreciate working sometimes with other
                 environments and new languages.
             </Speech>
+
+            <Social>
+                <IconLink
+                    href="https://github.com/nesk/"
+                    title="See my Github account"
+                    aria-label="See my Github account"
+                >
+                    <GithubIcon />
+                </IconLink>
+                <IconLink
+                    href="https://twitter.com/johannpardanaud"
+                    title="See my Twitter account"
+                    aria-label="See my Twitter account"
+                >
+                    <TwitterIcon />
+                </IconLink>
+                <IconLink
+                    href="https://www.linkedin.com/in/johann-pardanaud/"
+                    title="See my LinkedIn account"
+                    aria-label="See my LinkedIn account"
+                >
+                    <LinkedInIcon />
+                </IconLink>
+            </Social>
         </About>
     </Layout>
 )
