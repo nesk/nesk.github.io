@@ -4,8 +4,13 @@
  * See: https://www.gatsbyjs.org/docs/gatsby-config/
  */
 module.exports = {
-    /* Your site config here */
+    siteMetadata: {
+        title: `Johann Pardanaud`,
+        description: `Developer working @batch — Passionate climber`,
+        author: `@johannpardanaud`,
+    },
     plugins: [
+        'gatsby-plugin-react-helmet',
         'gatsby-plugin-styled-components',
         {
             resolve: 'gatsby-plugin-react-svg',

@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { SEO } from './seo'
 
 const Container = styled.div`
     display: flex;
@@ -44,13 +45,16 @@ export const Content = styled.section`
     }
 `
 
-export const Layout = ({ children }) => (
-    <Container>
-        <Header>
-            <Content>
-                <H1>Johann Pardanaud</H1>
-            </Content>
-        </Header>
-        <Body>{children}</Body>
-    </Container>
+export const Layout = ({ children, seo }) => (
+    <>
+        {seo || <SEO />}
+        <Container>
+            <Header>
+                <Content>
+                    <H1>Johann Pardanaud</H1>
+                </Content>
+            </Header>
+            <Body>{children}</Body>
+        </Container>
+    </>
 )

@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Layout, Content } from '../components/layout'
+import { SEO } from '../components/seo'
 import johann from '../../static/images/johann.jpg'
 import GithubIcon from '../../static/icons/github.svg'
 import TwitterIcon from '../../static/icons/twitter.svg'
@@ -106,7 +107,7 @@ const Speech = styled.p`
 `
 
 export default () => (
-    <Layout>
+    <Layout seo={<SEO title="About" />}>
         <About>
             <AvatarContainer>
                 <Avatar src={johann} alt="Johann Pardanaud"></Avatar>
