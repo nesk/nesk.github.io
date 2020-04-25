@@ -4,7 +4,7 @@ import { graphql } from 'gatsby'
 import { Layout, Content } from '../components/layout'
 import { SEO } from '../components/seo'
 
-const Article = styled.article`
+const Post = styled.article`
     margin-bottom: calc(var(--content-spacing) * 2);
 
     h2 {
@@ -14,15 +14,15 @@ const Article = styled.article`
 `
 
 export default ({ data }) => {
-    const articles = data.allMarkdownRemark.edges.map(({ node }) => node)
+    const posts = data.allMarkdownRemark.edges.map(({ node }) => node)
     return (
         <Layout seo={<SEO title="Blog" />}>
             <Content>
-                {articles.map((article) => (
-                    <Article>
-                        <h2>{article.frontmatter.title}</h2>
-                        <p>{article.excerpt}</p>
-                    </Article>
+                {posts.map((post) => (
+                    <Post>
+                        <h2>{post.frontmatter.title}</h2>
+                        <p>{post.excerpt}</p>
+                    </Post>
                 ))}
             </Content>
         </Layout>
