@@ -1,0 +1,377 @@
+---
+title: 'Ship an Android app with a pre-populated database'
+date: '2018-06-26'
+slug: ship-an-android-app-with-a-pre-populated-database
+---
+
+I recently had to create an Android app with a pre-populated database containing containing more than 8,000 rows. Unfortunately, Android doesn't provide any API to do this easily. After searching for a few minutes, I found a blog post explaining [how to install a SQLite database from your assets to your app directory (by Juan-Manuel Fluxà)](https://blog.reigndesign.com/blog/using-your-own-sqlite-database-in-android-applications/), which helped me to create my own database helper.<!-- excerpt-end -->
+
+However, this article is a bit outdated (it was written in 2009), the code could benefit from some optimizations, it doesn't handle database updates and it is written in Java (while I'm in love with Kotlin ❤️).
+
+### Choosing between Room or pure SQLite
+
+Android highly suggests to use their [Room](https://developer.android.com/topic/libraries/architecture/room) library, an abstraction tool running over SQLite. It's a great API, however, it manages your data with an obscure structure. Shipping a compatible database is really complicated (and honestly, I did not manage to do it), and [the Android team has been asked to provide a solution](https://issuetracker.google.com/issues/62185732). Because of this complexity, we will stick to a basic SQLite database.
+
+If using Room is a requirement for you and you don't have that much data, [you can try what is explained in this article (by Gonzalo Martin)](https://android.jlelse.eu/pre-populate-room-database-6920f9acc870). But you should probably avoid this if you have hundreds of rows to store.
+
+### Building your database file
+
+Databases in Android are using the SQLite3 file format, the extension changes nothing.
+
+#### Supporting the right version
+
+Be careful to use features supported by old SQLite versions, because Android runs different ones depending on the API level. You can check which versions are available [on the **android.database.sqlite** package reference](https://developer.android.com/reference/android/database/sqlite/package-summary).
+
+For example, if you want to support Android API 21+, you shouldn't use SQLite features added after the 3.8 version.
+
+#### Metadata is optional
+
+While reading or writing your database, Android will use the `android_metadata` table to know the locale. It will be automatically added if it doesn't already exist, however you can add this table by yourself if you want to set a specific locale for your content:
+
+```sql
+CREATE TABLE android_metadata (locale TEXT);
+INSERT INTO android_metadata VALUES ("en_US");
+```
+
+#### Cursor adapters need a special field
+
+If you want to support cursor adapters, you must add a primary key field named `_ID` to your tables. Here's a quote [from the documentation](https://developer.android.com/training/data-storage/sqlite#DefineContract):
+
+> Note: By implementing the [`BaseColumns`](https://developer.android.com/reference/android/provider/BaseColumns.html) interface, your inner class can inherit a primary key field called `_ID` that some Android classes such as [`CursorAdapter`](https://developer.android.com/reference/android/widget/CursorAdapter.html) expect it to have. It's not required, but this can help your database work harmoniously with the Android framework.
+
+### Add the database to your project
+
+To ship your database with your app, you will have to add it to your assets. If you don't already have one, create the **assets** directory: right click on your project in the sidebar, then click on _New > Folder > Assets Folder_.
+
+HERE GOES THIS FUCKING IMAGE https://miro.medium.com/max/1400/1*qRqDw4qUXNylxAB8J0x9WQ.png
+
+Now right click on the new assets directory, then click on New > Directory, and name it “databases”.
+
+Once the directory is created, copy your database file in it and name it “mydb.sqlite3” (feel free to change this).
+
+### Writing the database helper
+
+Now that your database is created and stored in the assets, we can write the logic to copy it from the assets directory to the final directory where databases are stored to be used by your app.
+
+#### The basic structure of our helper
+
+First, create a simple database helper just like explained [in Android's documentation](https://developer.android.com/training/data-storage/sqlite):
+
+```kt
+package com.example.example
+
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+
+class ActsDbHelper(val context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+
+    override fun onCreate(db: SQLiteDatabase?) {
+        // Nothing to do
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        // Nothing to do
+    }
+
+    companion object {
+        const val DATABASE_NAME = "mydb"
+        const val DATABASE_VERSION = 1
+    }
+
+}
+```
+
+Since the database structure is already defined by the SQLite file stored in the assets, there is no need to define any logic in the `onCreate` and `onUpgrade` methods, but we must override them because they are defined as abstract.
+
+#### Installing the database from the assets
+
+Now we need to copy our database from the assets to the final directory, here's how:
+
+```kt
+package com.example.example
+
+// ...
+import java.io.File
+import java.io.FileOutputStream
+
+class ActsDbHelper(val context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+
+    private fun installDatabaseFromAssets() {
+        val inputStream = context.assets.open("$ASSETS_PATH/$DATABASE_NAME.sqlite3")
+
+        try {
+            val outputFile = File(context.getDatabasePath(DATABASE_NAME).path)
+            val outputStream = FileOutputStream(outputFile)
+
+            inputStream.copyTo(outputStream)
+            inputStream.close()
+
+            outputStream.flush()
+            outputStream.close()
+        } catch (exception: Throwable) {
+            throw RuntimeException("The $DATABASE_NAME database couldn't be installed.", exception)
+        }
+    }
+
+    override fun onCreate(db: SQLiteDatabase?) {
+        // Nothing to do
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        // Nothing to do
+    }
+
+    companion object {
+        const val ASSETS_PATH = "databases"
+        // ...
+    }
+
+}
+```
+
+The `installDatabaseFromAssets` method:
+
+- opens an input stream for the database file in the assets (note the usage of the `ASSETS_PATH` constant);
+- opens an output stream to a file where the active databases of your app are located;
+- copies the data form the input stream to the output one;
+- closes the streams.
+
+**Note:** For readability, I'm commenting out the sections we have already treated and will provide the full code at the end of the article.
+
+#### Checking the database status
+
+Before installing/updating our database, we must check if it is already installed and up to date. This can be done through [`SharedPreferences`](https://developer.android.com/training/data-storage/shared-preferences):
+
+```kt
+package com.example.example
+
+// ...
+import android.content.SharedPreferences
+
+class ActsDbHelper(val context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+
+    private val preferences: SharedPreferences = context.getSharedPreferences(
+            "${context.packageName}.database_versions",
+            Context.MODE_PRIVATE
+    )
+
+    private fun installedDatabaseIsOutdated(): Boolean {
+        return preferences.getInt(DATABASE_NAME, 0) < DATABASE_VERSION
+    }
+
+    private fun writeDatabaseVersionInPreferences() {
+        preferences.edit().apply {
+            putInt(DATABASE_NAME, DATABASE_VERSION)
+            apply()
+        }
+    }
+
+    private fun installDatabaseFromAssets() {
+        // ...
+    }
+
+    override fun onCreate(db: SQLiteDatabase?) {
+        // Nothing to do
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        // Nothing to do
+    }
+
+    companion object {
+        // ...
+    }
+
+}
+```
+
+On initialization, we create/open a new shared preference file to store the installed database version. We use the package name to generate a unique name, which is [recommended by Android's documentation](https://developer.android.com/training/data-storage/shared-preferences#GetSharedPreferences):
+
+> When naming your shared preference files, you should use a name that’s uniquely identifiable to your app. An easy way to do this is prefix the file name with your [application ID](https://developer.android.com/studio/build/application-id.html). For example: `"com.example.myapp.PREFERENCE_FILE_KEY"`
+
+We have created two methods to check or update the database version:
+
+- `installedDatabaseIsOutdated` compares the version stored in the shared preferences and the version written in the companion object.
+- `writeDatabaseVersionInPreferences` saves the version written in the companion object to the shared preferences.
+
+#### Installing the database automatically
+
+You may have noticed that all our custom methods are private. This is because we don't wan't to mess with them when instanciating our database helper, we just want them to be executed when necessary.
+
+The perfect moment to run our install/update workflow is when you try to read your database. If you worry about performance, [remember this from Android's documentation](https://developer.android.com/training/data-storage/sqlite#DbHelper):
+
+>Because they can be long-running, be sure that you call [`getWritableDatabase()`](https://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#getWritableDatabase()) or [`getReadableDatabase()`](https://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#getReadableDatabase()) in a background thread, such as with [`AsyncTask`](https://developer.android.com/reference/android/os/AsyncTask.html) or [`IntentService`](https://developer.android.com/reference/android/app/IntentService.html).
+
+Since you will have to use these two methods in a background thread anyway, adding a bit of workload to the `getReadableDatabase` method shouldn't be an issue:
+
+```kt
+package com.example.example
+
+// ...
+
+class ActsDbHelper(val context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+
+    // private val preferences: SharedPreferences = ...
+
+    private fun installedDatabaseIsOutdated(): Boolean {
+        // ...
+    }
+
+    private fun writeDatabaseVersionInPreferences() {
+        // ...
+    }
+
+    private fun installDatabaseFromAssets() {
+        // ...
+    }
+
+    @Synchronized
+    private fun installOrUpdateIfNecessary() {
+        if (installedDatabaseIsOutdated()) {
+            context.deleteDatabase(DATABASE_NAME)
+            installDatabaseFromAssets()
+            writeDatabaseVersionInPreferences()
+        }
+    }
+
+    override fun getWritableDatabase(): SQLiteDatabase {
+        throw RuntimeException("The $DATABASE_NAME database is not writable.")
+    }
+
+    override fun getReadableDatabase(): SQLiteDatabase {
+        installOrUpdateIfNecessary()
+        return super.getReadableDatabase()
+    }
+
+    override fun onCreate(db: SQLiteDatabase?) {
+        // Nothing to do
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        // Nothing to do
+    }
+
+    companion object {
+        // ...
+    }
+
+}
+```
+
+To install/update our database on read, we must override `getReadableDatabase` method to run `installOrUpdateIfNecessary` before returning the database. If our database is outdated (or not installed) we:
+
+- remove the current database with the same name;
+- install the latest database version;
+- write the new version in the shared preferences.
+
+**Note:** The `installOrUpdateIfNecessary` method has the `Synchronized` annotation to avoid potential issues if you call `getReadableDatabase` simultaneously in two different threads.
+
+And what about the `getWritableDatabase` method? Well, if you're planning to update your database sometimes like me, you cannot allow the database to be writable because it would be extremely complicated to merge user modifications to your own database.
+
+My suggestion here is to store the data generated by the user in a new database created programmatically on the device. Actually, it's great because you will be able to use [Room](https://developer.android.com/topic/libraries/architecture/room) for this database, since you're not importing it from the assets.
+
+If you really need to write data in your imported database, use the `installOrUpdateIfNecessary` method in `getWritableDatabase`, just like in `getReadableDatabase`. But remember to _never_ increase the database version in the future or the user modifications will be overriden.
+
+#### Getting everything together
+
+Finally, here's the whole code in one piece with a (very) simple use case:
+
+```kt
+package com.example.example
+
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // This is an example, remember to use a background thread in production.
+        val myDatabase = MyDatabaseHelper(this).readableDatabase
+
+        myDatabase.rawQuery("SELECT * FROM my_awesome_table")
+    }
+}
+```
+
+```kt
+package com.example.example
+
+import android.content.Context
+import android.content.SharedPreferences
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+import java.io.File
+import java.io.FileOutputStream
+
+class ActsDbHelper(val context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+
+    private val preferences: SharedPreferences = context.getSharedPreferences(
+            "${context.packageName}.database_versions",
+            Context.MODE_PRIVATE
+    )
+
+    private fun installedDatabaseIsOutdated(): Boolean {
+        return preferences.getInt(DATABASE_NAME, 0) < DATABASE_VERSION
+    }
+
+    private fun writeDatabaseVersionInPreferences() {
+        preferences.edit().apply {
+            putInt(DATABASE_NAME, DATABASE_VERSION)
+            apply()
+        }
+    }
+
+    private fun installDatabaseFromAssets() {
+        val inputStream = context.assets.open("$ASSETS_PATH/$DATABASE_NAME.sqlite3")
+
+        try {
+            val outputFile = File(context.getDatabasePath(DATABASE_NAME).path)
+            val outputStream = FileOutputStream(outputFile)
+
+            inputStream.copyTo(outputStream)
+            inputStream.close()
+
+            outputStream.flush()
+            outputStream.close()
+        } catch (exception: Throwable) {
+            throw RuntimeException("The $DATABASE_NAME database couldn't be installed.", exception)
+        }
+    }
+
+    @Synchronized
+    private fun installOrUpdateIfNecessary() {
+        if (installedDatabaseIsOutdated()) {
+            context.deleteDatabase(DATABASE_NAME)
+            installDatabaseFromAssets()
+            writeDatabaseVersionInPreferences()
+        }
+    }
+
+    override fun getWritableDatabase(): SQLiteDatabase {
+        throw RuntimeException("The $DATABASE_NAME database is not writable.")
+    }
+
+    override fun getReadableDatabase(): SQLiteDatabase {
+        installOrUpdateIfNecessary()
+        return super.getReadableDatabase()
+    }
+
+    override fun onCreate(db: SQLiteDatabase?) {
+        // Nothing to do
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        // Nothing to do
+    }
+
+    companion object {
+        const val ASSETS_PATH = "databases"
+        const val DATABASE_NAME = "mydb"
+        const val DATABASE_VERSION = 1
+    }
+
+}
+```
