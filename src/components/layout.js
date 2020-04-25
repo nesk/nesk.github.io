@@ -26,14 +26,11 @@ const H1 = styled.h1`
 
 const Body = styled.div`
     flex: 1 0 auto;
-    padding: var(--content-spacing) 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: calc(var(--content-spacing) * 3) 0;
 `
 
 export const Content = styled.section`
-    margin: auto;
+    margin: 0 auto;
     padding: 0 var(--content-spacing);
 
     @media (min-width: 768px) {
