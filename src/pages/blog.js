@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { graphql } from 'gatsby'
+import { Link, graphql } from 'gatsby'
 import { Layout, Content } from '../components/layout'
 import { SEO } from '../components/seo'
 
@@ -20,7 +20,11 @@ export default ({ data }) => {
             <Content>
                 {posts.map((post) => (
                     <Post>
-                        <h2>{post.frontmatter.title}</h2>
+                        <h2>
+                            <Link to={`/blog/${post.frontmatter.slug}`}>
+                                {post.frontmatter.title}
+                            </Link>
+                        </h2>
                         <p>{post.excerpt}</p>
                     </Post>
                 ))}
@@ -38,6 +42,7 @@ export const query = graphql`
                     frontmatter {
                         title
                         date(formatString: "DD MMMM, YYYY")
+                        slug
                     }
                     excerpt(pruneLength: 300)
                 }
