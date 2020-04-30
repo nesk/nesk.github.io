@@ -22,6 +22,14 @@ module.exports = {
             resolve: `gatsby-transformer-remark`,
             options: {
                 excerpt_separator: `<!-- excerpt-end -->`,
+                plugins: [
+                    {
+                        resolve: `gatsby-remark-prismjs`,
+                        options: {
+                            aliases: { kt: 'kotlin' },
+                        },
+                    },
+                ],
             },
         },
         'gatsby-plugin-styled-components',

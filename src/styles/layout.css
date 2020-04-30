@@ -20,3 +20,13 @@ a:active {
     text-decoration: underline;
     outline: none;
 }
+
+code[class*='language-'],
+pre[class*='language-'] {
+    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+    font-size: 0.9rem;
+}
+
+:not(pre) > code[class*='language-'] {
+    padding: 0.1em 0.25em;
+}
