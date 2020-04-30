@@ -4,11 +4,36 @@ import { graphql } from 'gatsby'
 import { Layout, Content } from '../components/layout'
 import { SEO } from '../components/seo'
 
-const Heading = styled.h2`
-    font-size: 2.5rem;
-    letter-spacing: 0.015rem;
-    line-height: 3.5rem;
-    margin-bottom: 2.5rem;
+const Post = styled.article`
+    font-size: 1.1rem;
+
+    h2 {
+        font-size: 2.5rem;
+        letter-spacing: 0.015rem;
+        line-height: 3.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    h3 {
+        margin-top: 1.6rem;
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        margin-top: 1.3rem;
+        font-size: 1.3rem;
+    }
+
+    blockquote {
+        border-left: 4px solid;
+        padding: 0.3rem 1rem;
+        line-height: 1.6;
+        font-style: italic;
+    }
+
+    pre {
+        margin-bottom: 1rem;
+    }
 `
 
 export default ({ data }) => {
@@ -17,10 +42,10 @@ export default ({ data }) => {
     return (
         <Layout seo={<SEO title={`${post.frontmatter.title} — Blog`} />}>
             <Content>
-                <article>
-                    <Heading>{post.frontmatter.title}</Heading>
+                <Post>
+                    <h2>{post.frontmatter.title}</h2>
                     <div dangerouslySetInnerHTML={{ __html: post.html }} />
-                </article>
+                </Post>
             </Content>
         </Layout>
     )
