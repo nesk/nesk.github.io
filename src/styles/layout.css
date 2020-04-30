@@ -1,6 +1,6 @@
 body {
     background: var(--grey-100);
-    color: var(--grey-800);
+    color: var(--grey-600);
 }
 
 p:last-child {
@@ -29,6 +29,7 @@ pre[class*='language-'] {
 
 pre[class*='language-'] {
     margin: 0;
+    background: var(--code-background);
 }
 
 :not(pre) > code[class*='language-'] {
