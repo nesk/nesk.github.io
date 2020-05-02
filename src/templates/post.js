@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { graphql } from 'gatsby'
-import { Layout, Content } from '../components/layout'
+import { Layout } from '../components/layout'
+import { Content } from '../components/content'
 import { SEO } from '../components/seo'
 
 const Post = styled.article`

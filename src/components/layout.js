@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SEO } from './seo'
+import { Content } from './content'
 
 const Container = styled.div`
     display: flex;
@@ -27,19 +28,6 @@ const H1 = styled.h1`
 const Body = styled.div`
     flex: 1 0 auto;
     padding: calc(var(--content-spacing) * 3) 0;
-`
-
-export const Content = styled.section`
-    margin: 0 auto;
-    padding: 0 var(--content-spacing);
-
-    @media (min-width: 768px) {
-        width: 44rem;
-    }
-
-    @media (min-width: 992px) {
-        width: 55rem;
-    }
 `
 
 export const Layout = ({ children, seo }) => (

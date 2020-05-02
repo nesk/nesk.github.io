@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Layout, Content } from '../components/layout'
+import { Layout } from '../components/layout'
+import { Content } from '../components/content'
 import { SEO } from '../components/seo'
 import johann from '../../static/images/johann.jpg'
 import GithubIcon from '../../static/icons/github.svg'
