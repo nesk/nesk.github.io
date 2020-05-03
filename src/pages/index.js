@@ -13,7 +13,7 @@ const About = styled(Content)`
     display: grid;
     grid-template-rows: [avatar-start] auto [avatar-end social-start] auto [social-end speech-start] auto [speech-end];
     grid-template-columns: 1fr;
-    grid-row-gap: calc(var(--content-spacing) * 1);
+    grid-row-gap: calc(var(--content-spacing) * 2);
     justify-items: center;
     align-items: center;
 
