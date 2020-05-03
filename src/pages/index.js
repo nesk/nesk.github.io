@@ -1,12 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+    faGithub,
+    faTwitter,
+    faLinkedinIn,
+} from '@fortawesome/free-brands-svg-icons'
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
 import { SEO } from '../components/seo'
 import johann from '../../static/images/johann.jpg'
-import GithubIcon from '../../static/icons/github.svg'
-import TwitterIcon from '../../static/icons/twitter.svg'
-import LinkedInIcon from '../../static/icons/linkedin.svg'
 
 const About = styled(Content)`
     max-width: min(300px, 100%);
@@ -76,6 +79,7 @@ const Social = styled.div`
 
 const IconLink = styled.a`
     color: inherit;
+    font-size: 1.6rem;
 
     &:visited {
         color: inherit;
@@ -87,14 +91,8 @@ const IconLink = styled.a`
         color: var(--primary-700);
     }
 
-    svg {
-        width: 1.4rem;
-    }
-
     @media (min-width: 992px) {
-        svg {
-            width: 1.8rem;
-        }
+        font-size: 1.8rem;
     }
 `
 
@@ -130,21 +128,21 @@ export default () => (
                     title="See my Github account"
                     aria-label="See my Github account"
                 >
-                    <GithubIcon />
+                    <FontAwesomeIcon icon={faGithub} />
                 </IconLink>
                 <IconLink
                     href="https://twitter.com/johannpardanaud"
                     title="See my Twitter account"
                     aria-label="See my Twitter account"
                 >
-                    <TwitterIcon />
+                    <FontAwesomeIcon icon={faTwitter} />
                 </IconLink>
                 <IconLink
                     href="https://www.linkedin.com/in/johann-pardanaud/"
                     title="See my LinkedIn account"
                     aria-label="See my LinkedIn account"
                 >
-                    <LinkedInIcon />
+                    <FontAwesomeIcon icon={faLinkedinIn} />
                 </IconLink>
             </Social>
         </About>

@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { Link } from 'gatsby'
 import styled from 'styled-components'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { Content } from './content'
-import BarsIcon from '../../static/icons/bars.svg'
 
 const Container = styled.header`
     flex: 0 0 auto;
@@ -39,10 +40,7 @@ const MenuButton = styled.button`
     border: 0;
     color: inherit;
     appearance: none;
-
-    svg {
-        width: 1.4rem;
-    }
+    font-size: 1.6rem;
 
     @media (min-width: 768px) {
         display: none;
@@ -97,7 +95,7 @@ export const Header = () => {
                     aria-label="Menu"
                     onClick={() => setShowMenu(!showMenu)}
                 >
-                    <BarsIcon />
+                    <FontAwesomeIcon icon={faBars} />
                 </MenuButton>
 
                 <Nav show={showMenu}>
