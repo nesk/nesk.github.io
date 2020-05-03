@@ -99,7 +99,9 @@ export const Header = () => {
                 </MenuButton>
 
                 <Nav show={showMenu}>
-                    <NavLink activeClassName="active">About</NavLink>
+                    <NavLink activeClassName="active" to="/">
+                        About
+                    </NavLink>
                     <NavLink
                         activeClassName="active"
                         partiallyActive
