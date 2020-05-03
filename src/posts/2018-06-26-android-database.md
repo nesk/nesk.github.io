@@ -8,23 +8,23 @@ I recently had to create an Android app with a pre-populated database containing
 
 However, this article is a bit outdated (it was written in 2009), the code could benefit from some optimizations, it doesn't handle database updates and it is written in Java (while I'm in love with Kotlin ❤️).
 
-### Choosing between Room or pure SQLite
+## Choosing between Room or pure SQLite
 
 Android highly suggests to use their [Room](https://developer.android.com/topic/libraries/architecture/room) library, an abstraction tool running over SQLite. It's a great API, however, it manages your data with an obscure structure. Shipping a compatible database is really complicated (and honestly, I did not manage to do it), and [the Android team has been asked to provide a solution](https://issuetracker.google.com/issues/62185732). Because of this complexity, we will stick to a basic SQLite database.
 
 If using Room is a requirement for you and you don't have that much data, [you can try what is explained in this article (by Gonzalo Martin)](https://android.jlelse.eu/pre-populate-room-database-6920f9acc870). But you should probably avoid this if you have hundreds of rows to store.
 
-### Building your database file
+## Building your database file
 
 Databases in Android are using the SQLite3 file format, the extension changes nothing.
 
-#### Supporting the right version
+### Supporting the right version
 
 Be careful to use features supported by old SQLite versions, because Android runs different ones depending on the API level. You can check which versions are available [on the **android.database.sqlite** package reference](https://developer.android.com/reference/android/database/sqlite/package-summary).
 
 For example, if you want to support Android API 21+, you shouldn't use SQLite features added after the 3.8 version.
 
-#### Metadata is optional
+### Metadata is optional
 
 While reading or writing your database, Android will use the `android_metadata` table to know the locale. It will be automatically added if it doesn't already exist, however you can add this table by yourself if you want to set a specific locale for your content:
 
@@ -33,13 +33,13 @@ CREATE TABLE android_metadata (locale TEXT);
 INSERT INTO android_metadata VALUES ("en_US");
 ```
 
-#### Cursor adapters need a special field
+### Cursor adapters need a special field
 
 If you want to support cursor adapters, you must add a primary key field named `_ID` to your tables. Here's a quote [from the documentation](https://developer.android.com/training/data-storage/sqlite#DefineContract):
 
-> Note: By implementing the [`BaseColumns`](https://developer.android.com/reference/android/provider/BaseColumns.html) interface, your inner class can inherit a primary key field called `_ID` that some Android classes such as [`CursorAdapter`](https://developer.android.com/reference/android/widget/CursorAdapter.html) expect it to have. It's not required, but this can help your database work harmoniously with the Android framework.
+> **Note:** By implementing the [`BaseColumns`](https://developer.android.com/reference/android/provider/BaseColumns.html) interface, your inner class can inherit a primary key field called `_ID` that some Android classes such as [`CursorAdapter`](https://developer.android.com/reference/android/widget/CursorAdapter.html) expect it to have. It's not required, but this can help your database work harmoniously with the Android framework.
 
-### Add the database to your project
+## Add the database to your project
 
 To ship your database with your app, you will have to add it to your assets. If you don't already have one, create the **assets** directory: right click on your project in the sidebar, then click on _New > Folder > Assets Folder_.
 
@@ -49,11 +49,11 @@ Now right click on the new assets directory, then click on New > Directory, and 
 
 Once the directory is created, copy your database file in it and name it “mydb.sqlite3” (feel free to change this).
 
-### Writing the database helper
+## Writing the database helper
 
 Now that your database is created and stored in the assets, we can write the logic to copy it from the assets directory to the final directory where databases are stored to be used by your app.
 
-#### The basic structure of our helper
+### The basic structure of our helper
 
 First, create a simple database helper just like explained [in Android's documentation](https://developer.android.com/training/data-storage/sqlite):
 
@@ -84,7 +84,7 @@ class ActsDbHelper(val context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
 Since the database structure is already defined by the SQLite file stored in the assets, there is no need to define any logic in the `onCreate` and `onUpgrade` methods, but we must override them because they are defined as abstract.
 
-#### Installing the database from the assets
+### Installing the database from the assets
 
 Now we need to copy our database from the assets to the final directory, here's how:
 
@@ -139,7 +139,7 @@ The `installDatabaseFromAssets` method:
 
 **Note:** For readability, I'm commenting out the sections we have already treated and will provide the full code at the end of the article.
 
-#### Checking the database status
+### Checking the database status
 
 Before installing/updating our database, we must check if it is already installed and up to date. This can be done through [`SharedPreferences`](https://developer.android.com/training/data-storage/shared-preferences):
 
@@ -195,7 +195,7 @@ We have created two methods to check or update the database version:
 - `installedDatabaseIsOutdated` compares the version stored in the shared preferences and the version written in the companion object.
 - `writeDatabaseVersionInPreferences` saves the version written in the companion object to the shared preferences.
 
-#### Installing the database automatically
+### Installing the database automatically
 
 You may have noticed that all our custom methods are private. This is because we don't wan't to mess with them when instanciating our database helper, we just want them to be executed when necessary.
 
@@ -273,7 +273,7 @@ My suggestion here is to store the data generated by the user in a new database 
 
 If you really need to write data in your imported database, use the `installOrUpdateIfNecessary` method in `getWritableDatabase`, just like in `getReadableDatabase`. But remember to _never_ increase the database version in the future or the user modifications will be overriden.
 
-#### Getting everything together
+### Getting everything together
 
 Finally, here's the whole code in one piece with a (very) simple use case:
 

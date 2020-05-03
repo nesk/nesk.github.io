@@ -8,19 +8,19 @@ import { SEO } from '../components/seo'
 const Post = styled.article`
     font-size: 1.1rem;
 
-    h2 {
+    h1 {
         font-size: 2.5rem;
         letter-spacing: 0.015rem;
         line-height: 3.5rem;
         margin-bottom: 2.5rem;
     }
 
-    h3 {
+    h2 {
         margin-top: 1.6rem;
         font-size: 1.6rem;
     }
 
-    h4 {
+    h3 {
         margin-top: 1.3rem;
         font-size: 1.3rem;
     }
@@ -41,10 +41,13 @@ export default ({ data }) => {
     const post = data.markdownRemark
 
     return (
-        <Layout seo={<SEO title={`${post.frontmatter.title} — Blog`} />}>
+        <Layout
+            seo={<SEO title={`${post.frontmatter.title} — Blog`} />}
+            autoTopHeading={false}
+        >
             <Content>
                 <Post>
-                    <h2>{post.frontmatter.title}</h2>
+                    <h1>{post.frontmatter.title}</h1>
                     <div dangerouslySetInnerHTML={{ __html: post.html }} />
                 </Post>
             </Content>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'gatsby'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { Content } from './content'
@@ -26,11 +26,19 @@ const Container = styled.header`
     }
 `
 
-const Title = styled.h1`
+const titleCss = css`
     margin: 0;
     font-size: inherit;
     font-weight: inherit;
     text-transform: uppercase;
+`
+
+const TitleStrong = styled.strong`
+    ${titleCss}
+`
+
+const TitleH1 = styled.h1`
+    ${titleCss}
 `
 
 const MenuButton = styled.button`
@@ -83,13 +91,17 @@ const NavLink = styled(Link)`
     }
 `
 
-export const Header = () => {
+export const Header = ({ autoTopHeading = true }) => {
     const [showMenu, setShowMenu] = useState(false)
 
     return (
         <Container>
             <Content>
-                <Title>Johann Pardanaud</Title>
+                {autoTopHeading ? (
+                    <TitleH1>Johann Pardanaud</TitleH1>
+                ) : (
+                    <TitleStrong>Johann Pardanaud</TitleStrong>
+                )}
 
                 <MenuButton
                     aria-label="Menu"

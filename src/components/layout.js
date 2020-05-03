@@ -15,11 +15,11 @@ const Body = styled.div`
     padding: calc(var(--content-spacing) * 3) 0;
 `
 
-export const Layout = ({ children, seo }) => (
+export const Layout = ({ children, seo, autoTopHeading = true }) => (
     <>
         {seo || <SEO />}
         <Container>
-            <Header />
+            <Header autoTopHeading={autoTopHeading} />
             <Body>{children}</Body>
         </Container>
     </>
