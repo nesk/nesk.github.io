@@ -9,7 +9,7 @@ import {
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
 import { SEO } from '../components/seo'
-import johann from '../../static/images/johann.jpg'
+import avatar from '../assets/images/avatar.jpg'
 
 const About = styled(Content)`
     max-width: min(300px, 100%);
@@ -109,7 +109,7 @@ export default () => (
     <Layout seo={<SEO title="About" />}>
         <About>
             <AvatarContainer>
-                <Avatar src={johann} alt="Johann Pardanaud"></Avatar>
+                <Avatar src={avatar} alt="Johann Pardanaud"></Avatar>
             </AvatarContainer>
 
             <Speech>
