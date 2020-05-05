@@ -1,0 +1,150 @@
+---
+title: 'About circular references in PHP'
+date: '2018-02-01'
+slug: 'about-circular-references-in-php'
+---
+
+Let me talk about some issues I encountered with circular references while working on my [PuPHPeteer](https://github.com/nesk/puphpeteer) library.
+
+## How you can end up with circular references
+
+Under the hood, PuPHPeteer uses [Rialto](https://github.com/nesk/rialto), a library I've created for the occasion. Rialto is a library to manage Node resources, therefore it needs to create a Node process and communicate with it. To do so, it has a `ProcessSupervisor` class which handles everything. In the early stage development, this class was handling way too much features.
+
+To improve [the separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns), I've moved all the functions handling data serialization to two new classes: `DataSerializer` and `DataUnserializer`. That way, the `ProcessSupervisor` class only had to instanciate these two classes and use their public methods.
+
+However, the `DataUnserializer` class needed to keep a reference to its `ProcessSupervisor` parent (so it can transmit the reference to some classes it creates on unserialization). We had this code organization:
+
+![A UML diagram showing how ProcessSupervisor and DataUnserializer classes create a circular reference](images/uml-1.png)
+
+And this is where we have an issue: if the root object is destroyed, the `ProcessSupervisor` and `DataUnserializer` instances will stay alive because they reference each other.
+
+## How circular references can be harmful
+
+Some languages can handle them pretty well, but since PHP's garbage collector is using [reference](https://www.php.net/manual/en/features.gc.refcounting-basics.php) [counting](https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)#Reference_counting), the two instances will be destroyed only once PHP shuts down:
+
+>Fortunately, PHP will clean up this data structure at the end of the request, but before then, this is taking up valuable space in memory.
+>
+>– [php.net](https://www.php.net/manual/en/features.gc.refcounting-basics.php#features.gc.cleanup-problems)
+
+However, memory isn't the only issue here. Let me take another example with Rialto: the `ProcessSupervisor` uses the `__destruct` method to kill the Node process once the class is no longer used, and here's what the PHP documentation states:
+
+>The destructor method will be called as soon as there are no other references to a particular object, or in any order during the shutdown sequence.
+>
+>– [php.net](https://www.php.net/manual/en/language.oop5.decon.php#language.oop5.decon.destructor)
+
+This means the Node process will be kept alive until PHP shuts down because there will still exist a reference to the `ProcessSupervisor` instance.
+
+So, having a circular dependency in PHP can be harmful for two reasons:
+
+- **Memory allocation**: if your instances store large chunks of data (arrays with thousands of very long strings, etc…).
+- **Destruction**: if your instances needs to do some cleanup on destruction, the cleanup will only happen on PHP shutdown.
+
+Ultimately, these issues will bother you essentially with long running processes, but even with simple web requests there could some side effects if your classes allocates a high volume of memory or needs to do proper cleaning at the right time.
+
+## How you can solve circular references
+
+You have three ways to solve your circular references issues:
+
+- **Use [weak references](https://en.wikipedia.org/wiki/Weak_reference)**:
+
+>A **weak reference** is a [reference](https://en.wikipedia.org/wiki/Reference_(computer_science)) that does not protect the referenced [object](https://en.wikipedia.org/wiki/Object_(computer_science)) from collection by a [garbage collector](https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)).
+>
+>– [Wikipedia](https://en.wikipedia.org/wiki/Weak_reference)
+
+Weak references is a missing language feature in PHP. You will need to use an extension. You can use either [WeakRef](https://github.com/colder/php-weakref) or [PHP Ref](https://github.com/pinepain/php-ref), I will use the first one below.
+
+Since this solution requires a PHP extension, it's not the best choice if you're writing a library or a command line, but if you're creating a website you will manage by yourself then it's probably what you should use.
+
+Here's a code example:
+
+```php
+class ParentClass
+{
+    public function __construct()
+    {
+        $this->child = new ChildClass($this);
+    }
+}
+
+class ChildClass
+{
+    public function __construct(ParentClass $parent)
+    {
+        $this->parent = new WeakRef($parent);
+    }
+}
+
+$instance = new ParentClass;
+
+// Do your work...
+
+// Once the parent instance is unreferenced, the parent and child instances will be destroyed.
+unset($instance);
+```
+
+- **Create a dereferencing method**:
+
+If you cannot install a PHP extension (because of a shared hosting, or whatever…), you can create a method to cleanup your circular references.
+
+However, this solution requires to call explicitly the dereferencing method, otherwise your circular reference will remain until PHP shuts down.
+
+Since you're required to call a method, this might not be the best idea for a library. Here's an example of the implementation:
+
+```php
+class ParentClass
+{
+    public function __construct()
+    {
+        $this->child = new ChildClass($this);
+    }
+
+    public function destroy()
+    {
+        $this->child->destroy();
+    }
+}
+
+class ChildClass
+{
+    public function __construct(ParentClass $parent)
+    {
+        $this->parent = $parent;
+    }
+
+    public function destroy()
+    {
+        // By setting the parent property to null, you remove the circular reference.
+        $this->parent = null;
+    }
+}
+
+$instance = new ParentClass;
+
+// Do your work...
+
+// Before unreferencing the parent, call the destroy method.
+$instance->destroy();
+
+// Unreference the parent
+unset($instance);
+```
+
+- **Change your code structure**:
+
+If you don't want to add a derefencing method because you're creating a library and you want to keep the API really simple, you might want to change your code structure.
+
+This is what I did with Rialto. I didn't want to put back the unserializing methods in the `ProcessSupervisor` class, so I went with a different solution and replaced the `DataUnserializer` class by a `UnserializesData` trait which is imported in the `ProcessSupervisor` class. Here's the new code organization:
+
+![A UML diagram showing how the circular reference can be broken using traits](images/uml-2.png)
+
+However, this is not always possible! I was able to do it here because Rialto used only one instance of the `DataUnserializer` class. If I had used multiple instances of this class (for… reasons), I could not have done that.
+
+## This could be way better
+
+PHP is a real mess when it comes to manage circular references. [A RFC was proposed](https://wiki.php.net/rfc/weakreferences) to add a SplWeakRef class to the standard PHP library, but it is marked as inactive…
+
+**Update**: [Weak references are coming](https://wiki.php.net/rfc/weakrefs) to PHP 7.4!
+
+In the other hand, not having weak references wouldn't be an issue if PHP's garbage collector used [the tracing algorithm](https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)#Tracing), but instead we have that crappy reference counting…
+
+If you encounter circular references in your code, two words: good luck!

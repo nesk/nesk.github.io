@@ -1,0 +1,66 @@
+---
+title: 'Running Electron on Heroku'
+date: '2017-03-06'
+slug: running-electron-on-heroku
+---
+
+>This article was written when only [the `Cedar-14` stack](https://devcenter.heroku.com/articles/cedar-14-stack) was available. I didn't try to run Electron on [the new `Heroku-16` stack](https://devcenter.heroku.com/articles/heroku-16-stack).
+
+These last days I've developed a module to scrap some data with [Nightmare](http://www.nightmarejs.org/), a headless browser based on [Electron](https://electron.atom.io/). Once my code was finished I tried to run it on [Heroku's infrastructure](https://www.heroku.com/home) and was pretty disappointed to see it wasn't running though it worked perfectly on my local machine.
+
+After a bit of research, I've found that “[Electron requires a display driver to function](https://github.com/electron/electron/blob/e315116/docs/tutorial/testing-on-headless-ci.md)”. Of course, Heroku doesn't provide any display driver since there is nearly no incentive to that. Thankfully, the Electron team addressed this issue (on the same documentation page) and recommends to use [Xvfb](https://www.x.org/archive/X11R7.6/doc/man/man1/Xvfb.1.xhtml), a tool which allows to run a virtual display server on your machine.
+
+## Installing Xvfb
+
+You will need to add the [APT buildpack](https://github.com/heroku/heroku-buildpack-apt) to your app, which allows to install APT packages [at compile time](https://devcenter.heroku.com/articles/slug-compiler):
+
+```sh
+heroku buildpacks:add -i 1 https://github.com/heroku/heroku-buildpack-apt
+```
+
+Then add a file named `Aptfile` in the root directory of your app with the following contents, each line contains the name of a package we want to install:
+
+```sh
+libxss1
+xvfb
+```
+
+The next time you will deploy your application, Xvfb will be installed on your dynos, however the command will not work right out of the box because of the architecture of Heroku's servers. You will need to install the [Xvfb buildpack](https://github.com/captain401/heroku-buildpack-xvfb) written by [yoz](https://github.com/yoz), which patches the Xvfb command so it can run properly. Obviously, this buildpack should run _after_ the APT one:
+
+```sh
+heroku buildpacks:add -i 2 https://github.com/captain401/heroku-buildpack-xvfb
+```
+
+## Running the virtual display server
+
+Now you need to run Xvfb before launching your Electron process. Instead of starting a new instance of Xvfb each time you want to run Electron, you could launch Xvfb at startup. Heroku provides the ability to run a bash script on startup [through a `.profile` file](https://devcenter.heroku.com/articles/dynos#the-profile-file) located at the root directory of your app. Here is what it should contain:
+
+```sh
+export DISPLAY=':99.0'
+Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+```
+
+These two lines are copied from [the configuration the Electron team provides for Travis CI](https://github.com/electron/electron/blob/e315116/docs/tutorial/testing-on-headless-ci.md#travis-ci). The `$DISPLAY` variable identifies your Xvfb instance and will be read by Electron, according to the documentation:
+
+>Chromium in Electron will automatically look for `$DISPLAY`, so no further configuration of your app is required.
+
+In the second line we run the Xvfb server in background and define the screen properties.
+
+One last thing, maybe you want to run the virtual display server only on one type of dyno. Heroku provides [a `$DYNO` variable](https://devcenter.heroku.com/articles/dynos#local-environment-variables) containing the process type and an identifier. So if you want to run Xvfb only for the `scraper` process type, you will need to write the following code in your `.profile` file:
+
+```sh
+if [ -z "$DYNO" ] || [[ $DYNO == *"scraper"* ]]; then
+    export DISPLAY=':99.0'
+    Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+fi
+```
+
+The `[ -z "$DYNO"]` part checks if the variable is unset or empty. I prefer to add this since Heroku states in its documentation:
+
+>The `$DYNO` variable is experimental and subject to change or removal.
+
+Thus, if the `$DYNO` variable gets removed, your virtual display server will still be running, but on all your dynos instead on the type you defined.
+
+## It might be simpler in the future
+
+Since December, Chromium supports [the `--headless` command line flag](https://bugs.chromium.org/p/chromium/issues/detail?id=546953#c148) which allows to run it without any display server. I don't know if Electron will integrate this feature in the future, but this could be great for saving time for developers.

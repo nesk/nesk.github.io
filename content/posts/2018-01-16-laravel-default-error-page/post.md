@@ -1,0 +1,63 @@
+---
+title: 'Create a default error page with Laravel'
+date: '2018-01-16'
+slug: create-a-default-error-page-with-laravel
+---
+
+Defining a [custom page for HTTP errors](https://laravel.com/docs/5.5/errors#custom-http-error-pages) is pretty easy with Laravel:
+
+>Laravel makes it easy to display custom error pages for various HTTP status codes. For example, if you wish to customize the error page for 404 HTTP status codes, create a `resources/views/errors/404.blade.php`.
+
+However, this requires to create a Blade file for each HTTP status you want to handle. An ideal solution would be to create a default view to display a generic error page for unhandled HTTP error codes.
+
+First, create a `resources/views/errors/default.blade.php` file with the content you want to warn your users about an unhandled exception. Now, we need to edit the exception handler in `app/Exceptions/Handler.php`.
+
+Internally, the exception handler uses [the `renderHttpException()` method](https://github.com/laravel/framework/blob/ff11fd7205431e31837538cc86c8e4dd4917bddb/src/Illuminate/Foundation/Exceptions/Handler.php#L386-L407) to convert a HTTP exception to a response. You can see it checks if a view exists for the status code with the following expression:
+
+```php
+view()->exists($view = "errors::{$status}")
+```
+
+Then, if there is no corresponding view, Laravel will show its default view for the exception. What we want now is to act _before_ the code of the `renderHttpException()` method is executed, so we can check by ourselves if there is no corresponding view and then use our _own_ default view instead of the one provided by Laravel.
+
+Copy the declaration of the `renderHttpException()` method in your exception handler:
+
+```php
+/**
+ * Render the given HttpException.
+ *
+ * @param  \Symfony\Component\HttpKernel\Exception\HttpException  $e
+ * @return \Symfony\Component\HttpFoundation\Response
+ */
+protected function renderHttpException(HttpException $e)
+{
+    return parent::renderHttpException($e);
+}
+```
+
+Remember to import the `HttpException` class with `use Symfony\Component\HttpKernel\Exception\HttpException` at the top of the file.
+
+Now, we need to check the existence of a view for the exception status code. If there is no corresponding view, we return a response with the `default.blade.php` view:
+
+```php
+/**
+ * Render the given HttpException.
+ *
+ * @param  \Symfony\Component\HttpKernel\Exception\HttpException  $e
+ * @return \Symfony\Component\HttpFoundation\Response
+ */
+protected function renderHttpException(HttpException $e)
+{
+    if (! view()->exists("errors.{$e->getStatusCode()}")) {
+        return response()->view('errors.default', ['exception' => $e], 500, $e->getHeaders());
+    }
+
+    return parent::renderHttpException($e);
+}
+```
+
+And that's it! You may have noticed that we were only talking about HTTP exceptions since the beginning of this article, however [Laravel will automatically convert other exceptions](https://github.com/laravel/framework/blob/ff11fd7205431e31837538cc86c8e4dd4917bddb/src/Illuminate/Foundation/Exceptions/Handler.php#L290-L292) to HTTP exceptions (with a 500 status code), thus all exceptions will be handled by your default view. 😉
+
+If you would like to see Laravel support for default error pages right out of the box, [you can add a reaction 👍 to my pull-request](https://github.com/laravel/framework/pull/22820).
+
+One last thing since we were talking about error handling in this article. Note that, since Laravel 5.5.5, [you can use the `Route::fallback()` method](https://twitter.com/themsaid/status/910135205989625856) to display advanced 404 error pages (and you will have access to sessions, cookies, etc…).
