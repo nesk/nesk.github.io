@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import { graphql } from 'gatsby'
+import Img from 'gatsby-image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     faGithub,
@@ -9,7 +11,6 @@ import {
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
 import { SEO } from '../components/seo'
-import avatar from '../assets/images/avatar.jpg'
 
 const About = styled(Content)`
     max-width: min(300px, 100%);
@@ -36,14 +37,8 @@ const About = styled(Content)`
     }
 `
 
-const Avatar = styled.img`
-    display: block;
-    width: 100%;
-`
-
-const AvatarContainer = styled.div`
+const Avatar = styled(Img)`
     grid-area: avatar;
-    position: relative;
     border-radius: 9999px;
     overflow: hidden;
 
@@ -51,15 +46,8 @@ const AvatarContainer = styled.div`
         width: calc(100% - 4rem);
     }
 
-    &::after {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border-radius: 9999px;
-        box-shadow: inset 0 0 20px var(--shadow);
-        content: '';
+    @media (min-width: 768px) {
+        justify-self: stretch;
     }
 `
 
@@ -105,12 +93,13 @@ const Speech = styled.p`
     }
 `
 
-export default () => (
+export default ({ data }) => (
     <Layout seo={<SEO title="About" />}>
         <About>
-            <AvatarContainer>
-                <Avatar src={avatar} alt="Johann Pardanaud"></Avatar>
-            </AvatarContainer>
+            <Avatar
+                fluid={data.file.childImageSharp.fluid}
+                alt="Johann Pardanaud's avatar"
+            ></Avatar>
 
             <Speech>
                 I'm <em>Johann Pardanaud</em>, developer at{' '}
@@ -148,3 +137,15 @@ export default () => (
         </About>
     </Layout>
 )
+
+export const query = graphql`
+    query {
+        file(relativePath: { eq: "images/avatar.jpg" }) {
+            childImageSharp {
+                fluid {
+                    ...GatsbyImageSharpFluid
+                }
+            }
+        }
+    }
+`

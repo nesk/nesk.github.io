@@ -14,6 +14,12 @@ module.exports = {
         {
             resolve: `gatsby-source-filesystem`,
             options: {
+                path: `${__dirname}/src/assets/`,
+            },
+        },
+        {
+            resolve: `gatsby-source-filesystem`,
+            options: {
                 name: `posts`,
                 path: `${__dirname}/src/posts/`,
             },
@@ -32,6 +38,8 @@ module.exports = {
                 ],
             },
         },
+        'gatsby-transformer-sharp',
+        'gatsby-plugin-sharp',
         'gatsby-plugin-styled-components',
         {
             resolve: 'gatsby-plugin-react-svg',
