@@ -17,6 +17,7 @@ const Container = styled.header`
         grid-template-rows: auto;
         grid-template-columns: 1fr auto;
         grid-row-gap: 1rem;
+        align-items: center;
     }
 
     @media (min-width: 768px) {
