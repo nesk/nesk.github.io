@@ -30,6 +30,12 @@ module.exports = {
                 excerpt_separator: `<!-- excerpt-end -->`,
                 plugins: [
                     {
+                        resolve: `gatsby-remark-images`,
+                        options: {
+                            maxWidth: 850,
+                        },
+                    },
+                    {
                         resolve: `gatsby-remark-prismjs`,
                         options: {
                             aliases: { kt: 'kotlin' },
