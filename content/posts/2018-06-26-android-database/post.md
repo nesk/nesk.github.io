@@ -43,7 +43,7 @@ If you want to support cursor adapters, you must add a primary key field named `
 
 To ship your database with your app, you will have to add it to your assets. If you don't already have one, create the **assets** directory: right click on your project in the sidebar, then click on _New > Folder > Assets Folder_.
 
-HERE GOES THIS FUCKING IMAGE https://miro.medium.com/max/1400/1*qRqDw4qUXNylxAB8J0x9WQ.png
+![Screenshot showing menus used to create a new assets folder](images/new-assets-folder.png)
 
 Now right click on the new assets directory, then click on New > Directory, and name it “databases”.
 
