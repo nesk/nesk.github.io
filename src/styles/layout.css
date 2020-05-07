@@ -37,7 +37,8 @@ pre[class*='language-'] {
 }
 
 /* Add an inset shadow over images, see: https://twitter.com/steveschoger/status/1064541476615593984 */
-.gatsby-image-wrapper::after {
+.gatsby-image-wrapper::after,
+.gatsby-resp-image-wrapper::after {
     position: absolute;
     top: 0;
     left: 0;
@@ -45,5 +46,6 @@ pre[class*='language-'] {
     height: 100%;
     border-radius: inherit;
     box-shadow: inset 0 0 20px var(--shadow);
+    pointer-events: none;
     content: '';
 }
