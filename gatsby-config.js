@@ -25,10 +25,9 @@ module.exports = {
             },
         },
         {
-            resolve: `gatsby-transformer-remark`,
+            resolve: `gatsby-plugin-mdx`,
             options: {
-                excerpt_separator: `<!-- excerpt-end -->`,
-                plugins: [
+                gatsbyRemarkPlugins: [
                     {
                         resolve: `gatsby-remark-images`,
                         options: {

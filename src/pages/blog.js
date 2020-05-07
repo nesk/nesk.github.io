@@ -43,12 +43,12 @@ const Post = styled.article`
 `
 
 export default ({ data }) => {
-    const posts = data.allMarkdownRemark.edges.map(({ node }) => node)
+    const posts = data.allMdx.edges.map(({ node }) => node)
     return (
         <Layout seo={<SEO title="Blog" />}>
             <Content>
                 {posts.map((post) => (
-                    <PostContainer key={post.frontmatter.slug}>
+                    <PostContainer key={post.frontmatter.id}>
                         <Link to={`/blog/${post.frontmatter.slug}`}>
                             <Post>
                                 <h2>{post.frontmatter.title}</h2>
@@ -70,7 +70,7 @@ export default ({ data }) => {
 
 export const query = graphql`
     query {
-        allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
+        allMdx(sort: { fields: [frontmatter___date], order: DESC }) {
             edges {
                 node {
                     id

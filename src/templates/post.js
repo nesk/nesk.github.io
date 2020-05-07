@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { graphql } from 'gatsby'
+import { MDXRenderer } from 'gatsby-plugin-mdx'
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
 import { SEO } from '../components/seo'
@@ -38,7 +39,7 @@ const Post = styled.article`
 `
 
 export default ({ data }) => {
-    const post = data.markdownRemark
+    const post = data.mdx
 
     return (
         <Layout
@@ -48,7 +49,7 @@ export default ({ data }) => {
             <Content>
                 <Post>
                     <h1>{post.frontmatter.title}</h1>
-                    <div dangerouslySetInnerHTML={{ __html: post.html }} />
+                    <MDXRenderer>{post.body}</MDXRenderer>
                 </Post>
             </Content>
         </Layout>
@@ -57,11 +58,11 @@ export default ({ data }) => {
 
 export const query = graphql`
     query($slug: String!) {
-        markdownRemark(frontmatter: { slug: { eq: $slug } }) {
-            html
+        mdx(frontmatter: { slug: { eq: $slug } }) {
             frontmatter {
                 title
             }
+            body
         }
     }
 `
