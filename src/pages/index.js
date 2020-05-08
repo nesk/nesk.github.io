@@ -65,19 +65,10 @@ const Social = styled.div`
     }
 `
 
-const IconLink = styled.a`
-    color: inherit;
+const IconLink = styled.a.attrs(() => ({
+    className: 'link-no-color-when-inactive',
+}))`
     font-size: 1.6rem;
-
-    &:visited {
-        color: inherit;
-    }
-
-    &:hover,
-    &:focus,
-    &:active {
-        color: var(--primary-700);
-    }
 
     @media (min-width: 992px) {
         font-size: 1.8rem;

@@ -68,21 +68,11 @@ const Nav = styled.nav`
     }
 `
 
-const NavLink = styled(Link)`
-    color: inherit;
-
+const NavLink = styled(Link).attrs(() => ({
+    className: 'link-no-color-when-inactive',
+}))`
     &.active {
         text-decoration: underline;
-    }
-
-    &:visited {
-        color: inherit;
-    }
-
-    &:hover,
-    &:focus,
-    &:active {
-        color: var(--primary-700);
     }
 
     @media (min-width: 768px) {

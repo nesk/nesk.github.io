@@ -26,6 +26,11 @@ a:focus {
     -moz-outline-radius: 3px;
 }
 
+.link-no-color-when-inactive:not(:hover):not(:focus):not(:active):not(:visited),
+.link-no-color-when-inactive:not(:hover):not(:focus):not(:active):visited {
+    color: inherit;
+}
+
 code[class*='language-'],
 pre[class*='language-'] {
     font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
