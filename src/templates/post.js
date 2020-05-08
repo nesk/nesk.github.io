@@ -27,6 +27,21 @@ const Post = styled.article`
         font-size: 1.3rem;
     }
 
+    h4 {
+        margin-top: 1.1rem;
+        font-size: 1.1rem;
+    }
+
+    h5 {
+        margin-top: 0.9rem;
+        font-size: 0.9rem;
+    }
+
+    h6 {
+        margin-top: 0.75rem;
+        font-size: 0.75rem;
+    }
+
     blockquote {
         border-left: 4px solid;
         padding: 0.3rem 1rem;
