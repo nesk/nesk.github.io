@@ -10,7 +10,7 @@ p:last-child {
 a,
 a:visited {
     color: var(--primary-500);
-    text-decoration: none;
+    text-decoration: underline;
 }
 
 a:hover,
@@ -18,7 +18,12 @@ a:focus,
 a:active {
     color: var(--primary-700);
     text-decoration: underline;
-    outline: none;
+}
+
+a:focus {
+    outline: 2px solid currentColor;
+    outline-offset: 0.2rem;
+    -moz-outline-radius: 3px;
 }
 
 code[class*='language-'],
