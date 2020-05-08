@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { graphql } from 'gatsby'
+import { MDXProvider } from '@mdx-js/react'
 import { MDXRenderer } from 'gatsby-plugin-mdx'
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
@@ -38,6 +39,14 @@ const Post = styled.article`
     }
 `
 
+const components = {
+    h1: (props) => <h2 {...props} />,
+    h2: (props) => <h3 {...props} />,
+    h3: (props) => <h4 {...props} />,
+    h4: (props) => <h5 {...props} />,
+    h5: (props) => <h6 {...props} />,
+}
+
 export default ({ data }) => {
     const post = data.mdx
 
@@ -49,7 +58,9 @@ export default ({ data }) => {
             <Content>
                 <Post>
                     <h1>{post.frontmatter.title}</h1>
-                    <MDXRenderer>{post.body}</MDXRenderer>
+                    <MDXProvider components={components}>
+                        <MDXRenderer>{post.body}</MDXRenderer>
+                    </MDXProvider>
                 </Post>
             </Content>
         </Layout>

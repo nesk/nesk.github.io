@@ -26,54 +26,54 @@ To this one:
 }
 ```
 
-### ES5
+## ES5
 
 ```js
 const data = {
     a: 1,
     b: 2,
-};
+}
 
 const newData = Object.keys(data)
     .map(function (key) {
         return {
             key: '_' + key,
             value: data[key] + 1,
-        };
+        }
     })
     .reduce(function (obj, item) {
-        obj[item.key] = item.value;
-        return obj;
-    }, {});
+        obj[item.key] = item.value
+        return obj
+    }, {})
 ```
 
-### ES2015 (ES6)
+## ES2015 (ES6)
 
 ```js
 const data = {
     a: 1,
     b: 2,
-};
+}
 
 const newData = Object.keys(data)
-    .map(key => ({ [`_${key}`]: data[key] + 1 }))
-    .reduce((obj, item) => Object.assign(obj, item), {});
+    .map((key) => ({ [`_${key}`]: data[key] + 1 }))
+    .reduce((obj, item) => Object.assign(obj, item), {})
 ```
 
-### ES2017+
+## ES2017+
 
 ```js
 const data = {
     a: 1,
     b: 2,
-};
+}
 
 const newData = Object.entries(data)
     .map(([key, value]) => ({ [`_${key}`]: value + 1 }))
-    .reduce((obj, item) => Object.assign(obj, item), {});
+    .reduce((obj, item) => Object.assign(obj, item), {})
 ```
 
-### In the future
+## In the future
 
 [A new stage-0 proposal](https://github.com/bakkot/object-from-entries) has been presented to add `Object.fromEntries`, this could provide us a new way to write the last example:
 
@@ -81,12 +81,11 @@ const newData = Object.entries(data)
 const data = {
     a: 1,
     b: 2,
-};
+}
 
 const newData = Object.fromEntries(
-    Object.entries(data)
-        .map(([key, value]) => ({ [`_${key}`]: value + 1 }))
-);
+    Object.entries(data).map(([key, value]) => ({ [`_${key}`]: value + 1 })),
+)
 ```
 
 And it would be even better with [the pipeline operator (stage-1)](https://github.com/tc39/proposal-pipeline-operator) to keep the method chaining:
@@ -95,9 +94,9 @@ And it would be even better with [the pipeline operator (stage-1)](https://githu
 const data = {
     a: 1,
     b: 2,
-};
+}
 
-const newData = Object.entries(data)
-    .map(([key, value]) => ({ [`_${key}`]: value + 1 }))
-    |> Object.fromEntries;
+const newData =
+    Object.entries(data).map(([key, value]) => ({ [`_${key}`]: value + 1 }))
+    |> Object.fromEntries
 ```
