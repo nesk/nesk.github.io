@@ -7,9 +7,7 @@ import { Layout } from '../components/layout'
 import { Content } from '../components/content'
 import { SEO } from '../components/seo'
 
-const ReadMore = styled.span`
-    color: var(--primary-500);
-
+const ReadMore = styled.span.attrs(() => ({ className: 'sublink' }))`
     svg {
         margin-left: calc(var(--content-spacing) / 2);
     }
@@ -18,20 +16,6 @@ const ReadMore = styled.span`
 const PostContainer = styled.div`
     &:not(:last-child) {
         margin-bottom: calc(var(--content-spacing) * 3);
-    }
-
-    a,
-    a:visited,
-    a:hover,
-    a:focus,
-    a:active {
-        color: inherit;
-        text-decoration: none;
-    }
-
-    a:hover ${ReadMore}, a:focus ${ReadMore}, a:active ${ReadMore} {
-        color: var(--primary-700);
-        text-decoration: underline;
     }
 `
 
@@ -49,7 +33,10 @@ export default ({ data }) => {
             <Content>
                 {posts.map((post) => (
                     <PostContainer key={post.frontmatter.id}>
-                        <Link to={`/blog/${post.frontmatter.slug}`}>
+                        <Link
+                            to={`/blog/${post.frontmatter.slug}`}
+                            className="link-invisible"
+                        >
                             <Post>
                                 <h2>{post.frontmatter.title}</h2>
                                 <p>{post.excerpt}</p>
