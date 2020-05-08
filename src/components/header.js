@@ -82,6 +82,12 @@ const NavLink = styled(Link).attrs(() => ({
     }
 `
 
+const titleLink = (
+    <Link className="link-invisible" to="/" tabIndex="-1">
+        Johann Pardanaud
+    </Link>
+)
+
 export const Header = ({ autoTopHeading = true }) => {
     const [showMenu, setShowMenu] = useState(false)
 
@@ -89,9 +95,9 @@ export const Header = ({ autoTopHeading = true }) => {
         <Container>
             <Content>
                 {autoTopHeading ? (
-                    <TitleH1>Johann Pardanaud</TitleH1>
+                    <TitleH1>{titleLink}</TitleH1>
                 ) : (
-                    <TitleStrong>Johann Pardanaud</TitleStrong>
+                    <TitleStrong>{titleLink}</TitleStrong>
                 )}
 
                 <MenuButton
