@@ -7,22 +7,20 @@ import { Layout } from '../components/layout'
 import { Content } from '../components/content'
 import { SEO } from '../components/seo'
 
-const ReadMore = styled.span.attrs(() => ({ className: 'sublink' }))`
-    svg {
-        margin-left: calc(var(--content-spacing) / 2);
+const Post = styled.article`
+    h2 {
+        font-size: 2rem;
+        letter-spacing: 0.02rem;
     }
-`
 
-const PostContainer = styled.div`
     &:not(:last-child) {
         margin-bottom: calc(var(--content-spacing) * 3);
     }
 `
 
-const Post = styled.article`
-    h2 {
-        font-size: 2rem;
-        letter-spacing: 0.02rem;
+const ReadMore = styled.span`
+    svg {
+        margin-left: calc(var(--content-spacing) / 2);
     }
 `
 
@@ -32,23 +30,19 @@ export default ({ data }) => {
         <Layout seo={<SEO title="Blog" />}>
             <Content>
                 {posts.map((post) => (
-                    <PostContainer key={post.frontmatter.id}>
+                    <Post key={post.frontmatter.id}>
                         <Link
                             to={`/blog/${post.frontmatter.slug}`}
                             className="link-invisible"
                         >
-                            <Post>
-                                <h2>{post.frontmatter.title}</h2>
-                                <p>{post.excerpt}</p>
-                                <ReadMore>
-                                    Read more
-                                    <FontAwesomeIcon
-                                        icon={faLongArrowAltRight}
-                                    />
-                                </ReadMore>
-                            </Post>
+                            <h2>{post.frontmatter.title}</h2>
+                            <p>{post.excerpt}</p>
+                            <ReadMore className="sublink" aria-hidden="true">
+                                Read more
+                                <FontAwesomeIcon icon={faLongArrowAltRight} />
+                            </ReadMore>
                         </Link>
-                    </PostContainer>
+                    </Post>
                 ))}
             </Content>
         </Layout>
