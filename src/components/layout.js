@@ -10,7 +10,7 @@ const Container = styled.div`
     height: 100vh;
 `
 
-const Body = styled.div`
+const Body = styled.main`
     flex: 1 0 auto;
     padding: calc(var(--content-spacing) * 3) 0;
 `
