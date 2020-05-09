@@ -60,6 +60,7 @@ pre[class*='language-'] {
 
 :not(pre) > code[class*='language-'] {
     padding: 0.1em 0.25em;
+    overflow-wrap: break-word;
 }
 
 /* Add an inset shadow over images, see: https://twitter.com/steveschoger/status/1064541476615593984 */
