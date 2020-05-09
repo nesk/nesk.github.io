@@ -34,9 +34,11 @@
     "gatsby-transformer-sharp": "^2.5.0",
     "prismjs": "^1.20.0",
     "react": "^16.12.0",
+    "react-children-utilities": "^2.1.0",
     "react-dom": "^16.12.0",
     "react-helmet": "^6.0.0",
-    "styled-components": "^5.1.0"
+    "styled-components": "^5.1.0",
+    "url-slug": "^2.3.1"
   },
   "devDependencies": {
     "prettier": "2.0.4"

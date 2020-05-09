@@ -1,8 +1,12 @@
 import React from 'react'
+import { onlyText } from 'react-children-utilities'
 import styled from 'styled-components'
 import { graphql } from 'gatsby'
 import { MDXProvider } from '@mdx-js/react'
 import { MDXRenderer } from 'gatsby-plugin-mdx'
+import urlSlug from 'url-slug'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faLink } from '@fortawesome/free-solid-svg-icons'
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
 import { SEO } from '../components/seo'
@@ -54,12 +58,66 @@ const Post = styled.article`
     }
 `
 
+const HeadingLink = styled.a`
+    position: absolute;
+    top: 50%;
+    right: calc(100% + var(--content-spacing));
+    transform: translateY(-50%);
+    display: block;
+    font-size: 0.75em;
+    opacity: 0;
+
+    &:hover,
+    &:focus,
+    &:active {
+        opacity: 1;
+    }
+
+    &::after {
+        position: absolute;
+        top: 0%;
+        left: 100%;
+        width: var(--content-spacing);
+        height: 100%;
+        content: '';
+    }
+`
+
+const Heading = styled.h1`
+    position: relative;
+
+    &:hover ${HeadingLink} {
+        opacity: 1;
+    }
+`
+
+const LinkableHeading = ({ tag, children, ...props }) => {
+    const text = onlyText(children)
+    const slug = urlSlug(text.toLowerCase())
+    const linkTitle = `Link to "${text}" heading`
+
+    return (
+        <Heading {...props} as={tag} id={slug}>
+            <HeadingLink
+                href={`#${slug}`}
+                className="link-no-color-when-inactive"
+                title={linkTitle}
+                aria-label={linkTitle}
+            >
+                <FontAwesomeIcon icon={faLink} />
+            </HeadingLink>
+
+            {children}
+        </Heading>
+    )
+}
+
 const components = {
-    h1: (props) => <h2 {...props} />,
-    h2: (props) => <h3 {...props} />,
-    h3: (props) => <h4 {...props} />,
-    h4: (props) => <h5 {...props} />,
-    h5: (props) => <h6 {...props} />,
+    h1: (props) => <LinkableHeading tag="h2" {...props} />,
+    h2: (props) => <LinkableHeading tag="h3" {...props} />,
+    h3: (props) => <LinkableHeading tag="h4" {...props} />,
+    h4: (props) => <LinkableHeading tag="h5" {...props} />,
+    h5: (props) => <LinkableHeading tag="h6" {...props} />,
 }
 
 export default ({ data }) => {
