@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'gatsby'
 import styled, { css } from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -58,7 +58,7 @@ const MenuButton = styled.button`
 
 const Nav = styled.nav`
     grid-column: span 2;
-    display: ${(props) => (props.show ? 'flex' : 'none')};
+    display: ${(props) => (props.isOpened ? 'flex' : 'none')};
     flex-direction: column;
     align-items: flex-end;
 
@@ -89,7 +89,14 @@ const titleLink = (
 )
 
 export const Header = ({ autoTopHeading = true }) => {
-    const [showMenu, setShowMenu] = useState(false)
+    const [isMenuOpened, setIsMenuOpened] = useState(false)
+    const aboutRef = useRef(null)
+
+    useEffect(() => {
+        if (isMenuOpened) {
+            aboutRef.current.focus()
+        }
+    }, [isMenuOpened])
 
     return (
         <Container>
@@ -101,14 +108,20 @@ export const Header = ({ autoTopHeading = true }) => {
                 )}
 
                 <MenuButton
-                    aria-label="Menu"
-                    onClick={() => setShowMenu(!showMenu)}
+                    aria-label={`${
+                        isMenuOpened ? 'Close' : 'Open'
+                    } navigation menu`}
+                    onClick={() => setIsMenuOpened(!isMenuOpened)}
                 >
                     <FontAwesomeIcon icon={faBars} />
                 </MenuButton>
 
-                <Nav show={showMenu}>
-                    <NavLink activeClassName="active" to="/">
+                <Nav isOpened={isMenuOpened}>
+                    <NavLink
+                        activeClassName="active"
+                        to="/"
+                        innerRef={aboutRef}
+                    >
                         About
                     </NavLink>
                     <NavLink
