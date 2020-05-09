@@ -11,6 +11,7 @@ import {
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
 import { SEO } from '../components/seo'
+import { IconButton } from '../components/button'
 
 const About = styled(Content)`
     max-width: min(300px, 100%);
@@ -65,15 +66,13 @@ const Social = styled.div`
     }
 `
 
-const IconLink = styled.a.attrs(() => ({
-    className: 'link-no-color-when-inactive',
-}))`
-    font-size: 1.6rem;
-
+const StyledIconLink = styled(IconButton)`
     @media (min-width: 992px) {
         font-size: 1.8rem;
     }
 `
+
+const IconLink = (props) => <StyledIconLink {...props} as="a" />
 
 const Speech = styled.p`
     grid-area: speech;

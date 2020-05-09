@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { Content } from './content'
+import { IconButton } from './button'
 
 const Container = styled.header`
     flex: 0 0 auto;
@@ -42,15 +43,7 @@ const TitleH1 = styled.h1`
     ${titleCss}
 `
 
-const MenuButton = styled.button`
-    display: flex;
-    padding: 0;
-    background: transparent;
-    border: 0;
-    color: inherit;
-    appearance: none;
-    font-size: 1.6rem;
-
+const MenuButton = styled(IconButton)`
     @media (min-width: 768px) {
         display: none;
     }
