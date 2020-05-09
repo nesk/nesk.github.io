@@ -81,6 +81,10 @@ const HeadingLink = styled.a`
         height: 100%;
         content: '';
     }
+
+    @media (max-width: 767.98px) {
+        display: none;
+    }
 `
 
 const Heading = styled.h1`
@@ -94,15 +98,14 @@ const Heading = styled.h1`
 const LinkableHeading = ({ tag, children, ...props }) => {
     const text = onlyText(children)
     const slug = urlSlug(text.toLowerCase())
-    const linkTitle = `Link to "${text}" heading`
 
     return (
         <Heading {...props} as={tag} id={slug}>
             <HeadingLink
                 href={`#${slug}`}
                 className="link-no-color-when-inactive"
-                title={linkTitle}
-                aria-label={linkTitle}
+                title={`Link to "${text}" heading`}
+                aria-hidden="true"
             >
                 <FontAwesomeIcon icon={faLink} />
             </HeadingLink>
