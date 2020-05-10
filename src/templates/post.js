@@ -22,27 +22,27 @@ const Post = styled.article`
     }
 
     h2 {
-        margin-top: 1.6rem;
+        margin-top: 2.1rem;
         font-size: 1.6rem;
     }
 
     h3 {
-        margin-top: 1.3rem;
+        margin-top: 1.8rem;
         font-size: 1.3rem;
     }
 
     h4 {
-        margin-top: 1.1rem;
+        margin-top: 1.6rem;
         font-size: 1.1rem;
     }
 
     h5 {
-        margin-top: 0.9rem;
+        margin-top: 1.4rem;
         font-size: 0.9rem;
     }
 
     h6 {
-        margin-top: 0.75rem;
+        margin-top: 1.25rem;
         font-size: 0.75rem;
     }
 
