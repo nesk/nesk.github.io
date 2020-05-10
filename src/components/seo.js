@@ -33,7 +33,10 @@ export const SEO = ({ title, description, lang = 'en', meta = [] }) => {
             <meta property="og:description" content={metaDescription} />
             <meta property="og:type" content={`website`} />
             <meta name="twitter:card" content={`summary`} />
-            <meta name="twitter:creator" content={site.siteMetadata.author} />
+            <meta
+                name="twitter:creator"
+                content={`@${site.siteMetadata.twitter}`}
+            />
             <meta name="twitter:title" content={title} />
             <meta name="twitter:description" content={metaDescription} />
 
