@@ -37,7 +37,7 @@ module.exports = {
                     {
                         resolve: `gatsby-remark-prismjs`,
                         options: {
-                            aliases: { kt: 'kotlin' },
+                            aliases: { kt: 'kotlin', sh: 'bash' },
                         },
                     },
                 ],
