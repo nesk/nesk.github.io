@@ -64,8 +64,8 @@ const Nav = styled.nav`
 const NavLink = styled(Link).attrs(() => ({
     className: 'link-no-color-when-inactive',
 }))`
-    &.active {
-        text-decoration: underline;
+    &:not(:hover):not(:focus):not(:active):not(.active) {
+        text-decoration: none;
     }
 
     @media (min-width: 768px) {
