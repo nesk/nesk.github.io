@@ -86,11 +86,6 @@ const Speech = styled.p`
 export default ({ data }) => (
     <Layout seo={<SEO title="About" />}>
         <About>
-            <Avatar
-                fluid={data.file.childImageSharp.fluid}
-                alt="Johann Pardanaud's avatar"
-            ></Avatar>
-
             <Speech>
                 I'm <em>Johann Pardanaud</em>, developer at{' '}
                 <a href="https://batch.com">Batch</a>. I develop technical
@@ -124,6 +119,11 @@ export default ({ data }) => (
                     <FontAwesomeIcon icon={faLinkedinIn} />
                 </IconLink>
             </Social>
+
+            <Avatar
+                fluid={data.file.childImageSharp.fluid}
+                alt="Johann Pardanaud's avatar"
+            ></Avatar>
         </About>
     </Layout>
 )
