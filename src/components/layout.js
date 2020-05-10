@@ -20,7 +20,7 @@ export const Layout = ({ children, seo, autoTopHeading = true }) => (
         {seo || <SEO />}
         <Container>
             <Header autoTopHeading={autoTopHeading} />
-            <Body>{children}</Body>
+            <Body id="main">{children}</Body>
         </Container>
     </>
 )

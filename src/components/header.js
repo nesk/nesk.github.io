@@ -28,6 +28,18 @@ const Container = styled.header`
     }
 `
 
+const SkipLink = styled(Link)`
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+
+    &:not(:focus) {
+        opacity: 0;
+        pointer-events: none;
+    }
+`
+
 const titleCss = css`
     margin: 0;
     font-size: inherit;
@@ -87,6 +99,7 @@ export const Header = ({ autoTopHeading = true }) => {
 
     return (
         <Container>
+            <SkipLink to="#main">Skip to content</SkipLink>
             <Content>
                 {autoTopHeading ? (
                     <TitleH1>Johann Pardanaud</TitleH1>
