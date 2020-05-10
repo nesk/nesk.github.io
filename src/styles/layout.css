@@ -8,20 +8,10 @@ p:last-child {
 }
 
 a,
-a:visited,
-a .sublink,
-a:visited .sublink {
-    color: var(--primary-500);
-    text-decoration: none;
-}
-
 a:hover,
-a:focus,
-a:active,
-a:hover .sublink,
-a:focus .sublink,
-a:active .sublink {
-    color: var(--primary-700);
+a .sublink,
+a:hover .sublink {
+    color: var(--color-link);
     text-decoration: underline;
 }
 
@@ -33,17 +23,14 @@ a:focus .sublink {
 }
 
 .link-invisible,
-.link-invisible:visited,
 .link-invisible:hover,
-.link-invisible:focus,
-.link-invisible:active {
+.link-invisible:focus {
     color: inherit;
     text-decoration: none;
     outline: none;
 }
 
-.link-no-color-when-inactive:not(:hover):not(:focus):not(:active):not(:visited),
-.link-no-color-when-inactive:not(:hover):not(:focus):not(:active):visited {
+.link-no-color-when-inactive:not(:hover):not(:focus):not(:active) {
     color: inherit;
 }
 
@@ -55,12 +42,18 @@ pre[class*='language-'] {
 
 pre[class*='language-'] {
     margin: 0;
-    background: var(--code-background);
+    background: var(--color-bg-code);
 }
 
 :not(pre) > code[class*='language-'] {
     padding: 0.1em 0.25em;
+    background: var(--color-bg-code);
     overflow-wrap: break-word;
+}
+
+a > code[class*='language-'] {
+    color: var(--color-link-dark);
+    text-decoration: none;
 }
 
 /* Add an inset shadow over images, see: https://twitter.com/steveschoger/status/1064541476615593984 */

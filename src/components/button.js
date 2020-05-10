@@ -8,7 +8,7 @@ export const IconButton = styled.button.attrs((props) => ({
     padding: 0;
     background: transparent;
     border: 0;
-    color: inherit;
+    ${({ as }) => (as === 'a' ? 'color: inherit' : '')}
     appearance: none;
     font-size: 1.6rem;
 

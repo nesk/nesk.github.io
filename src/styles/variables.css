@@ -1,29 +1,72 @@
+/** Basic variables */
 :root {
     --content-spacing: 1rem;
-
-    --grey-100: hsl(206, 10%, 95%);
-    --grey-200: hsl(206, 10%, 91%);
-    --grey-600: hsl(206, 10%, 29%);
-    --grey-800: hsl(206, 10%, 15%);
-
-    --primary-500: hsl(206, 90%, 50%);
-    --primary-700: hsl(206, 90%, 38%);
-
     --shadow: hsla(206, 10%, 29%, 25%);
-
-    --code-background: var(--grey-800);
 }
 
+/** All colors */
+:root {
+    /** Grey colors */
+
+    --grey-100-light: hsl(206, 10%, 95%);
+    --grey-200-light: hsl(206, 10%, 91%);
+    --grey-600-light: hsl(206, 10%, 32%);
+    --grey-800-light: hsl(206, 10%, 15%);
+
+    --grey-100-dark: hsl(206, 10%, 14.5%);
+    --grey-200-dark: hsl(206, 10%, 19.5%);
+    --grey-600-dark: hsl(206, 10%, 80%);
+    --grey-800-dark: hsl(206, 10%, 90%);
+
+    /** Primary colors */
+
+    --primary-500-light: hsl(206, 90%, 50%);
+    --primary-700-light: hsl(206, 90%, 39.7%);
+
+    --primary-500-dark: hsl(206, 100%, 56%);
+    --primary-700-dark: hsl(206, 100%, 43%);
+
+    /** Semantic colors */
+
+    --color-link-light: var(--primary-700-light);
+    --color-bg-code-light: var(--grey-800-light);
+
+    --color-link-dark: var(--primary-500-dark);
+    --color-bg-code-dark: var(--grey-200-dark);
+}
+
+/** Light theme */
+:root {
+    /** Grey colors */
+    --grey-100: var(--grey-100-light);
+    --grey-200: var(--grey-200-light);
+    --grey-600: var(--grey-600-light);
+    --grey-800: var(--grey-800-light);
+
+    /** Primary colors */
+    --primary-500: var(--primary-500-light);
+    --primary-700: var(--primary-700-light);
+
+    /** Semantic colors */
+    --color-link: var(--color-link-light);
+    --color-bg-code: var(--color-bg-code-light);
+}
+
+/** Dark theme */
 @media (prefers-color-scheme: dark) {
     :root {
-        --grey-100: hsl(206, 10%, 15%);
-        --grey-200: hsl(206, 10%, 20%);
-        --grey-600: hsl(206, 10%, 80%);
-        --grey-800: hsl(206, 10%, 90%);
+        /** Grey colors */
+        --grey-100: var(--grey-100-dark);
+        --grey-200: var(--grey-200-dark);
+        --grey-600: var(--grey-600-dark);
+        --grey-800: var(--grey-800-dark);
 
-        --primary-500: hsl(206, 100%, 55%);
-        --primary-700: hsl(206, 100%, 43%);
+        /** Primary colors */
+        --primary-500: var(--primary-500-dark);
+        --primary-700: var(--primary-700-dark);
 
-        --code-background: var(--grey-200);
+        /** Semantic colors */
+        --color-link: var(--color-link-dark);
+        --color-bg-code: var(--color-bg-code-dark);
     }
 }
