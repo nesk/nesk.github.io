@@ -15,13 +15,6 @@ import { IconButton } from '../components/button'
 const Post = styled.article`
     font-size: 1.1rem;
 
-    h1 {
-        font-size: 2.5rem;
-        letter-spacing: 0.015rem;
-        line-height: 3.5rem;
-        margin-bottom: 2.5rem;
-    }
-
     h2 {
         margin-top: 2.1rem;
         font-size: 1.6rem;
@@ -56,6 +49,27 @@ const Post = styled.article`
 
     pre {
         margin-bottom: 1rem;
+    }
+`
+
+const Header = styled.header`
+    display: flex;
+    flex-direction: column-reverse;
+
+    h1 {
+        font-size: 2.5rem;
+        letter-spacing: 0.015rem;
+        line-height: 3.5rem;
+        margin: 0.5rem 0 2.5rem;
+    }
+`
+
+const Metadata = styled.p`
+    font-size: 0.8rem;
+    color: var(--grey-400);
+
+    address {
+        display: inline;
     }
 `
 
@@ -134,7 +148,17 @@ export default ({ data }) => {
         >
             <Content>
                 <Post>
-                    <h1>{post.frontmatter.title}</h1>
+                    <Header>
+                        <h1>{post.frontmatter.title}</h1>
+                        <Metadata>
+                            Published{' '}
+                            <time datetime={post.frontmatter.date}>
+                                {post.frontmatter.formattedDate}
+                            </time>
+                            , by <address>Johann Pardanaud</address>
+                        </Metadata>
+                    </Header>
+
                     <MDXProvider components={components}>
                         <MDXRenderer>{post.body}</MDXRenderer>
                     </MDXProvider>
@@ -149,6 +173,8 @@ export const query = graphql`
         mdx(frontmatter: { slug: { eq: $slug } }) {
             frontmatter {
                 title
+                date
+                formattedDate: date(formatString: "Do MMMM YYYY")
             }
             body
         }
