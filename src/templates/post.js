@@ -10,6 +10,7 @@ import { faLink } from '@fortawesome/free-solid-svg-icons'
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
 import { SEO } from '../components/seo'
+import { IconButton } from '../components/button'
 
 const Post = styled.article`
     font-size: 1.1rem;
@@ -58,12 +59,11 @@ const Post = styled.article`
     }
 `
 
-const HeadingLink = styled.a`
+const HeadingLink = styled(IconButton)`
     position: absolute;
     top: 50%;
     right: calc(100% + var(--content-spacing));
     transform: translateY(-50%);
-    display: block;
     font-size: 0.75em;
     opacity: 0;
 
@@ -73,7 +73,7 @@ const HeadingLink = styled.a`
         opacity: 1;
     }
 
-    &::after {
+    &::before {
         position: absolute;
         top: 0%;
         left: 100%;
@@ -102,6 +102,7 @@ const LinkableHeading = ({ tag, children, ...props }) => {
     return (
         <Heading {...props} as={tag} id={slug}>
             <HeadingLink
+                as="a"
                 href={`#${slug}`}
                 className="link-no-color-when-inactive"
                 title={`Link to "${text}" heading`}
