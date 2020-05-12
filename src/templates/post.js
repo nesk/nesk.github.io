@@ -152,10 +152,10 @@ export default ({ data }) => {
                         <h1>{post.frontmatter.title}</h1>
                         <Metadata>
                             Published{' '}
-                            <time datetime={post.frontmatter.date}>
+                            <time dateTime={post.frontmatter.date}>
                                 {post.frontmatter.formattedDate}
                             </time>
-                            , by <address>Johann Pardanaud</address>
+                            , by Johann Pardanaud
                         </Metadata>
                     </Header>
 
