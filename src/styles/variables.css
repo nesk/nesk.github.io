@@ -30,6 +30,22 @@
     --primary-500-dark: hsl(206, 100%, 56%);
     --primary-700-dark: hsl(206, 100%, 43%);
 
+    /** Note colors */
+
+    --note-100-light: hsl(260, 90%, 93%);
+    --note-700-light: hsl(260, 90%, 50%);
+
+    --note-100-dark: hsl(260, 40%, 30%);
+    --note-700-dark: hsl(260, 100%, 78%);
+
+    /** Warning colors */
+
+    --warning-100-light: hsl(0, 90%, 94%);
+    --warning-700-light: hsl(0, 90%, 43%);
+
+    --warning-100-dark: hsl(0, 40%, 30%);
+    --warning-700-dark: hsl(0, 100%, 78%);
+
     /** Semantic colors */
 
     --color-link-light: var(--primary-700-light);
@@ -53,6 +69,14 @@
     --primary-500: var(--primary-500-light);
     --primary-700: var(--primary-700-light);
 
+    /** Note colors */
+    --note-100: var(--note-100-light);
+    --note-700: var(--note-700-light);
+
+    /** Warning colors */
+    --warning-100: var(--warning-100-light);
+    --warning-700: var(--warning-700-light);
+
     /** Semantic colors */
     --color-link: var(--color-link-light);
     --color-bg-code: var(--color-bg-code-light);
@@ -72,6 +96,14 @@
         /** Primary colors */
         --primary-500: var(--primary-500-dark);
         --primary-700: var(--primary-700-dark);
+
+        /** Note colors */
+        --note-100: var(--note-100-dark);
+        --note-700: var(--note-700-dark);
+
+        /** Warning colors */
+        --warning-100: var(--warning-100-dark);
+        --warning-700: var(--warning-700-dark);
 
         /** Semantic colors */
         --color-link: var(--color-link-dark);

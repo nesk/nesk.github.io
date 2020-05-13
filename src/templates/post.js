@@ -10,6 +10,7 @@ import { faLink } from '@fortawesome/free-solid-svg-icons'
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
 import { SEO } from '../components/seo'
+import * as aside from '../components/aside'
 import { IconButton } from '../components/button'
 
 const Post = styled.article`
@@ -136,6 +137,7 @@ const components = {
     h3: (props) => <LinkableHeading tag="h4" {...props} />,
     h4: (props) => <LinkableHeading tag="h5" {...props} />,
     h5: (props) => <LinkableHeading tag="h6" {...props} />,
+    ...aside,
 }
 
 export default ({ data }) => {

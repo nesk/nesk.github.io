@@ -69,3 +69,17 @@ a > code[class*='language-'] {
     pointer-events: none;
     content: '';
 }
+
+/* A class to display some content to screen readers only */
+/* Retrieved from Bootstrap: https://github.com/twbs/bootstrap/blob/7966167/scss/mixins/_screen-reader.scss */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
