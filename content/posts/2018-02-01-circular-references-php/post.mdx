@@ -143,7 +143,11 @@ However, this is not always possible! I was able to do it here because Rialto us
 
 PHP is a real mess when it comes to manage circular references. [A RFC was proposed](https://wiki.php.net/rfc/weakreferences) to add a SplWeakRef class to the standard PHP library, but it is marked as inactive…
 
-**Update**: [Weak references are coming](https://wiki.php.net/rfc/weakrefs) to PHP 7.4!
+<Note>
+
+[Weak references were added to PHP 7.4!](https://www.php.net/releases/7_4_0.php)
+
+</Note>
 
 In the other hand, not having weak references wouldn't be an issue if PHP's garbage collector used [the tracing algorithm](<https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)#Tracing>), but instead we have that crappy reference counting…
 

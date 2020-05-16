@@ -137,7 +137,7 @@ The `installDatabaseFromAssets` method:
 -   copies the data form the input stream to the output one;
 -   closes the streams.
 
-**Note:** For readability, I'm commenting out the sections we have already treated and will provide the full code at the end of the article.
+<Note>For readability, I'm commenting out the sections we have already treated and will provide the full code at the end of the article.</Note>
 
 ## Checking the database status
 
@@ -265,7 +265,11 @@ To install/update our database on read, we must override `getReadableDatabase` m
 -   install the latest database version;
 -   write the new version in the shared preferences.
 
-**Note:** The `installOrUpdateIfNecessary` method has the `Synchronized` annotation to avoid potential issues if you call `getReadableDatabase` simultaneously in two different threads.
+<Note>
+
+The `installOrUpdateIfNecessary` method has the `Synchronized` annotation to avoid potential issues if you call `getReadableDatabase` simultaneously in two different threads.
+
+</Note>
 
 And what about the `getWritableDatabase` method? Well, if you're planning to update your database sometimes like me, you cannot allow the database to be writable because it would be extremely complicated to merge user modifications to your own database.
 
