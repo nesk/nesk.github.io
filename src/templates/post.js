@@ -171,7 +171,7 @@ export default ({ data }) => {
 }
 
 export const query = graphql`
-    query($slug: String!) {
+    query PostQuery($slug: String!) {
         mdx(frontmatter: { slug: { eq: $slug } }) {
             frontmatter {
                 title

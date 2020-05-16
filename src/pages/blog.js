@@ -50,7 +50,7 @@ export default ({ data }) => {
 }
 
 export const query = graphql`
-    query {
+    query BlogQuery {
         allMdx(sort: { fields: [frontmatter___date], order: DESC }) {
             edges {
                 node {

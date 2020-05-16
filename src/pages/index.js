@@ -129,7 +129,7 @@ export default ({ data }) => (
 )
 
 export const query = graphql`
-    query {
+    query AboutQuery {
         file(relativePath: { eq: "images/avatar.jpg" }) {
             childImageSharp {
                 fluid {
