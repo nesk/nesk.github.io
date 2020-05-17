@@ -11,6 +11,7 @@ export const IconButton = styled.button.attrs((props) => ({
     ${({ as }) => (as === 'a' ? 'color: inherit' : '')}
     appearance: none;
     font-size: 1.6rem;
+    color: inherit;
 
     &::after {
         position: absolute;
