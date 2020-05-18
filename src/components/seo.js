@@ -34,6 +34,16 @@ export const SEO = ({
 
             {title ? <title>{title}</title> : null}
 
+            {[16, 32, 192, 512].map((size) => (
+                <link
+                    key={size}
+                    rel="icon"
+                    type="image/png"
+                    sizes={`${size}x${size}`}
+                    href={`/favicon-${size}x${size}.png`}
+                />
+            ))}
+
             <meta name="description" content={metaDescription} />
             <meta property="og:title" content={title} />
             <meta property="og:description" content={metaDescription} />
