@@ -5,6 +5,7 @@
  */
 module.exports = {
     siteMetadata: {
+        siteUrl: `https://johann.pardanaud.com`,
         title: `Johann Pardanaud`,
         description: `Developer working @batch — Passionate climber`,
         author: `Johann Pardanaud`,
@@ -47,5 +48,60 @@ module.exports = {
         'gatsby-transformer-sharp',
         'gatsby-plugin-sharp',
         'gatsby-plugin-styled-components',
+        {
+            resolve: `gatsby-plugin-feed`,
+            options: {
+                query: `
+                    {
+                        site {
+                            siteMetadata {
+                                siteUrl
+                            }
+                        }
+                    }
+                `,
+                feeds: [
+                    {
+                        title: "Johann Pardanaud's RSS Feed",
+                        output: '/rss.xml',
+                        query: `
+                            {
+                                allMdx(sort: { fields: [frontmatter___date], order: DESC }) {
+                                    edges {
+                                        node {
+                                            frontmatter {
+                                                title
+                                                date
+                                                slug
+                                            }
+                                            excerpt(pruneLength: 300)
+                                            html
+                                        }
+                                    }
+                                }
+                            }
+                        `,
+                        serialize: ({ query: { site, allMdx } }) => {
+                            return allMdx.edges.map((edge) => {
+                                const { siteUrl } = site.siteMetadata
+                                const { frontmatter } = edge.node
+
+                                return Object.assign({}, frontmatter, {
+                                    url: `${siteUrl}/${frontmatter.slug}`,
+                                    guid: `${siteUrl}/${frontmatter.slug}`,
+                                    date: frontmatter.date,
+                                    description: edge.node.excerpt,
+                                    custom_elements: [
+                                        {
+                                            'content:encoded': edge.node.html,
+                                        },
+                                    ],
+                                })
+                            })
+                        },
+                    },
+                ],
+            },
+        },
     ],
 }
