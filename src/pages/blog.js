@@ -30,7 +30,7 @@ export default ({ data }) => {
         <Layout seo={<SEO title="Blog" />}>
             <Content>
                 {posts.map((post) => (
-                    <Post key={post.frontmatter.id}>
+                    <Post key={post.id}>
                         <Link
                             to={`/blog/${post.frontmatter.slug}`}
                             className="link-invisible"
