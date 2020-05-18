@@ -2,7 +2,13 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { useStaticQuery, graphql } from 'gatsby'
 
-export const SEO = ({ title, description, lang = 'en', meta = [] }) => {
+export const SEO = ({
+    title,
+    description,
+    image = null,
+    lang = 'en',
+    meta = [],
+}) => {
     const { site } = useStaticQuery(
         graphql`
             query SeoQuery {
@@ -31,6 +37,14 @@ export const SEO = ({ title, description, lang = 'en', meta = [] }) => {
             <meta name="description" content={metaDescription} />
             <meta property="og:title" content={title} />
             <meta property="og:description" content={metaDescription} />
+
+            {image !== null ? (
+                <meta
+                    property="og:image"
+                    content={`https://johann.pardanaud.com${image}`}
+                />
+            ) : null}
+
             <meta property="og:type" content={`website`} />
             <meta name="twitter:card" content={`summary`} />
             <meta

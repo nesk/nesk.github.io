@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { graphql } from 'gatsby'
 import { MDXProvider } from '@mdx-js/react'
 import { MDXRenderer } from 'gatsby-plugin-mdx'
+import Img from 'gatsby-image'
 import urlSlug from 'url-slug'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink } from '@fortawesome/free-solid-svg-icons'
@@ -54,8 +55,10 @@ const Post = styled.article`
 `
 
 const Header = styled.header`
-    display: flex;
-    flex-direction: column-reverse;
+    ${Content} {
+        display: flex;
+        flex-direction: column-reverse;
+    }
 
     h1 {
         font-size: 2.5rem;
@@ -72,6 +75,10 @@ const Metadata = styled.p`
     address {
         display: inline;
     }
+`
+
+const FeaturedImage = styled(Img)`
+    margin-bottom: 2.5rem;
 `
 
 const HeadingLink = styled(IconButton)`
@@ -142,15 +149,20 @@ const components = {
 
 export default ({ data }) => {
     const post = data.mdx
+    const featuredImage = post.frontmatter.featuredImage.childImageSharp.fluid
+
+    const seo = (
+        <SEO
+            title={`${post.frontmatter.title} — Blog`}
+            image={featuredImage.src}
+        />
+    )
 
     return (
-        <Layout
-            seo={<SEO title={`${post.frontmatter.title} — Blog`} />}
-            autoTopHeading={false}
-        >
-            <Content>
-                <Post>
-                    <Header>
+        <Layout seo={seo} autoTopHeading={false}>
+            <Post>
+                <Header>
+                    <Content>
                         <h1>{post.frontmatter.title}</h1>
                         <Metadata>
                             Published{' '}
@@ -159,13 +171,16 @@ export default ({ data }) => {
                             </time>
                             , by Johann Pardanaud
                         </Metadata>
-                    </Header>
+                    </Content>
+                    <FeaturedImage fluid={featuredImage} />
+                </Header>
 
+                <Content>
                     <MDXProvider components={components}>
                         <MDXRenderer>{post.body}</MDXRenderer>
                     </MDXProvider>
-                </Post>
-            </Content>
+                </Content>
+            </Post>
         </Layout>
     )
 }
@@ -177,6 +192,13 @@ export const query = graphql`
                 title
                 date
                 formattedDate: date(formatString: "Do MMMM YYYY")
+                featuredImage {
+                    childImageSharp {
+                        fluid(maxWidth: 2000) {
+                            ...GatsbyImageSharpFluid
+                        }
+                    }
+                }
             }
             body
         }
