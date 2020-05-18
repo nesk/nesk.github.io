@@ -99,7 +99,7 @@ export default ({ data }) => (
     <Layout seo={<SEO title="About" />}>
         <About>
             <Speech>
-                I'm <em>Johann Pardanaud</em>, developer at{' '}
+                <em>I'm Johann Pardanaud</em>, developer at{' '}
                 <a href="https://batch.com">Batch</a>. I develop technical
                 solutions for back-end and front-end. I love the open source
                 philosophy and try to contribute whenever I have time (and
