@@ -7,20 +7,29 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
 `
 
 const Body = styled.main`
     flex: 1 0 auto;
     padding: calc(var(--content-spacing) * 3) 0;
+
+    ${({ center }) => (center ? ` display: flex; align-items: center;` : '')}
 `
 
-export const Layout = ({ children, seo, autoTopHeading = true }) => (
+export const Layout = ({
+    children,
+    seo,
+    autoTopHeading = true,
+    centeredBody = false,
+}) => (
     <>
         {seo || <SEO />}
         <Container>
             <Header autoTopHeading={autoTopHeading} />
-            <Body id="main">{children}</Body>
+            <Body id="main" center={centeredBody}>
+                {children}
+            </Body>
         </Container>
     </>
 )

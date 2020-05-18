@@ -96,7 +96,7 @@ const Speech = styled.p`
 `
 
 export default ({ data }) => (
-    <Layout seo={<SEO title="About" />}>
+    <Layout seo={<SEO title="About" />} centeredBody>
         <About>
             <Speech>
                 <em>I'm Johann Pardanaud</em>, developer at{' '}
