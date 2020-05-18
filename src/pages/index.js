@@ -43,6 +43,18 @@ const Avatar = styled(Img)`
     border-radius: 9999px;
     overflow: hidden;
 
+    &::after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        box-shadow: inset 0 0 20px var(--shadow);
+        pointer-events: none;
+        content: '';
+    }
+
     @media (max-width: 767.98px) {
         width: calc(100% - 4rem);
     }

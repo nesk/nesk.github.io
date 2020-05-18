@@ -56,20 +56,6 @@ a > code[class*='language-'] {
     text-decoration: none;
 }
 
-/* Add an inset shadow over images, see: https://twitter.com/steveschoger/status/1064541476615593984 */
-.gatsby-image-wrapper::after,
-.gatsby-resp-image-wrapper::after {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: inherit;
-    box-shadow: inset 0 0 20px var(--shadow);
-    pointer-events: none;
-    content: '';
-}
-
 /* A class to display some content to screen readers only */
 /* Retrieved from Bootstrap: https://github.com/twbs/bootstrap/blob/7966167/scss/mixins/_screen-reader.scss */
 .sr-only {
