@@ -24,11 +24,9 @@
 
     /** Primary colors */
 
-    --primary-500-light: hsl(206, 90%, 50%);
-    --primary-700-light: hsl(206, 90%, 39.7%);
+    --primary-500-light: hsl(206, 90%, 39.7%);
 
     --primary-500-dark: hsl(206, 100%, 56%);
-    --primary-700-dark: hsl(206, 100%, 43%);
 
     /** Note colors */
 
@@ -48,10 +46,8 @@
 
     /** Semantic colors */
 
-    --color-link-light: var(--primary-700-light);
     --color-bg-code-light: var(--grey-800-light);
 
-    --color-link-dark: var(--primary-500-dark);
     --color-bg-code-dark: var(--grey-200-dark);
 }
 
@@ -67,7 +63,6 @@
 
     /** Primary colors */
     --primary-500: var(--primary-500-light);
-    --primary-700: var(--primary-700-light);
 
     /** Note colors */
     --note-100: var(--note-100-light);
@@ -78,7 +73,6 @@
     --warning-700: var(--warning-700-light);
 
     /** Semantic colors */
-    --color-link: var(--color-link-light);
     --color-bg-code: var(--color-bg-code-light);
 }
 
@@ -95,7 +89,6 @@
 
         /** Primary colors */
         --primary-500: var(--primary-500-dark);
-        --primary-700: var(--primary-700-dark);
 
         /** Note colors */
         --note-100: var(--note-100-dark);
@@ -106,7 +99,6 @@
         --warning-700: var(--warning-700-dark);
 
         /** Semantic colors */
-        --color-link: var(--color-link-dark);
         --color-bg-code: var(--color-bg-code-dark);
     }
 }
