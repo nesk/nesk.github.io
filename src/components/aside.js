@@ -42,18 +42,10 @@ const asideCss = css`
         font-size: 2rem;
     }
 
-    /* Slight color variations for links below, to improve contrasts */
-
+    /* Slight color variations for links, to improve contrasts. */
     a,
     a:hover {
-        color: hsl(206, 90%, 36%);
-    }
-
-    @media (prefers-color-scheme: dark) {
-        a,
-        a:hover {
-            color: hsl(206, 100%, 66%);
-        }
+        color: var(--color-aside-link);
     }
 `
 

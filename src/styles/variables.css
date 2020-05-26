@@ -25,7 +25,9 @@
     /** Primary colors */
 
     --primary-500-light: hsl(206, 90%, 39.7%);
+    --primary-600-light: hsl(206, 90%, 36%);
 
+    --primary-400-dark: hsl(206, 100%, 66%);
     --primary-500-dark: hsl(206, 100%, 56%);
 
     /** Note colors */
@@ -47,8 +49,10 @@
     /** Semantic colors */
 
     --color-bg-code-light: var(--grey-800-light);
+    --color-aside-link-light: var(--primary-600-light);
 
     --color-bg-code-dark: var(--grey-200-dark);
+    --color-aside-link-dark: var(--primary-400-dark);
 }
 
 /** Light theme */
@@ -74,6 +78,33 @@
 
     /** Semantic colors */
     --color-bg-code: var(--color-bg-code-light);
+    --color-aside-link: var(--color-aside-link-light);
+}
+
+/** Forced light theme */
+.light-theme:root {
+    /** Grey colors */
+    --grey-100: var(--grey-100-light);
+    --grey-200: var(--grey-200-light);
+    --grey-300: var(--grey-300-light);
+    --grey-400: var(--grey-400-light);
+    --grey-600: var(--grey-600-light);
+    --grey-800: var(--grey-800-light);
+
+    /** Primary colors */
+    --primary-500: var(--primary-500-light);
+
+    /** Note colors */
+    --note-100: var(--note-100-light);
+    --note-700: var(--note-700-light);
+
+    /** Warning colors */
+    --warning-100: var(--warning-100-light);
+    --warning-700: var(--warning-700-light);
+
+    /** Semantic colors */
+    --color-bg-code: var(--color-bg-code-light);
+    --color-aside-link: var(--color-aside-link-light);
 }
 
 /** Dark theme */
@@ -100,5 +131,32 @@
 
         /** Semantic colors */
         --color-bg-code: var(--color-bg-code-dark);
+        --color-aside-link: var(--color-aside-link-dark);
     }
+}
+
+/** Forced dark theme */
+.dark-theme:root {
+    /** Grey colors */
+    --grey-100: var(--grey-100-dark);
+    --grey-200: var(--grey-200-dark);
+    --grey-300: var(--grey-300-dark);
+    --grey-400: var(--grey-400-dark);
+    --grey-600: var(--grey-600-dark);
+    --grey-800: var(--grey-800-dark);
+
+    /** Primary colors */
+    --primary-500: var(--primary-500-dark);
+
+    /** Note colors */
+    --note-100: var(--note-100-dark);
+    --note-700: var(--note-700-dark);
+
+    /** Warning colors */
+    --warning-100: var(--warning-100-dark);
+    --warning-700: var(--warning-700-dark);
+
+    /** Semantic colors */
+    --color-bg-code: var(--color-bg-code-dark);
+    --color-aside-link: var(--color-aside-link-dark);
 }

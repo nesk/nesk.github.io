@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { SEO } from './seo'
 import { Header } from './header'
+import { DarkModeSwitch } from './dark-mode'
 
 const Container = styled.div`
     display: flex;
@@ -22,14 +23,28 @@ export const Layout = ({
     seo,
     autoTopHeading = true,
     centeredBody = false,
-}) => (
-    <>
-        {seo || <SEO />}
-        <Container>
-            <Header autoTopHeading={autoTopHeading} />
-            <Body id="main" center={centeredBody}>
-                {children}
-            </Body>
-        </Container>
-    </>
-)
+}) => {
+    const onDarkModeChange = (state) => {
+        const classList = document.querySelector('html').classList
+        classList.remove('light-theme')
+        classList.remove('dark-theme')
+
+        if (state !== null) {
+            classList.add(state ? 'dark-theme' : 'light-theme')
+        }
+    }
+
+    return (
+        <>
+            {seo || <SEO />}
+            <Container>
+                <Header autoTopHeading={autoTopHeading}>
+                    <DarkModeSwitch onChange={onDarkModeChange} />
+                </Header>
+                <Body id="main" center={centeredBody}>
+                    {children}
+                </Body>
+            </Container>
+        </>
+    )
+}

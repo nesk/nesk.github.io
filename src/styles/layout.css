@@ -16,8 +16,10 @@ a:hover .sublink {
 }
 
 a:focus,
-a:focus .sublink {
-    outline: 2px solid currentColor;
+a:focus .sublink,
+.focusable:focus,
+.focusable:focus-within {
+    outline: 2px solid var(--primary-500);
     outline-offset: 0.2rem;
     -moz-outline-radius: 3px;
 }

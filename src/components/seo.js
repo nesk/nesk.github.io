@@ -32,6 +32,15 @@ export const SEO = ({
         >
             <html lang={lang} />
 
+            <script>
+                {`
+                    const darkMode = localStorage.getItem('dark-mode-preference')
+                    if (darkMode === 'true' || darkMode === 'false') {
+                        document.querySelector('html').classList.add(darkMode === 'true' ? 'dark-theme' : 'light-theme')
+                    }
+                `}
+            </script>
+
             {title ? <title>{title}</title> : null}
 
             {[16, 32, 192, 512].map((size) => (

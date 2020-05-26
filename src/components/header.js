@@ -61,15 +61,26 @@ const MenuButton = styled(IconButton)`
     }
 `
 
-const Nav = styled.nav`
+const Menu = styled.div`
     grid-column: span 2;
-    display: ${(props) => (props.isOpened ? 'flex' : 'none')};
-    flex-direction: column;
-    align-items: flex-end;
+    display: ${(props) => (props.isOpened ? 'grid' : 'none')};
+    justify-items: end;
+    grid-row-gap: calc(var(--content-spacing) * 2);
+    grid-column-gap: calc(var(--content-spacing) * 3.5);
+
+    nav {
+        display: grid;
+        justify-items: end;
+    }
 
     @media (min-width: 768px) {
-        display: flex;
-        flex-direction: row;
+        display: grid;
+        grid-auto-flow: column;
+
+        nav {
+            grid-auto-flow: column;
+            grid-gap: calc(var(--content-spacing) * 1.5);
+        }
     }
 `
 
@@ -79,15 +90,9 @@ const NavLink = styled(Link).attrs(() => ({
     &:not(:hover):not(:focus):not(:active):not(.active) {
         text-decoration: none;
     }
-
-    @media (min-width: 768px) {
-        &:not(:last-child) {
-            margin-right: 1.5rem;
-        }
-    }
 `
 
-export const Header = ({ autoTopHeading = true }) => {
+export const Header = ({ children, autoTopHeading = true }) => {
     const [isMenuOpened, setIsMenuOpened] = useState(false)
     const aboutRef = useRef(null)
 
@@ -108,30 +113,32 @@ export const Header = ({ autoTopHeading = true }) => {
                 )}
 
                 <MenuButton
-                    aria-label={`${
-                        isMenuOpened ? 'Close' : 'Open'
-                    } navigation menu`}
+                    aria-label={`${isMenuOpened ? 'Close' : 'Open'} menu`}
                     onClick={() => setIsMenuOpened(!isMenuOpened)}
                 >
                     <FontAwesomeIcon icon={faBars} />
                 </MenuButton>
 
-                <Nav isOpened={isMenuOpened}>
-                    <NavLink
-                        activeClassName="active"
-                        to="/"
-                        innerRef={aboutRef}
-                    >
-                        About
-                    </NavLink>
-                    <NavLink
-                        activeClassName="active"
-                        partiallyActive
-                        to="/blog"
-                    >
-                        Blog
-                    </NavLink>
-                </Nav>
+                <Menu isOpened={isMenuOpened}>
+                    <nav>
+                        <NavLink
+                            activeClassName="active"
+                            to="/"
+                            innerRef={aboutRef}
+                        >
+                            About
+                        </NavLink>
+                        <NavLink
+                            activeClassName="active"
+                            partiallyActive
+                            to="/blog"
+                        >
+                            Blog
+                        </NavLink>
+                    </nav>
+
+                    {children}
+                </Menu>
             </Content>
         </Container>
     )
