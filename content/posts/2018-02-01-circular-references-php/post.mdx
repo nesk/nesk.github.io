@@ -15,7 +15,11 @@ To improve [the separation of concerns](https://en.wikipedia.org/wiki/Separation
 
 However, the `DataUnserializer` class needed to keep a reference to its `ProcessSupervisor` parent (so it can transmit the reference to some classes it creates on unserialization). We had this code organization:
 
+<Caption text="If anyone told me I would need a UML diagram one day, I would have not believed him.">
+
 ![A UML diagram showing how ProcessSupervisor and DataUnserializer classes create a circular reference](images/uml-1.png)
+
+</Caption>
 
 And this is where we have an issue: if the root object is destroyed, the `ProcessSupervisor` and `DataUnserializer` instances will stay alive because they reference each other.
 
@@ -136,7 +140,11 @@ If you don't want to add a derefencing method because you're creating a library 
 
 This is what I did with Rialto. I didn't want to put back the unserializing methods in the `ProcessSupervisor` class, so I went with a different solution and replaced the `DataUnserializer` class by a `UnserializesData` trait which is imported in the `ProcessSupervisor` class. Here's the new code organization:
 
+<Caption text="Probably the last UML diagram I will ever create…">
+
 ![A UML diagram showing how the circular reference can be broken using traits](images/uml-2.png)
+
+</Caption>
 
 However, this is not always possible! I was able to do it here because Rialto used only one instance of the `DataUnserializer` class. If I had used multiple instances of this class (for… reasons), I could not have done that.
 
