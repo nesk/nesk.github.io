@@ -50,7 +50,7 @@ Ultimately, these issues will bother you essentially with long running processes
 
 You have three ways to solve your circular references issues:
 
--   **Use [weak references](https://en.wikipedia.org/wiki/Weak_reference)**:
+## Use weak references
 
 > A **weak reference** is a [reference](<https://en.wikipedia.org/wiki/Reference_(computer_science)>) that does not protect the referenced [object](<https://en.wikipedia.org/wiki/Object_(computer_science)>) from collection by a [garbage collector](<https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)>).
 >
@@ -87,7 +87,7 @@ $instance = new ParentClass;
 unset($instance);
 ```
 
--   **Create a dereferencing method**:
+## Create a dereferencing method
 
 If you cannot install a PHP extension (because of a shared hosting, or whatever…), you can create a method to cleanup your circular references.
 
@@ -134,7 +134,7 @@ $instance->destroy();
 unset($instance);
 ```
 
--   **Change your code structure**:
+## Change your code structure
 
 If you don't want to add a derefencing method because you're creating a library and you want to keep the API really simple, you might want to change your code structure.
 
