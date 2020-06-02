@@ -5,10 +5,10 @@ export const Content = styled.section`
     padding: 0 var(--content-spacing);
 
     @media (min-width: 768px) {
-        width: 44rem;
+        width: 42rem;
     }
 
     @media (min-width: 992px) {
-        width: 55rem;
+        width: 53rem;
     }
 `
