@@ -124,6 +124,8 @@ export const DarkModeSwitch = ({ onChange }) => {
             return
         }
 
+        event.preventDefault()
+
         let newDarkModeUser
 
         if (darkModeUser === null) {
