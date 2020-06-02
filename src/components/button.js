@@ -1,17 +1,16 @@
 import styled from 'styled-components'
 
 export const IconButton = styled.button.attrs((props) => ({
-    className: props.as === 'a' ? 'link-no-color-when-inactive' : undefined,
+    className: props.as === 'a' ? 'link-no-color-when-inactive' : 'focusable',
 }))`
     position: relative;
     display: inline-flex;
     padding: 0;
     background: transparent;
     border: 0;
-    ${({ as }) => (as === 'a' ? 'color: inherit' : '')}
     appearance: none;
     font-size: 1.6rem;
-    color: inherit;
+    ${({ as }) => (as !== 'a' ? 'color: inherit;' : '')}
 
     &::after {
         position: absolute;
