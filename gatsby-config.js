@@ -39,6 +39,7 @@ module.exports = {
                     {
                         resolve: `gatsby-remark-prismjs`,
                         options: {
+                            classPrefix: 'focusable language-',
                             aliases: { kt: 'kotlin', sh: 'bash' },
                         },
                     },
