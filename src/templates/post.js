@@ -93,7 +93,7 @@ const ShareButton = ({ name, icon, urlTemplate }) => {
             target="_blank"
             rel="noopener noreferrer"
             title={title}
-            aria-hidden={title}
+            aria-label={title}
             onClick={(event) => {
                 event.preventDefault()
                 window.open(url, title, 'width=500,height=500')
