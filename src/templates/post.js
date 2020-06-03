@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { onlyText } from 'react-children-utilities'
 import styled from 'styled-components'
 import { graphql } from 'gatsby'
@@ -68,13 +68,26 @@ const StyledShareButton = styled(IconButton)`
     margin-bottom: 0.5rem;
 `
 
+const useIsClient = () => {
+    const [isClient, setIsClient] = React.useState(false)
+
+    useEffect(() => {
+        setIsClient(true)
+    }, [])
+
+    return isClient
+}
+
 const ShareButton = ({ name, icon, urlTemplate }) => {
+    const isClient = useIsClient()
     const title = `Share on ${name}`
-    const sharedUrl = encodeURIComponent(window.location.href)
+    const location = typeof window !== 'undefined' ? window.location : {}
+    const sharedUrl = encodeURIComponent(location.href)
     const url = urlTemplate.replace('{url}', sharedUrl)
 
     return (
         <StyledShareButton
+            key={isClient}
             as="a"
             href={url}
             target="_blank"
