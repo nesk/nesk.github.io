@@ -10,7 +10,7 @@ const Container = styled.header`
     flex: 0 0 auto;
     padding: var(--content-spacing) 0;
     background: var(--grey-200);
-    font-size: 1.1rem;
+    font-size: 1.125rem;
     font-weight: 500;
 
     ${Content} {

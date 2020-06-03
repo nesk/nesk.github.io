@@ -80,7 +80,7 @@ const Social = styled.div`
 
 const StyledIconLink = styled(IconButton)`
     @media (min-width: 992px) {
-        font-size: 1.8rem;
+        font-size: 1.75rem;
     }
 `
 

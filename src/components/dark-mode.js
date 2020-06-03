@@ -8,13 +8,14 @@ import { faSun, faMoon, faCircle } from '@fortawesome/free-solid-svg-icons'
 const DarkModeIcon = styled.span`
     opacity: ${({ active }) => (active ? '1' : '0.3')};
     color: ${({ selected }) => (selected ? 'var(--primary-500)' : 'inherit')};
+    font-size: 1.125rem;
 `
 
 const DarkModeState = styled.span`
     display: grid;
     grid-template: 'icon';
     margin: 0 calc(var(--content-spacing) / 2);
-    font-size: 0.3rem;
+    font-size: 0.3125rem;
 
     svg {
         grid-area: icon;
