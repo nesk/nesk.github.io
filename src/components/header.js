@@ -28,7 +28,7 @@ const Container = styled.header`
     }
 `
 
-const SkipLink = styled(Link)`
+const SkipLink = styled.a`
     position: fixed;
     top: 0;
     left: 50%;
@@ -104,7 +104,7 @@ export const Header = ({ children, autoTopHeading = true }) => {
 
     return (
         <Container>
-            <SkipLink to="#main">Skip to content</SkipLink>
+            <SkipLink href="#main">Skip to content</SkipLink>
             <Content>
                 {autoTopHeading ? (
                     <TitleH1>Johann Pardanaud</TitleH1>
