@@ -63,10 +63,8 @@ const DarkModeContainer = styled.div`
         transition: all ease 250ms;
     }
 
-    &:hover
-        ${DarkModeTooltip},
-        input[type='checkbox']:focus
-        + ${DarkModeTooltip} {
+    &:hover ${DarkModeTooltip},
+    &:focus ${DarkModeTooltip} {
         opacity: 1;
     }
 `
