@@ -24,6 +24,7 @@ export const SEO = ({
     )
 
     const metaDescription = description || site.siteMetadata.description
+    image = image !== null ? image : '/social-banner.jpg'
 
     return (
         <Helmet
@@ -56,14 +57,10 @@ export const SEO = ({
             <meta name="description" content={metaDescription} />
             <meta property="og:title" content={title} />
             <meta property="og:description" content={metaDescription} />
-
-            {image !== null ? (
-                <meta
-                    property="og:image"
-                    content={`https://johann.pardanaud.com${image}`}
-                />
-            ) : null}
-
+            <meta
+                property="og:image"
+                content={`https://johann.pardanaud.com${image}`}
+            />
             <meta property="og:type" content={`website`} />
             <meta name="twitter:card" content={`summary`} />
             <meta
