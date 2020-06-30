@@ -1,0 +1,101 @@
+---
+title: 'nesk.dev v2'
+date: '2020-06-30'
+slug: nesk-dev-v2
+featuredImage: images/featured.jpg
+---
+
+For years I've dreamt about creating one of those crazy personal websites, with a beautiful design, animations everywhere and some easter eggs. This was probably due to my work as a front-end developer, but these days I'm more of a back-end developer and my personal tastes in development have evolved, just like my expectations for the perfect website.
+
+These last months, I've been patiently working to craft the website of my **current** dreams. And, despite being way simpler in a graphical way, it still took me quite some time to find the technologies I would love to use, what colors to pick, how to arrange my stuff, and many other details.
+
+So here it is! ✨ **My new website!** ✨ Not that fancy eh? However, it fits all the requirements I had in mind:
+
+- Unlike my previous website, I wanted to write my blog posts on a platform over which I have control because [I've grown tired of _Medium_ and I'm not the only one.](https://www.cdevn.com/why-medium-actually-sucks/)
+- I really dislike [_WYSIWYG_ editors](https://en.wikipedia.org/wiki/WYSIWYG), I always struggle to achieve formatting with these editors, a [_Lightweight markup language_](https://en.wikipedia.org/wiki/Lightweight_markup_language) will always have my preference.
+- I wanted to use [static web pages](https://en.wikipedia.org/wiki/Static_web_page), that way I don't have to manage any database and hosting is cheap.
+- I love dark themes, I don't always use them but I do appreciate when a website provides one.
+- Like I said just above, I'm not that much of a front-end developer anymore. This is a choice, but sometimes I miss _HTML_/_CSS_/_JS_ development, this project was an opportunity to use these languages once again.
+- Accessibility has always been something I had an interest for, this new website was the opportunity to make things right.
+
+# Writing the content
+
+Among all the available lightweight markup languages, [_Markdown_](https://en.wikipedia.org/wiki/Markdown) is the most popular one. However, I always feel like its syntax is really limited. You can write some HTML code and extend it with _Markdown Extra_, but this is quite limited too, especially if you have to use complex HTML structures for some of your custom components.
+
+This is where [_MDX_](https://mdxjs.com/getting-started) shines, its still _Markdown_ but you can use _React_ components inside the content. It allows you to create simple to complex custom components and use them with an easy to remember syntax. For example, on this blog I can create aside content with those two tags:
+
+```jsx
+<Note>Note this!</Note>
+<Warning>Warn that!</Warning>
+```
+
+See by yourself:
+
+<Note>Note this!</Note>
+<Warning>Warn that!</Warning>
+
+Additionally, _MDX_ allows you to replace some _DOM_ elements by custom components, which is great because I can use heading levels without thinking about <cite>What levels are already present in my layout that I should avoid when writing?</cite> I can use all 6 heading levels and [configure MDX to rewrite the headings](https://github.com/nesk/nesk.github.io/blob/ad18bf21fa07abd8a150712b1888b81d62a0afee/src/templates/post.js#L222-L230) to match the structure of my layout:
+
+```jsx
+// My layout already contains a <h1> tag and I don't want a
+// duplicate, I can replace the headings to avoid that.
+const components = {
+    h1: (props) => <h2 {...props} />,
+    h2: (props) => <h3 {...props} />,
+    h3: (props) => <h4 {...props} />,
+    h4: (props) => <h5 {...props} />,
+    h5: (props) => <h6 {...props} />,
+}
+
+<MDXProvider components={components}>
+    {/* ... */}
+</MDXProvider>
+```
+
+# Generating the web pages
+
+Maintaining HTML files by hand is not quite my “kink”, and it's not the Internet's either, that's why static site generators exist. There are many of them and you can find a really extensive list on [_StaticGen.com_](https://www.staticgen.com/). You simply create one or many templates and the generator will use them to generate pages by adding your content. Plus, you can use your favorite code editor to write the content of your pages!
+
+Choosing the appropriate generator for me wasn't a hard task. Since I don't have much experience with this kind of tools, I was thinking about picking one of the mainstream ones.
+
+At first, I was attracted by [_Hugo_](https://gohugo.io), mainly because it was written in _Go_, I find this language really interesting but never really seized the opportunity to correctly learn it. However, [_Gatsby_](https://www.gatsbyjs.org/) was way more accessible to me and provides first-class support for _MDX_.
+
+# Continous integration & hosting
+
+My website has always been open source on _Github_, it's not a game changer but it's something I'm used too. In addition, since June 2018, I take the benefits of the platform and use [_Github Pages_](https://pages.github.com/) to serve my website, it's free and can scale without issues.
+
+The incentives of a static site generator is that you only have to serve HTML, CSS, JS files, and your assets (like images, videos). _Github Pages_ is perfect for this task!
+
+To ease the publication of blog posts, I wanted to use _Continuous Integration_ to build and automatically deploy the generated files. Fortunately, [an action already exists to handle all the work for you!](https://github.com/enriikke/gatsby-gh-pages-action) See by yourself, [I had barely nothing to do](https://github.com/nesk/nesk.github.io/tree/dev/.github/workflows/gatsby.yaml). 🎉
+
+# Accessibility
+
+Accessibility was a new thing for me, I've always tried to avoid shady behaviours but I've never tried to really invest myself in best practices. This project was the opportunity to do more and enable all users to read what I write.
+
+Fortunately, there are lots of resources to learn and debug about accessibility:
+
+- Google provides a great guide, <cite>[How To Do an Accessibility Review](https://developers.google.com/web/fundamentals/accessibility/how-to-review)</cite>.
+- [_Axess Lab_](https://axesslab.com/) is a blog entirely dedicated about accessibility.
+- [_Firefox's Accessibility Inspector_](https://developer.mozilla.org/en-US/docs/Tools/Accessibility_inspector) helped me to easily do incremental reviews.
+- [_Google Lighthouse_](https://developers.google.com/web/tools/lighthouse) allowed me to strengthen my reviews, but I found it less useful for small incremental reviews.
+- [_Microsoft's Accessibility Insights For Web_](https://accessibilityinsights.io/) is a real killer to make a full and complete review of your website once development is done.
+
+# Dark Mode
+
+I might not be a frequent user of dark mode—or dark theme—but I didn't mean to be the one who would force you to use either mode. Plus, I thought it would be really fun to do and not that complicated. _WHAT A MISTAKE!_
+
+Creating the styles for a dark mode is a pretty easy task, especially if you're using [_CSS custom properties_](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties). You can simply override your custom properties if the system notifies you that the user prefers dark mode, [and that's it!](https://github.com/nesk/nesk.github.io/blob/ad18bf21fa07abd8a150712b1888b81d62a0afee/src/styles/variables.css#L110-L136)
+
+However, once you want to enable your users to change the color scheme without changing their system preferences, you're going down the rabbit hole, especially with those requirements:
+
+- Ability to revert back to the system preference, this is something I frequently miss on many websites.
+- Save the user choice and apply it on page load, it takes a bit of work to avoid any blinking styles.
+- Make the component accessible, because a user could need to change the color scheme to better see the content, this lead me to create [a custom widget](https://developer.mozilla.org/en-US/docs/Learn/Forms/How_to_build_custom_form_controls), a first time for me!
+
+In the end, I'm really satisfied with my component, maybe in future I will create a NPM package to share it with other developers.
+
+# Finally
+
+This project was an opportunity to learn and experiment with recent front-end development trends. Additionally, I hope having my own hosted blog will help me write more posts (the previous one was 2 years ago…).
+
+Thanks for reading me!
