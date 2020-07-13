@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SEO } from './seo'
+import { MatomoProvider } from './matomo'
 import { Header } from './header'
 import { DarkModeSwitch } from './dark-mode'
 
@@ -35,7 +36,7 @@ export const Layout = ({
     }
 
     return (
-        <>
+        <MatomoProvider>
             {seo || <SEO />}
             <Container>
                 <Header autoTopHeading={autoTopHeading}>
@@ -45,6 +46,6 @@ export const Layout = ({
                     {children}
                 </Body>
             </Container>
-        </>
+        </MatomoProvider>
     )
 }
