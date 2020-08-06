@@ -1,0 +1,137 @@
+---
+title: 'Mocking an exception in PHP'
+date: '2020-08-06'
+slug: mocking-an-exception-in-php
+featuredImage: images/featured.jpg # https://unsplash.com/photos/KmKZV8pso-s
+---
+
+When writing tests, you might sometimes need to mock an exception, this is an unusual case but it happened to me one year ago [while overcoming a bug in Symfony's Security component](https://github.com/symfony/symfony/issues/28229#issuecomment-507273572). I needed to know if an exception was thrown by the `Symfony\Component\Security\Http\Firewall\AccessListener` class or not, I did it by writing a code similar to this:
+
+```php
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Http\Firewall\AccessListener;
+
+class ThrowerChecker
+{
+    public function isThrownByFirewall(AccessDeniedException $exception): bool
+    {
+        // Walking through the stack frames and returning true if one of them is triggered
+        // by the firewall (Symfony\Component\Security\Http\Firewall\AccessListener)
+        foreach ($exception->getTrace() as $stackItem) {
+            $class = $stackItem['class'] ?? null;
+            if ($class === AccessListener::class) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+```
+
+However, testing this short piece of code can be quiet tricky. You can't mock an exception and override the `getTrace()` method because it is marked as **final**—[like many other ones](https://www.php.net/manual/en/class.exception.php#exception.synopsis).
+
+Since PHP 7, you can use the [_Throwable_](https://www.php.net/manual/en/class.throwable.php) interface, which can be easily mocked because interfaces can't declare final methods. However, sometimes you might need to mock a specific implementation, like for the `isThrownByFirewall(AccessDeniedException $exception): bool` method declared in the previous code.
+
+The only solution left is to use the [_Reflection API_](https://www.php.net/manual/en/book.reflection.php) to override the internal properties of the exception. You can easily know what are the internal properties of the class by dumping an instance of the `Exception` class:
+
+```php
+// I'm using a function here to generate the exception
+// because I want to show you a proper trace.
+function generateException()
+{
+    return new Exception();
+}
+
+var_dump(generateException());
+
+/*
+  Outputs:
+
+  object(Exception)#1 (7) {
+    ["message":protected]=>
+    string(0) ""
+    ["string":"Exception":private]=>
+    string(0) ""
+    ["code":protected]=>
+    int(0)
+    ["file":protected]=>
+    string(35) "/Users/johann/Desktop/exception.php"
+    ["line":protected]=>
+    int(5)
+    ["trace":"Exception":private]=>
+    array(1) {
+      [0]=>
+      array(4) {
+        ["file"]=>
+        string(35) "/Users/johann/Desktop/exception.php"
+        ["line"]=>
+        int(8)
+        ["function"]=>
+        string(17) "generateException"
+        ["args"]=>
+        array(0) {
+        }
+      }
+    }
+    ["previous":"Exception":private]=>
+    NULL
+  }
+*/
+```
+
+Here you can see the `trace` property contains what would have been returned by the `getTrace()` method if we called it, this is what needs to changed to properly mock the exception trace. Let's write a simple test with a method handling the modification for us:
+
+```php
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Http\Firewall\AccessListener;
+
+class ThrowerCheckerTest extends TestCase
+{
+    public function testIfExceptionsThrownByFirewallAreDetected(): void
+    {
+        $exception = new AccessDeniedException;
+        // highlight-start
+        self::overrideExceptionTrace(
+            $exception,
+            [['class' => 'foo'],
+            ['class' => AccessListener::class], ['class' => 'bar']]
+        );
+        // highlight-end
+
+        $throwerChecker = new ThrowerChecker();
+        static::assertTrue($throwerChecker->isThrownByFirewall($exception));
+    }
+
+    /**
+     * Overrides an exception trace through reflection, since this
+     * cannot be done through mocking (getTrace is final).
+     *
+     * @param array<int, array<string, mixed>> $trace
+     */
+    private static function overrideExceptionTrace(
+        \Exception $exception,
+        array $trace
+    ): void {
+        // highlight-start
+        $exceptionReflection = new \ReflectionObject($exception);
+
+        // Find the parent root to be able to read the "trace" property
+        // because it's defined on the \Exception class
+        while ($exceptionReflection->getParentClass() !== false) {
+            $exceptionReflection = $exceptionReflection->getParentClass();
+        }
+
+        $traceReflection = $exceptionReflection->getProperty('trace');
+        $traceReflection->setAccessible(true);
+        $traceReflection->setValue($exception, $trace);
+        $traceReflection->setAccessible(false);
+        // highlight-end
+    }
+}
+```
+
+And that's it! We use a loop to find the reflection of the `Exception` class, then [we make the property accessible](https://www.php.net/manual/en/reflectionproperty.setaccessible.php), we rewrite it, and we make it private again.
+
+Note that this kind of mock should be an… _exception_ (I'm funny at parties)! This was done only to fix a bug in vendor code ; with proper software architecture this shouldn't happen.
