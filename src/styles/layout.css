@@ -47,6 +47,20 @@ pre[class*='language-'] {
     background: var(--color-bg-code);
 }
 
+.line-numbers-rows {
+    padding: 1em 0 1em 0.8em;
+}
+
+.gatsby-highlight-code-line {
+    display: block;
+    margin-right: -1em;
+    margin-left: -1em;
+    padding-right: 1em;
+    padding-left: 0.7em;
+    border-left: 0.3em solid var(--primary-500);
+    background-color: var(--color-bg-code-highlight);
+}
+
 :not(pre) > code[class*='language-'] {
     padding: 0.1em 0.25em;
     background: var(--color-bg-code);

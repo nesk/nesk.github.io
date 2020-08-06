@@ -10,16 +10,20 @@
 
     --grey-100-light: hsl(206, 10%, 95%);
     --grey-200-light: hsl(206, 10%, 91%);
+    --grey-250-light: hsl(206, 10%, 80%);
     --grey-300-light: hsl(206, 10%, 54%);
     --grey-400-light: hsl(206, 10%, 43%);
     --grey-600-light: hsl(206, 10%, 32%);
+    --grey-700-light: hsl(206, 10%, 23%);
     --grey-800-light: hsl(206, 10%, 15%);
 
     --grey-100-dark: hsl(206, 10%, 14.5%);
     --grey-200-dark: hsl(206, 10%, 19.5%);
+    --grey-250-dark: hsl(206, 10%, 24%);
     --grey-300-dark: hsl(206, 10%, 44%);
     --grey-400-dark: hsl(206, 10%, 57%);
     --grey-600-dark: hsl(206, 10%, 80%);
+    --grey-700-dark: hsl(206, 10%, 85%);
     --grey-800-dark: hsl(206, 10%, 90%);
 
     /** Primary colors */
@@ -49,9 +53,11 @@
     /** Semantic colors */
 
     --color-bg-code-light: var(--grey-800-light);
+    --color-bg-code-highlight-light: var(--grey-700-light);
     --color-aside-link-light: var(--primary-600-light);
 
     --color-bg-code-dark: var(--grey-200-dark);
+    --color-bg-code-highlight-dark: var(--grey-250-dark);
     --color-aside-link-dark: var(--primary-400-dark);
 }
 
@@ -60,9 +66,11 @@
     /** Grey colors */
     --grey-100: var(--grey-100-light);
     --grey-200: var(--grey-200-light);
+    --grey-250: var(--grey-250-light);
     --grey-300: var(--grey-300-light);
     --grey-400: var(--grey-400-light);
     --grey-600: var(--grey-600-light);
+    --grey-700: var(--grey-700-light);
     --grey-800: var(--grey-800-light);
 
     /** Primary colors */
@@ -78,6 +86,7 @@
 
     /** Semantic colors */
     --color-bg-code: var(--color-bg-code-light);
+    --color-bg-code-highlight: var(--color-bg-code-highlight-light);
     --color-aside-link: var(--color-aside-link-light);
 }
 
@@ -86,9 +95,11 @@
     /** Grey colors */
     --grey-100: var(--grey-100-light);
     --grey-200: var(--grey-200-light);
+    --grey-250: var(--grey-250-light);
     --grey-300: var(--grey-300-light);
     --grey-400: var(--grey-400-light);
     --grey-600: var(--grey-600-light);
+    --grey-700: var(--grey-700-light);
     --grey-800: var(--grey-800-light);
 
     /** Primary colors */
@@ -104,6 +115,7 @@
 
     /** Semantic colors */
     --color-bg-code: var(--color-bg-code-light);
+    --color-bg-code-highlight: var(--color-bg-code-highlight-light);
     --color-aside-link: var(--color-aside-link-light);
 }
 
@@ -113,9 +125,11 @@
         /** Grey colors */
         --grey-100: var(--grey-100-dark);
         --grey-200: var(--grey-200-dark);
+        --grey-250: var(--grey-250-dark);
         --grey-300: var(--grey-300-dark);
         --grey-400: var(--grey-400-dark);
         --grey-600: var(--grey-600-dark);
+        --grey-700: var(--grey-700-dark);
         --grey-800: var(--grey-800-dark);
 
         /** Primary colors */
@@ -131,6 +145,7 @@
 
         /** Semantic colors */
         --color-bg-code: var(--color-bg-code-dark);
+        --color-bg-code-highlight: var(--color-bg-code-highlight-dark);
         --color-aside-link: var(--color-aside-link-dark);
     }
 }
@@ -140,9 +155,11 @@
     /** Grey colors */
     --grey-100: var(--grey-100-dark);
     --grey-200: var(--grey-200-dark);
+    --grey-250: var(--grey-250-dark);
     --grey-300: var(--grey-300-dark);
     --grey-400: var(--grey-400-dark);
     --grey-600: var(--grey-600-dark);
+    --grey-700: var(--grey-700-dark);
     --grey-800: var(--grey-800-dark);
 
     /** Primary colors */
@@ -158,5 +175,6 @@
 
     /** Semantic colors */
     --color-bg-code: var(--color-bg-code-dark);
+    --color-bg-code-highlight: var(--color-bg-code-highlight-dark);
     --color-aside-link: var(--color-aside-link-dark);
 }
