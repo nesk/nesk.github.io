@@ -45,7 +45,7 @@
     "url-slug": "^2.3.2"
   },
   "devDependencies": {
-    "prettier": "2.0.5"
+    "prettier": "2.1.2"
   },
   "repository": {
     "type": "git",
