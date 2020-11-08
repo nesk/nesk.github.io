@@ -63,8 +63,7 @@ const DarkModeContainer = styled.div`
         transition: all ease 250ms;
     }
 
-    &:hover ${DarkModeTooltip},
-    &:focus ${DarkModeTooltip} {
+    &:hover ${DarkModeTooltip}, &:focus ${DarkModeTooltip} {
         opacity: 1;
     }
 `
