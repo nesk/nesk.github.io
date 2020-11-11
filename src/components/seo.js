@@ -61,8 +61,8 @@ export const SEO = ({
                 property="og:image"
                 content={`https://johann.pardanaud.com${image}`}
             />
-            <meta property="og:type" content={`website`} />
-            <meta name="twitter:card" content={`summary`} />
+            <meta property="og:type" content="website" />
+            <meta name="twitter:card" content="summary_large_image" />
             <meta
                 name="twitter:creator"
                 content={`@${site.siteMetadata.twitter}`}
