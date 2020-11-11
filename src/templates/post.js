@@ -18,6 +18,7 @@ import { Content } from '../components/content'
 import { SEO } from '../components/seo'
 import * as aside from '../components/aside'
 import { Caption } from '../components/caption'
+import { MaxWidth } from '../components/max-width'
 import { IconButton } from '../components/button'
 
 const Header = styled.header`
@@ -227,6 +228,7 @@ const components = {
     h5: (props) => <LinkableHeading tag="h6" {...props} />,
     ...aside,
     Caption,
+    MaxWidth,
 }
 
 export default ({ data }) => {
