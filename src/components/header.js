@@ -131,7 +131,7 @@ export const Header = ({ children, autoTopHeading = true }) => {
                         <NavLink
                             activeClassName="active"
                             partiallyActive
-                            to="/blog"
+                            to="/blog/"
                         >
                             Blog
                         </NavLink>

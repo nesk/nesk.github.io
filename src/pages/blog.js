@@ -32,7 +32,7 @@ export default ({ data }) => {
                 {posts.map((post) => (
                     <Post key={post.id}>
                         <Link
-                            to={`/blog/${post.frontmatter.slug}`}
+                            to={`/blog/${post.frontmatter.slug}/`}
                             className="link-invisible"
                         >
                             <h2>{post.frontmatter.title}</h2>
