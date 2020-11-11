@@ -302,7 +302,7 @@ export const query = graphql`
                             ...GatsbyImageSharpFixed
                         }
                         fluid(maxWidth: 2560) {
-                            ...GatsbyImageSharpFluid
+                            ...GatsbyImageSharpFluid_withWebp
                         }
                     }
                 }
