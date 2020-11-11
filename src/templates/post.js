@@ -238,7 +238,7 @@ export default ({ data }) => {
     const seo = (
         <SEO
             title={`${post.frontmatter.title} — Blog`}
-            image={featuredImage.src}
+            image={post.frontmatter.featuredImage.childImageSharp.fixed.src}
         />
     )
 
@@ -290,7 +290,7 @@ export default ({ data }) => {
 }
 
 export const query = graphql`
-    query PostQuery($slug: String!) {
+    query PostQuery($slug: String!, $cropFocus: ImageCropFocus!) {
         mdx(frontmatter: { slug: { eq: $slug } }) {
             frontmatter {
                 title
@@ -298,6 +298,9 @@ export const query = graphql`
                 formattedDate: date(formatString: "Do MMMM YYYY")
                 featuredImage {
                     childImageSharp {
+                        fixed(width: 1200, height: 630, cropFocus: $cropFocus) {
+                            ...GatsbyImageSharpFixed
+                        }
                         fluid(maxWidth: 2560) {
                             ...GatsbyImageSharpFluid
                         }

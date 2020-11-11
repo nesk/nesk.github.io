@@ -10,6 +10,7 @@ exports.createPages = async ({ graphql, actions }) => {
                     node {
                         frontmatter {
                             slug
+                            socialImageCrop
                         }
                     }
                 }
@@ -23,6 +24,7 @@ exports.createPages = async ({ graphql, actions }) => {
             component: path.resolve('./src/templates/post.js'),
             context: {
                 slug: node.frontmatter.slug,
+                cropFocus: node.frontmatter.socialImageCrop || 'ATTENTION',
             },
         })
     })
