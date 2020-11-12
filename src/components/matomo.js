@@ -6,6 +6,7 @@ import {
 
 const instance = createInstance({
     urlBase: 'https://s.pardanaud.com',
+    siteId: 1,
 })
 
 export const MatomoProvider = ({ children }) => (
