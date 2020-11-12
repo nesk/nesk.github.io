@@ -66,6 +66,7 @@ pre[class*='language-'] {
     padding: 0.1em 0.25em;
     background: var(--color-bg-code);
     overflow-wrap: break-word;
+    word-break: break-all;
 }
 
 a > code[class*='language-'] {

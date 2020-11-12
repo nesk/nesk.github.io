@@ -8,6 +8,8 @@ import { Content } from '../components/content'
 import { SEO } from '../components/seo'
 
 const Post = styled.article`
+    overflow-wrap: break-word;
+
     h2 {
         font-size: 2rem;
         letter-spacing: 0.02rem;
