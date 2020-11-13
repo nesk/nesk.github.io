@@ -8,10 +8,12 @@ import {
     faTwitter,
     faLinkedinIn,
 } from '@fortawesome/free-brands-svg-icons'
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
 import { SEO } from '../components/seo'
 import { IconButton } from '../components/button'
+import { useKonamiCode } from '../components/konami'
 
 const About = styled(Content)`
     max-width: min(300px, 100%);
@@ -89,56 +91,88 @@ const IconLink = (props) => <StyledIconLink {...props} as="a" />
 const Speech = styled.p`
     grid-area: speech;
     font-size: 1.2rem;
+    font-style: ${(props) => (props.as === 'blockquote' ? 'italic' : 'normal')};
 
     @media (min-width: 992px) {
         font-size: 1.4rem;
     }
 `
 
-export default ({ data }) => (
-    <Layout seo={<SEO title="About" />} centeredBody>
-        <About>
-            <Speech>
-                <em>I'm Johann Pardanaud</em>, developer at{' '}
-                <a href="https://batch.com">Batch</a>. I develop technical
-                solutions for back-end and front-end. I love the open source
-                philosophy and try to contribute whenever I have time (and
-                motivation 😅). Although my skills are mainly in web
-                development, I appreciate working sometimes with other
-                environments and new languages.
-            </Speech>
-
-            <Social>
-                <IconLink
-                    href="https://github.com/nesk/"
-                    title="See my Github account"
-                    aria-label="See my Github account"
-                >
-                    <FontAwesomeIcon icon={faGithub} />
-                </IconLink>
-                <IconLink
-                    href="https://twitter.com/johannpardanaud"
-                    title="See my Twitter account"
-                    aria-label="See my Twitter account"
-                >
-                    <FontAwesomeIcon icon={faTwitter} />
-                </IconLink>
-                <IconLink
-                    href="https://www.linkedin.com/in/johann-pardanaud/"
-                    title="See my LinkedIn account"
-                    aria-label="See my LinkedIn account"
-                >
-                    <FontAwesomeIcon icon={faLinkedinIn} />
-                </IconLink>
-            </Social>
-
-            <Avatar
-                fluid={data.file.childImageSharp.fluid}
-                alt="Johann Pardanaud's avatar"
-            ></Avatar>
-        </About>
-    </Layout>
+const OriginalSpeech = () => (
+    <Speech>
+        <em>I'm Johann Pardanaud</em>, developer at{' '}
+        <a href="https://batch.com">Batch</a>. I develop technical solutions for
+        back-end and front-end. I love the open source philosophy and try to
+        contribute whenever I have time (and motivation 😅). Although my skills
+        are mainly in web development, I appreciate working sometimes with other
+        environments and new languages.
+    </Speech>
 )
+
+const KonamiSpeech = () => (
+    <Speech
+        as="blockquote"
+        lang="fr"
+        cite="https://www.reddit.com/r/france/comments/g744c9/a/fofi03m/"
+    >
+        Loser gauchiste tendance new age qui raconte sa vie sur Twitter et
+        rempli son Github de scripts pourris.
+        <ExternalLink
+            href="https://www.reddit.com/r/france/comments/g744c9/a/fofi03m/"
+            title="See the Reddit comment"
+            target="_blank"
+        >
+            <FontAwesomeIcon icon={faExternalLinkAlt} />
+        </ExternalLink>
+    </Speech>
+)
+
+const ExternalLink = styled.a`
+    margin-left: 0.5em;
+    vertical-align: top;
+    font-size: 0.6em;
+`
+
+export default ({ data }) => {
+    const hasTriggeredKonamiCode = useKonamiCode()
+
+    return (
+        <Layout seo={<SEO title="About" />} centeredBody>
+            <About>
+                {hasTriggeredKonamiCode ? <KonamiSpeech /> : <OriginalSpeech />}
+
+                <Social>
+                    <IconLink
+                        href="https://github.com/nesk/"
+                        title="See my Github account"
+                        aria-label="See my Github account"
+                    >
+                        <FontAwesomeIcon icon={faGithub} />
+                    </IconLink>
+                    <IconLink
+                        href="https://twitter.com/johannpardanaud"
+                        title="See my Twitter account"
+                        aria-label="See my Twitter account"
+                    >
+                        <FontAwesomeIcon icon={faTwitter} />
+                    </IconLink>
+                    <IconLink
+                        href="https://www.linkedin.com/in/johann-pardanaud/"
+                        title="See my LinkedIn account"
+                        aria-label="See my LinkedIn account"
+                    >
+                        <FontAwesomeIcon icon={faLinkedinIn} />
+                    </IconLink>
+                </Social>
+
+                <Avatar
+                    fluid={data.file.childImageSharp.fluid}
+                    alt="Johann Pardanaud's avatar"
+                ></Avatar>
+            </About>
+        </Layout>
+    )
+}
 
 export const query = graphql`
     query AboutQuery {
