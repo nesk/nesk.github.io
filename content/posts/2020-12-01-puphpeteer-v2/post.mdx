@@ -1,0 +1,42 @@
+---
+title: PuPHPeteer is back!
+date: 2020-12-01
+slug: puphpeteer-is-back
+featuredImage: images/featured.webp
+---
+
+In 2018, I started my own company to create **extractr.io**, a product to allow non-technical users to scrap data from
+any website. During that year, I realized I was _way more_ interested in the technical part of my job than in the entrepreneurial one, which led me to stop my company and join [Batch](https://batch.com/fr).
+
+However, something emerged from the hashes of the initial product, it was [PuPHPeteer](https://github.com/rialto-php/puphpeteer)! When I was working on **extractr.io** I needed to use [Puppeteer](https://pptr.dev/)—see the difference?—to extract the data, so I created a bridge to use the Node.js library within PHP code. Under the hood, it uses [Rialto](https://github.com/rialto-php/rialto) framework, which I've created specially for this task.
+
+# The downfall
+
+I've worked several months on the repository after the shutdown of my company. PuPHPeteer was my most popular open source project ever created so I didn't want to let it go. But working alone on a project you're not using anymore is a real pain… And contributions were rare because most people do not know how the internals work.
+
+The inevitable happened: I lost my motivation and stopped working on the project. After several months without doing anything, I wrote that I was searching for a new maintainer, because I didn't want to see the project die when it was easily gaining [stars](https://star-history.t9t.io/#rialto-php/puphpeteer) and [installs](https://packagist.org/packages/nesk/puphpeteer/stats).
+
+# _Guess who's back_ 🎶
+
+Good news finally happened! [Peter](https://github.com/spekulatius) reached me in September to know if it was still possible to become maintainer of PuPHPeteer. He's developing [his own PHP library](https://phpscraper.de/) to scrap data from websites and wants to use PuPHPeteer for some uses cases involving JavaScript execution. After some discussions, I've finally grant him the maintainer status, welcome Peter!
+
+However, Peter also brought some motivation with him! So I'm happy to announce I'm _still_ a maintainer and we are now two developers working on the project. 🥳 I moved the PuPHPeteer and Rialto repositories [to a new organization](https://github.com/rialto-php) to reflect the fact that I'm not alone anymore.
+
+So, after weeks of work, Peter and me are thrilled to announce that PuPHPeteer v2 is available right now! 🎉
+
+This version brings the following changes:
+
+- The underlying Puppeteer version is updated from v1.18 to v5.5 (the latest version available when writing those words).
+- PHP 8 is officially supported.
+- A tremendous amount of work was done to provide autocompletion in your IDE. Thanks to [Erik for his initial contribution](https://github.com/rialto-php/puphpeteer/pull/38). 🙇‍♂️
+
+# What's next
+
+Now that we've caught up with missing features, it's time to stabilize everything. Here are the main next goals:
+
+- Improve the documentation for users: some people do not know how to adapt their JavaScript code to the PHP API, we should help them and provide more examples.
+- Improve the documentation for contributions: nobody knows how Rialto works 😅, we should document the underlying architecture to ease future contributions.
+- Provide a safe environment: there are already some [Docker](https://github.com/ivastly/docker-puphpeteer) [images](https://github.com/issacg/docker-pupheteer) available to run PuPHPeteer. But we will probably provide [our own official image](https://github.com/rialto-php/puphpeteer/issues/118) to ease development and deployments for our users.
+- Improve the stability: multiple users have been reporting various instabilities occuring within the communication between the PHP and Node process. We have some ideas to vastly improve this part and make everything more stable.
+
+Don't forget: your help is **welcome** if you want to contribute, provide reproducible examples for some complex issues, or sponsor one of us on Github: [Johann (me)](https://github.com/sponsors/nesk), [Peter](https://github.com/sponsors/spekulatius). Thank you.
