@@ -290,7 +290,11 @@ export default ({ data }) => {
 }
 
 export const query = graphql`
-    query PostQuery($slug: String!, $cropFocus: ImageCropFocus!) {
+    query PostQuery(
+        $slug: String!
+        $cropFocus: ImageCropFocus!
+        $quality: Int!
+    ) {
         mdx(frontmatter: { slug: { eq: $slug } }) {
             frontmatter {
                 title
@@ -301,7 +305,7 @@ export const query = graphql`
                         fixed(width: 1200, height: 630, cropFocus: $cropFocus) {
                             ...GatsbyImageSharpFixed
                         }
-                        fluid(maxWidth: 2560) {
+                        fluid(maxWidth: 2560, quality: $quality) {
                             ...GatsbyImageSharpFluid_withWebp
                         }
                     }

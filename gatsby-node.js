@@ -11,6 +11,7 @@ exports.createPages = async ({ graphql, actions }) => {
                         frontmatter {
                             slug
                             socialImageCrop
+                            featuredImageQuality
                         }
                     }
                 }
@@ -25,6 +26,7 @@ exports.createPages = async ({ graphql, actions }) => {
             context: {
                 slug: node.frontmatter.slug,
                 cropFocus: node.frontmatter.socialImageCrop || 'ATTENTION',
+                quality: node.frontmatter.featuredImageQuality || 80,
             },
         })
     })
