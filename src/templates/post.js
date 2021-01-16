@@ -16,6 +16,7 @@ import {
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
 import { SEO } from '../components/seo'
+import { useMatomo } from '@datapunt/matomo-tracker-react'
 import * as aside from '../components/aside'
 import { Caption } from '../components/caption'
 import { MaxWidth } from '../components/max-width'
@@ -80,11 +81,24 @@ const useIsClient = () => {
 }
 
 const ShareButton = ({ name, icon, urlTemplate }) => {
+    const { trackEvent } = useMatomo()
     const isClient = useIsClient()
     const title = `Share on ${name}`
     const location = typeof window !== 'undefined' ? window.location : {}
     const sharedUrl = encodeURIComponent(location.href)
     const url = urlTemplate.replace('{url}', sharedUrl)
+
+    const openSharePopup = (event) => {
+        event.preventDefault()
+
+        trackEvent({
+            category: 'Share',
+            action: 'Click Share Button',
+            name,
+        })
+
+        window.open(url, title, 'width=500,height=500')
+    }
 
     return (
         <StyledShareButton
@@ -95,10 +109,7 @@ const ShareButton = ({ name, icon, urlTemplate }) => {
             rel="noopener noreferrer"
             title={title}
             aria-label={title}
-            onClick={(event) => {
-                event.preventDefault()
-                window.open(url, title, 'width=500,height=500')
-            }}
+            onClick={openSharePopup}
         >
             <FontAwesomeIcon icon={icon} fixedWidth />
         </StyledShareButton>
