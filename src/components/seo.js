@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { useStaticQuery, graphql } from 'gatsby'
+import { useMatomo } from '@datapunt/matomo-tracker-react'
 
 export const SEO = ({
     title,
@@ -9,6 +10,11 @@ export const SEO = ({
     lang = 'en',
     meta = [],
 }) => {
+    const { trackPageView } = useMatomo()
+    useEffect(() => {
+        trackPageView({ documentTitle: title || '[[UNKNOWN]]' })
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
     const { site } = useStaticQuery(
         graphql`
             query SeoQuery {
