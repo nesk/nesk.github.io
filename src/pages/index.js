@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { graphql } from 'gatsby'
 import Img from 'gatsby-image'
@@ -12,6 +12,7 @@ import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
 import { SEO } from '../components/seo'
+import { useMatomo } from '@datapunt/matomo-tracker-react'
 import { IconButton } from '../components/button'
 import { useKonamiCode } from '../components/konami'
 
@@ -109,23 +110,34 @@ const OriginalSpeech = () => (
     </Speech>
 )
 
-const KonamiSpeech = () => (
-    <Speech
-        as="blockquote"
-        lang="fr"
-        cite="https://www.reddit.com/r/france/comments/g744c9/a/fofi03m/"
-    >
-        Loser gauchiste tendance new age qui raconte sa vie sur Twitter et
-        rempli son Github de scripts pourris.
-        <ExternalLink
-            href="https://www.reddit.com/r/france/comments/g744c9/a/fofi03m/"
-            title="See the Reddit comment"
-            target="_blank"
+const KonamiSpeech = () => {
+    const { trackEvent } = useMatomo()
+    useEffect(() => {
+        trackEvent({
+            category: 'Konami Code',
+            action: 'Finish Full Sequence',
+            name: 'Reddit quote',
+        })
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+    return (
+        <Speech
+            as="blockquote"
+            lang="fr"
+            cite="https://www.reddit.com/r/france/comments/g744c9/a/fofi03m/"
         >
-            <FontAwesomeIcon icon={faExternalLinkAlt} />
-        </ExternalLink>
-    </Speech>
-)
+            Loser gauchiste tendance new age qui raconte sa vie sur Twitter et
+            rempli son Github de scripts pourris.
+            <ExternalLink
+                href="https://www.reddit.com/r/france/comments/g744c9/a/fofi03m/"
+                title="See the Reddit comment"
+                target="_blank"
+            >
+                <FontAwesomeIcon icon={faExternalLinkAlt} />
+            </ExternalLink>
+        </Speech>
+    )
+}
 
 const ExternalLink = styled.a`
     margin-left: 0.5em;
