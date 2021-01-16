@@ -39,7 +39,7 @@
     "gatsby-transformer-sharp": "^2.9.0",
     "prismjs": "^1.22.0",
     "react": "^16.14.0",
-    "react-children-utilities": "^2.2.1",
+    "react-children-utilities": "^2.2.2",
     "react-dom": "^16.14.0",
     "react-helmet": "^6.1.0",
     "react-responsive": "^8.2.0",
