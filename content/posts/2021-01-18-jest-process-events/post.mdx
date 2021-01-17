@@ -1,0 +1,163 @@
+---
+title: How to assert process events with Jest
+date: 2021-01-18
+slug: how-to-assert-unhandled-rejection-and-uncaught-exception-with-jest
+featuredImage: images/featured.webp # https://unsplash.com/photos/0SMnZekfR5k
+---
+
+I'm not a long-time user of Jest, I've always used it sporadically. But lately I've being coding more frequently with it and wrote more advanced use cases.
+
+One of the "advanced" use cases is to assert if an exception is properly thrown inside a `setTimeout` callback, here's a simple example with a function to limit the execution time of our Node process:
+
+```js
+function setMaximumExecutionTimeForNode(maxTime) {
+    setTimeout(() => {
+        throw new Error('Maximum execution time has been reached.')
+    }, maxTime)
+}
+```
+
+<Note>
+
+In this blog post, I'm mainly talking about the `uncaughtException` event, however everything I explain here can also be applied to the `unhandledRejection` one. I provide an example at the end.
+
+</Note>
+
+My first solution was to add a listener on the `uncaughtException` of the `process` variable and wait for it to be triggered:
+
+```js
+test('exception is thrown when maximum execution time is reached', async () => {
+    // Resolve the promise once the error as been caught by the listener
+    const uncaughtErrorPromise = new Promise((resolve) => {
+        process.on('uncaughtException', resolve)
+    })
+
+    // Set our maximum execution time to 0 to trigger as soon as possible
+    setMaximumExecutionTimeForNode(0)
+
+    // Expect our promise to resolve with the error
+    await expect(uncaughtErrorPromise).resolves.toBeInstanceOf(Error)
+})
+```
+
+Unfortunately, this doesn't work out of the box, you are told an uncaught exception occured but you are unable to intercept it.
+
+<MaxWidth max={632}>
+
+![Jest output showing our test failed with an uncaught exception](images/jest-error.webp)
+
+</MaxWidth>
+
+This happens because [Jest mocks the `process` variable](https://github.com/facebook/jest/blob/f0dc9932cba828a1c51ef842c00c1ca51b7f2796/packages/jest-util/src/installCommonGlobals.ts#L19)! When you call `process.on()`, you add your listener to an `EventEmitter` which is not the original one and which will never be called when an uncaught exception occurs.
+
+This is not something expected by Jest users and [it brings problems for everyone](https://github.com/facebook/jest/issues/5620). To fix this, we need to add our listener on the original process instance. But the real issue here is that **Jest doesn't provide any API to retrieve the original global objects it mocks**.
+
+A solution is to store the original process instance somewhere before Jest starts, we can do this by creating a bootstrap file:
+
+```js
+#!/usr/bin/env node
+
+// Pass the original process to a closure stored in the `process._original` property.
+// Use a closure to ensure the stored value will not change when running tests.
+process._original = (function (_original) {
+  return function () {
+    return _original
+  }
+})(process)
+
+// Run Jest
+require('jest/bin/jest')
+```
+
+Now, instead of running the `jest` command, we can make our file executable with `chmod +x .bin/jest` and run it directly in our terminal by typing `.bin/jest`. If you use NPM to run your tests, simply replace the jest command with the bootstrap file:
+
+```json
+{
+  "scripts": {
+    // highlight-next-line
+    "test": ".bin/jest"
+  }
+}
+```
+
+Finally, we can replace our usage of `process` by `process._original()`:
+
+```js
+test('exception is thrown when maximum execution time is reached', async () => {
+    // Resolve the promise once the error as been caught by the listener
+    const uncaughtErrorPromise = new Promise((resolve) => {
+        // highlight-next-line
+        process._original().on('uncaughtException', resolve)
+    })
+
+    // Set our maximum execution time to 0 to trigger as soon as possible
+    setMaximumExecutionTimeForNode(0)
+
+    // Expect our promise to resolve with the error
+    await expect(uncaughtErrorPromise).resolves.toBeInstanceOf(Error)
+})
+```
+
+However, when you run Jest, you can see the test fails in the same way as on our first try, [because Jest registers its own listeners](https://github.com/facebook/jest/blob/f0dc9932cba828a1c51ef842c00c1ca51b7f2796/packages/jest-circus/src/globalErrorHandlers.ts#L23-L24). To fix that you have to remove the listeners before running your test and restore them right after:
+
+```js
+// Store the original listeners in an object containing
+// an array for each event we need to alter
+const originalJestListeners = {
+    uncaughtException: [],
+    unhandledRejection: [],
+}
+
+// For each event, we retrieve the registered listeners, store them
+// in our global object and remove them from the event emitter.
+beforeEach(() => {
+    const originalProcess = process._original()
+    Object.keys(originalJestListeners).forEach((event) => {
+        originalProcess.listeners(event).forEach((listener) => {
+            originalJestListeners[event].push(listener)
+            originalProcess.off(event, listener)
+        })
+    })
+})
+
+// For each event, we retrieve the listeners stored in the global object
+// and we register them on the event emitter.
+afterEach(() => {
+    let listener
+    Object.keys(originalJestListeners).forEach((event) => {
+        while ((listener = originalJestListeners[event].pop()) !== undefined) {
+            process._original().on(event, listener)
+        }
+    })
+})
+```
+
+Now our test succeeds! 🎉
+
+<MaxWidth max={600}>
+
+![Jest output showing our test has succeeded](images/jest-success.webp)
+
+</MaxWidth>
+
+<Warning>
+
+Never remove the default listeners in a _classic_ test, you will break the output in case of an unhandled rejection, and the tests will stop in case of an uncaught exception.
+
+</Warning>
+
+In case you were wandering how to assert if a promise rejection was unhandled, it's pretty much the same:
+
+```js
+test('promise is rejected', async () => {
+  const unhandledRejectionPromise = new Promise((resolve) => {
+    process._original().on('unhandledRejection', resolve)
+  })
+
+  Promise.reject('test')
+
+  await expect(unhandledRejectionPromise).resolves.toBe('test')
+})
+```
+
+That's it, we're now able to assert if an exception was uncaught or if a promise rejection was unhandled. We're not using any public API so we must be careful because this is an undocumented area, however I don't think this will easily break since we're not removing or disabling the mocks.
