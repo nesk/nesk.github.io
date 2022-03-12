@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet'
 import { useStaticQuery, graphql } from 'gatsby'
 import { useMatomo } from '@datapunt/matomo-tracker-react'
 
-export const SEO = ({
+export const Seo = ({
     title,
     description,
     image = null,

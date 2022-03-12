@@ -11,7 +11,7 @@ import {
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
-import { SEO } from '../components/seo'
+import { Seo } from '../components/seo'
 import { useMatomo } from '@datapunt/matomo-tracker-react'
 import { IconButton } from '../components/button'
 import { useKonamiCode } from '../components/konami'
@@ -145,11 +145,11 @@ const ExternalLink = styled.a`
     font-size: 0.6em;
 `
 
-export default ({ data }) => {
+const IndexPage = ({ data }) => {
     const hasTriggeredKonamiCode = useKonamiCode()
 
     return (
-        <Layout seo={<SEO title="About" />} centeredBody>
+        <Layout seo={<Seo title="About" />} centeredBody>
             <About>
                 {hasTriggeredKonamiCode ? <KonamiSpeech /> : <OriginalSpeech />}
 
@@ -185,6 +185,7 @@ export default ({ data }) => {
         </Layout>
     )
 }
+export default IndexPage
 
 export const query = graphql`
     query AboutQuery {

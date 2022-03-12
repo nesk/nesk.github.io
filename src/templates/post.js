@@ -15,7 +15,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
-import { SEO } from '../components/seo'
+import { Seo } from '../components/seo'
 import { useMatomo } from '@datapunt/matomo-tracker-react'
 import * as aside from '../components/aside'
 import { Caption } from '../components/caption'
@@ -242,12 +242,12 @@ const components = {
     MaxWidth,
 }
 
-export default ({ data }) => {
+const PostTemplate = ({ data }) => {
     const post = data.mdx
     const featuredImage = post.frontmatter.featuredImage.childImageSharp.fluid
 
     const seo = (
-        <SEO
+        <Seo
             title={`${post.frontmatter.title} — Blog`}
             image={post.frontmatter.featuredImage.childImageSharp.fixed.src}
         />
@@ -299,6 +299,7 @@ export default ({ data }) => {
         </Layout>
     )
 }
+export default PostTemplate
 
 export const query = graphql`
     query PostQuery(

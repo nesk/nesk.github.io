@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { SEO } from './seo'
+import { Seo } from './seo'
 import { useMatomo } from '@datapunt/matomo-tracker-react'
 import { MatomoProvider } from './matomo'
 import { Header } from './header'
@@ -50,7 +50,7 @@ export const Layout = ({
     centeredBody = false,
 }) => (
     <MatomoProvider>
-        {seo || <SEO />}
+        {seo || <Seo />}
         <Container>
             <Header autoTopHeading={autoTopHeading}>
                 <DarkModeSwitch />

@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLongArrowAltRight } from '@fortawesome/free-solid-svg-icons'
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
-import { SEO } from '../components/seo'
+import { Seo } from '../components/seo'
 
 const Post = styled.article`
     overflow-wrap: break-word;
@@ -26,10 +26,10 @@ const ReadMore = styled.span`
     }
 `
 
-export default ({ data }) => {
+const BlogPage = ({ data }) => {
     const posts = data.allMdx.edges.map(({ node }) => node)
     return (
-        <Layout seo={<SEO title="Blog" />}>
+        <Layout seo={<Seo title="Blog" />}>
             <Content>
                 {posts.map((post) => (
                     <Post key={post.id}>
@@ -50,6 +50,7 @@ export default ({ data }) => {
         </Layout>
     )
 }
+export default BlogPage
 
 export const query = graphql`
     query BlogQuery {

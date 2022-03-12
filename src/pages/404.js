@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Layout } from '../components/layout'
 import { Content } from '../components/content'
-import { SEO } from '../components/seo'
+import { Seo } from '../components/seo'
 
 const StatusContent = styled(Content)`
     text-align: center;
@@ -15,9 +15,9 @@ const StatusCode = styled.p`
     color: var(--grey-300);
 `
 
-export default () => {
+const NotFoundPage = () => {
     return (
-        <Layout seo={<SEO title="Not Found" />}>
+        <Layout seo={<Seo title="Not Found" />}>
             <StatusContent>
                 <StatusCode>404</StatusCode>
                 <p>Not Found</p>
@@ -25,3 +25,4 @@ export default () => {
         </Layout>
     )
 }
+export default NotFoundPage
