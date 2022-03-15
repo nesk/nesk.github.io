@@ -1,0 +1,62 @@
+{
+    "Note": {
+        "scope": "markdown,mdx,jsx",
+        "prefix": "note",
+        "body": [
+            "",
+            "<Note>",
+            "",
+            "${TM_SELECTED_TEXT:${1:content}}",
+            "",
+            "</Note>",
+            "",
+            "$0"
+        ],
+        "description": "Add a note"
+    },
+    "Warning": {
+        "scope": "markdown,mdx,jsx",
+        "prefix": "warning",
+        "body": [
+            "",
+            "<Warning>",
+            "",
+            "${TM_SELECTED_TEXT:${1:content}}",
+            "",
+            "</Warning>",
+            "",
+            "$0"
+        ],
+        "description": "Add a warning"
+    },
+    "Caption": {
+        "scope": "markdown,mdx,jsx",
+        "prefix": "caption",
+        "body": [
+            "",
+            "<Caption text=\"${2:caption text}\">",
+            "",
+            "${TM_SELECTED_TEXT:${1:figure}}",
+            "",
+            "</Caption>",
+            "",
+            "$0"
+        ],
+        "description": "Add a caption to some figure"
+    },
+    "MaxWidth": {
+        "scope": "markdown,mdx,jsx",
+        "prefix": "maxwidth",
+        "body": [
+            "",
+            "<MaxWidth max={$2}>",
+            "",
+            "${TM_SELECTED_TEXT:${1:content}}",
+            "",
+            "</Caption>",
+            "",
+            "$0"
+        ],
+        "description": "Add a maximum width to some content"
+    }
+}
