@@ -63,14 +63,16 @@ pre[class*='language-'] {
 }
 
 :not(pre) > code[class*='language-'] {
+    border: 1px solid var(--color-border-code-inline);
     padding: 0.1em 0.25em;
-    background: var(--color-bg-code);
+    background: var(--color-bg-code-inline);
     overflow-wrap: break-word;
     word-break: break-all;
+    color: var(--grey-600);
 }
 
 a > code[class*='language-'] {
-    color: var(--primary-500-dark);
+    color: var(--primary-500);
     text-decoration: none;
 }
 
