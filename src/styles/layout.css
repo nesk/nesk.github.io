@@ -37,15 +37,21 @@ a:focus .sublink,
     color: inherit;
 }
 
-code[class*='language-'],
-pre[class*='language-'] {
+code,
+pre {
     font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
     font-size: 0.9rem;
 }
 
-pre[class*='language-'] {
+pre,
+pre.grvsc-container {
     margin: 0;
     background: var(--color-bg-code);
+    line-height: 1.38rem;
+}
+
+pre > code {
+    min-width: 100%;
 }
 
 .line-numbers-rows {
@@ -62,8 +68,9 @@ pre[class*='language-'] {
     background-color: var(--color-bg-code-highlight);
 }
 
-:not(pre) > code[class*='language-'] {
+:not(pre) > code {
     border: 1px solid var(--color-border-code-inline);
+    border-radius: 0.3em;
     padding: 0.1em 0.25em;
     background: var(--color-bg-code-inline);
     overflow-wrap: break-word;
@@ -71,7 +78,7 @@ pre[class*='language-'] {
     color: var(--grey-600);
 }
 
-a > code[class*='language-'] {
+a > code {
     color: var(--primary-500);
     text-decoration: none;
 }

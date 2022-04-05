@@ -58,7 +58,7 @@ Now that your database is created and stored in the assets, we can write the log
 
 First, create a simple database helper just like explained [in Android's documentation](https://developer.android.com/training/data-storage/sqlite):
 
-```kt
+```kotlin
 package com.example.example
 
 import android.content.Context
@@ -89,7 +89,7 @@ Since the database structure is already defined by the SQLite file stored in the
 
 Now we need to copy our database from the assets to the final directory, here's how:
 
-```kt
+```kotlin
 package com.example.example
 
 // ...
@@ -144,7 +144,7 @@ The `installDatabaseFromAssets` method:
 
 Before installing/updating our database, we must check if it is already installed and up to date. This can be done through [`SharedPreferences`](https://developer.android.com/training/data-storage/shared-preferences):
 
-```kt
+```kotlin
 package com.example.example
 
 // ...
@@ -206,7 +206,7 @@ The perfect moment to run our install/update workflow is when you try to read yo
 
 Since you will have to use these two methods in a background thread anyway, adding a bit of workload to the `getReadableDatabase` method shouldn't be an issue:
 
-```kt
+```kotlin
 package com.example.example
 
 // ...
@@ -282,7 +282,7 @@ If you really need to write data in your imported database, use the `installOrUp
 
 Finally, here's the whole code in one piece with a (very) simple use case:
 
-```kt
+```kotlin
 package com.example.example
 
 import android.os.Bundle
@@ -301,7 +301,7 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-```kt
+```kotlin
 package com.example.example
 
 import android.content.Context

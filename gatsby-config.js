@@ -40,10 +40,13 @@ module.exports = {
                         },
                     },
                     {
-                        resolve: `gatsby-remark-prismjs`,
+                        resolve: `gatsby-remark-vscode`,
                         options: {
-                            classPrefix: 'focusable language-',
-                            aliases: { kt: 'kotlin', sh: 'bash' },
+                            theme: 'One Dark Pro',
+                            extensions: ['material-theme', 'Kotlin'],
+                            languageAliases: {
+                                kotlin: 'kotlinscript',
+                            },
                         },
                     },
                 ],

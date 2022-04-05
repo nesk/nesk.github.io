@@ -55,14 +55,20 @@
     --color-bg-code-light: var(--grey-800-light);
     --color-bg-code-inline-light: white;
     --color-border-code-inline-light: var(--grey-200-light);
-    --color-bg-code-highlight-light: var(--grey-700-light);
     --color-aside-link-light: var(--primary-600-light);
 
     --color-bg-code-dark: var(--grey-200-dark);
     --color-bg-code-inline-dark: var(--grey-200-dark);
     --color-border-code-inline-dark: var(--grey-250-dark);
-    --color-bg-code-highlight-dark: var(--grey-250-dark);
     --color-aside-link-dark: var(--primary-400-dark);
+
+    /** gatsby-remark-vscode */
+
+    --grvsc-border-radius: 0.32rem;
+    --grvsc-padding-v: 1em;
+    --grvsc-padding-h: 1.4em;
+    --grvsc-line-highlighted-border-width: 0.3em;
+    --grvsc-line-highlighted-border-color: var(--primary-500-dark);
 }
 
 /** Light theme */
@@ -94,6 +100,9 @@
     --color-border-code-inline: var(--color-border-code-inline-light);
     --color-bg-code-highlight: var(--color-bg-code-highlight-light);
     --color-aside-link: var(--color-aside-link-light);
+
+    /** gatsby-remark-vscode */
+    --grvsc-line-highlighted-background-color: var(--grey-700-light);
 }
 
 /** Forced light theme */
@@ -125,6 +134,9 @@
     --color-border-code-inline: var(--color-border-code-inline-light);
     --color-bg-code-highlight: var(--color-bg-code-highlight-light);
     --color-aside-link: var(--color-aside-link-light);
+
+    /** gatsby-remark-vscode */
+    --grvsc-line-highlighted-background-color: var(--grey-700-light);
 }
 
 /** Dark theme */
@@ -157,6 +169,9 @@
         --color-border-code-inline: var(--color-border-code-inline-dark);
         --color-bg-code-highlight: var(--color-bg-code-highlight-dark);
         --color-aside-link: var(--color-aside-link-dark);
+
+        /** gatsby-remark-vscode */
+        --grvsc-line-highlighted-background-color: var(--grey-250-dark);
     }
 }
 
@@ -189,4 +204,7 @@
     --color-border-code-inline: var(--color-border-code-inline-dark);
     --color-bg-code-highlight: var(--color-bg-code-highlight-dark);
     --color-aside-link: var(--color-aside-link-dark);
+
+    /** gatsby-remark-vscode */
+    --grvsc-line-highlighted-background-color: var(--grey-250-dark);
 }
