@@ -17,9 +17,9 @@ import { Layout } from '../components/layout'
 import { Content } from '../components/content'
 import { Seo } from '../components/seo'
 import { useMatomo } from '@datapunt/matomo-tracker-react'
-import * as aside from '../components/aside'
-import { Caption } from '../components/caption'
-import { MaxWidth } from '../components/max-width'
+import * as aside from '../components/mdx/aside'
+import { Caption } from '../components/mdx/caption'
+import { MaxWidth } from '../components/mdx/max-width'
 import { IconButton } from '../components/button'
 
 const Header = styled.header`
