@@ -43,6 +43,7 @@ module.exports = {
                         resolve: `gatsby-remark-vscode`,
                         options: {
                             theme: 'One Dark Pro',
+                            injectStyles: false,
                             extensions: ['material-theme', 'Kotlin'],
                             languageAliases: {
                                 kotlin: 'kotlinscript',
