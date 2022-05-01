@@ -65,9 +65,9 @@
     /** gatsby-remark-vscode */
 
     --grvsc-border-radius: 0.32rem;
-    --grvsc-padding-v: 1em;
-    --grvsc-padding-h: 1.4em;
-    --grvsc-line-highlighted-border-width: 0.3em;
+    --grvsc-padding-v: 1rem;
+    --grvsc-padding-h: 1.3rem;
+    --grvsc-line-highlighted-border-width: 0.28rem;
     --grvsc-line-highlighted-border-color: var(--primary-500-dark);
 }
 

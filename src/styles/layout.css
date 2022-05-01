@@ -54,20 +54,6 @@ pre > code {
     min-width: 100%;
 }
 
-.line-numbers-rows {
-    padding: 1em 0 1em 0.8em;
-}
-
-.gatsby-highlight-code-line {
-    display: block;
-    margin-right: -1em;
-    margin-left: -1em;
-    padding-right: 1em;
-    padding-left: 0.7em;
-    border-left: 0.3em solid var(--primary-500);
-    background-color: var(--color-bg-code-highlight);
-}
-
 :not(pre) > code {
     border: 1px solid var(--color-border-code-inline);
     border-radius: 0.3em;
@@ -81,6 +67,23 @@ pre > code {
 a > code {
     color: var(--primary-500);
     text-decoration: none;
+}
+
+/*
+    Due to rendering issues in Safari iOS, we change the way highlighted lines work and stop using a pseudo element
+    because it is misplaced on this browser. Instead we remove the pseudo element and apply the background and
+    box-shadow on its parent. It might break some features like line numbers, but we don't use them anyway.
+
+    The rendering in Safari iOS is still not perfect because the box-shadow is not visible, but at least the background
+    is visible and properly positioned.
+*/
+.grvsc-line.grvsc-line-highlighted {
+    background-color: var(--grvsc-line-highlighted-background-color);
+    box-shadow: inset var(--grvsc-line-highlighted-border-width) 0 0 0
+        var(--grvsc-line-highlighted-border-color);
+}
+.grvsc-has-line-highlighting > .grvsc-code > .grvsc-line::before {
+    content: none;
 }
 
 /* A class to display some content to screen readers only */
@@ -108,5 +111,5 @@ a > code {
     display: var(--fa-display, inline-block);
     height: 1em;
     overflow: visible;
-    vertical-align: -.125em;
+    vertical-align: -0.125em;
 }
