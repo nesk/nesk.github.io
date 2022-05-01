@@ -55,11 +55,13 @@
     --color-bg-code-light: var(--grey-800-light);
     --color-bg-code-inline-light: white;
     --color-border-code-inline-light: var(--grey-200-light);
+    --color-bg-code-fold-light: var(--grey-100-light);
     --color-aside-link-light: var(--primary-600-light);
 
     --color-bg-code-dark: var(--grey-200-dark);
     --color-bg-code-inline-dark: var(--grey-200-dark);
     --color-border-code-inline-dark: var(--grey-250-dark);
+    --color-bg-code-fold-dark: var(--grey-600-dark);
     --color-aside-link-dark: var(--primary-400-dark);
 
     /** gatsby-remark-vscode */
@@ -98,6 +100,7 @@
     --color-bg-code: var(--color-bg-code-light);
     --color-bg-code-inline: var(--color-bg-code-inline-light);
     --color-border-code-inline: var(--color-border-code-inline-light);
+    --color-bg-code-fold: var(--color-bg-code-fold-light);
     --color-aside-link: var(--color-aside-link-light);
 
     /** gatsby-remark-vscode */
@@ -131,6 +134,7 @@
     --color-bg-code: var(--color-bg-code-light);
     --color-bg-code-inline: var(--color-bg-code-inline-light);
     --color-border-code-inline: var(--color-border-code-inline-light);
+    --color-bg-code-fold: var(--color-bg-code-fold-light);
     --color-aside-link: var(--color-aside-link-light);
 
     /** gatsby-remark-vscode */
@@ -165,6 +169,7 @@
         --color-bg-code: var(--color-bg-code-dark);
         --color-bg-code-inline: var(--color-bg-code-inline-dark);
         --color-border-code-inline: var(--color-border-code-inline-dark);
+        --color-bg-code-fold: var(--color-bg-code-fold-dark);
         --color-aside-link: var(--color-aside-link-dark);
 
         /** gatsby-remark-vscode */
@@ -199,6 +204,7 @@
     --color-bg-code: var(--color-bg-code-dark);
     --color-bg-code-inline: var(--color-bg-code-inline-dark);
     --color-border-code-inline: var(--color-border-code-inline-dark);
+    --color-bg-code-fold: var(--color-bg-code-fold-dark);
     --color-aside-link: var(--color-aside-link-dark);
 
     /** gatsby-remark-vscode */

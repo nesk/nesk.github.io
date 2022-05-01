@@ -21,6 +21,21 @@
         ],
         "description": "Wrap content in tabs"
     },
+    "Code Folding": {
+        "scope": "markdown,mdx,jsx",
+        "prefix": "fold",
+        "body": [
+            "",
+            "<CodeFold>",
+            "",
+            "${TM_SELECTED_TEXT:${1:Code folding content}}",
+            "",
+            "</CodeFold>",
+            "",
+            "$0"
+        ],
+        "description": "Hide highlighted lines and allow the user to display them"
+    },
     "Note": {
         "scope": "markdown,mdx,jsx",
         "prefix": "note",
