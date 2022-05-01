@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     faInfoCircle,
@@ -28,19 +28,14 @@ const withoutInlineContent = (WrappedComponent) => {
     return WithoutInlineContent
 }
 
-const asideCss = css`
+const Aside = styled.aside`
     display: flex;
     align-items: center;
+    gap: var(--content-spacing);
     margin-bottom: 1.5rem;
     border-left: 4px solid;
     padding: 0.6rem 1rem;
     line-height: 1.6;
-
-    svg {
-        flex: 0 0 auto;
-        margin-right: var(--content-spacing);
-        font-size: 2rem;
-    }
 
     /* Slight color variations for links, to improve contrasts. */
     a,
@@ -49,32 +44,39 @@ const asideCss = css`
     }
 `
 
-const StyledNote = styled.aside`
-    ${asideCss}
+const AsideIcon = styled(FontAwesomeIcon)`
+    flex: 0 0 auto;
+    font-size: 2rem;
+`
+
+const AsideContent = styled.div`
+    overflow: hidden;
+`
+
+const StyledNote = styled(Aside)`
     background: var(--note-100);
     color: var(--note-700);
 `
 export const Note = withoutInlineContent(({ children }) => (
     <StyledNote>
-        <FontAwesomeIcon icon={faInfoCircle} />
-        <div>
+        <AsideIcon icon={faInfoCircle} />
+        <AsideContent>
             <span className="sr-only">Note:</span>
             {children}
-        </div>
+        </AsideContent>
     </StyledNote>
 ))
 
-const StyledWarning = styled.aside`
-    ${asideCss}
+const StyledWarning = styled(Aside)`
     background: var(--warning-100);
     color: var(--warning-700);
 `
 export const Warning = withoutInlineContent(({ children }) => (
     <StyledWarning>
-        <FontAwesomeIcon icon={faExclamationTriangle} />
-        <div>
+        <AsideIcon icon={faExclamationTriangle} />
+        <AsideContent>
             <span className="sr-only">Warning:</span>
             {children}
-        </div>
+        </AsideContent>
     </StyledWarning>
 ))
