@@ -1,4 +1,26 @@
 {
+    "Tabs": {
+        "scope": "markdown,mdx,jsx",
+        "prefix": "tabs",
+        "body": [
+            "",
+            "<Tabs>",
+            "<Tab label=\"${1:First tab title}\" isDefault>",
+            "",
+            "${TM_SELECTED_TEXT:${2:First tab content}}",
+            "",
+            "</Tab>",
+            "<Tab label=\"${3:Second tab title}\">",
+            "",
+            "${TM_SELECTED_TEXT:${4:Second tab content}}",
+            "",
+            "</Tab>",
+            "</Tabs>",
+            "",
+            "$0"
+        ],
+        "description": "Wrap content in tabs"
+    },
     "Note": {
         "scope": "markdown,mdx,jsx",
         "prefix": "note",

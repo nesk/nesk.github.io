@@ -18,6 +18,7 @@ import { Content } from '../components/content'
 import { Seo } from '../components/seo'
 import { useMatomo } from '@datapunt/matomo-tracker-react'
 import * as aside from '../components/mdx/aside'
+import * as tabs from '../components/mdx/tabs'
 import { Caption } from '../components/mdx/caption'
 import { MaxWidth } from '../components/mdx/max-width'
 import { IconButton } from '../components/button'
@@ -238,6 +239,7 @@ const components = {
     h4: (props) => <LinkableHeading tag="h5" {...props} />,
     h5: (props) => <LinkableHeading tag="h6" {...props} />,
     ...aside,
+    ...tabs,
     Caption,
     MaxWidth,
 }
