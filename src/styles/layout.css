@@ -1,72 +1,72 @@
 body {
-    background: var(--grey-100);
-    color: var(--grey-600);
+  background: var(--grey-100);
+  color: var(--grey-600);
 }
 
 p:last-child,
 ul:last-child {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 a,
 a:hover,
 a .sublink,
 a:hover .sublink {
-    color: var(--primary-500);
-    text-decoration: underline;
+  color: var(--primary-500);
+  text-decoration: underline;
 }
 
 a:focus,
 a:focus .sublink,
 .focusable:focus,
 .focusable:focus-within {
-    outline: 2px solid var(--primary-500);
-    outline-offset: 0.2rem;
-    -moz-outline-radius: 3px;
+  outline: 2px solid var(--primary-500);
+  outline-offset: 0.2rem;
+  -moz-outline-radius: 3px;
 }
 
 .link-invisible,
 .link-invisible:hover,
 .link-invisible:focus {
-    color: inherit;
-    text-decoration: none;
-    outline: none;
+  color: inherit;
+  text-decoration: none;
+  outline: none;
 }
 
 .link-no-color-when-inactive:not(:hover):not(:focus):not(:active) {
-    color: inherit;
+  color: inherit;
 }
 
 code,
 pre {
-    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
-    font-size: 0.9rem;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-size: 0.9rem;
 }
 
 pre,
 pre.grvsc-container {
-    margin: 0;
-    background: var(--color-bg-code);
-    line-height: 1.38rem;
+  margin: 0;
+  background: var(--color-bg-code);
+  line-height: 1.38rem;
 }
 
 pre > code {
-    min-width: 100%;
+  min-width: 100%;
 }
 
 :not(pre) > code {
-    border: 1px solid var(--color-border-code-inline);
-    border-radius: 0.3em;
-    padding: 0.1em 0.25em;
-    background: var(--color-bg-code-inline);
-    overflow-wrap: break-word;
-    word-break: break-all;
-    color: var(--grey-600);
+  border: 1px solid var(--color-border-code-inline);
+  border-radius: 0.3em;
+  padding: 0.1em 0.25em;
+  background: var(--color-bg-code-inline);
+  overflow-wrap: break-word;
+  word-break: break-all;
+  color: var(--grey-600);
 }
 
 a > code {
-    color: var(--primary-500);
-    text-decoration: none;
+  color: var(--primary-500);
+  text-decoration: none;
 }
 
 /*
@@ -78,26 +78,26 @@ a > code {
     is visible and properly positioned.
 */
 .grvsc-line.grvsc-line-highlighted {
-    background-color: var(--grvsc-line-highlighted-background-color);
-    box-shadow: inset var(--grvsc-line-highlighted-border-width) 0 0 0
-        var(--grvsc-line-highlighted-border-color);
+  background-color: var(--grvsc-line-highlighted-background-color);
+  box-shadow: inset var(--grvsc-line-highlighted-border-width) 0 0 0
+    var(--grvsc-line-highlighted-border-color);
 }
 .grvsc-has-line-highlighting > .grvsc-code > .grvsc-line::before {
-    content: none;
+  content: none;
 }
 
 /* A class to display some content to screen readers only */
 /* Retrieved from Bootstrap: https://github.com/twbs/bootstrap/blob/7966167/scss/mixins/_screen-reader.scss */
 .sr-only {
-    position: absolute !important;
-    width: 1px !important;
-    height: 1px !important;
-    padding: 0 !important;
-    margin: -1px !important;
-    overflow: hidden !important;
-    clip: rect(0, 0, 0, 0) !important;
-    white-space: nowrap !important;
-    border: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
 }
 
 /*
@@ -108,8 +108,8 @@ a > code {
   see the icons way bigger than they should be.
 */
 .svg-inline--fa {
-    display: var(--fa-display, inline-block);
-    height: 1em;
-    overflow: visible;
-    vertical-align: -0.125em;
+  display: var(--fa-display, inline-block);
+  height: 1em;
+  overflow: visible;
+  vertical-align: -0.125em;
 }

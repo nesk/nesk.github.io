@@ -4,68 +4,68 @@
  * See: https://www.gatsbyjs.org/docs/gatsby-config/
  */
 module.exports = {
-    siteMetadata: {
-        siteUrl: `https://johann.pardanaud.com`,
-        title: `Johann Pardanaud`,
-        description: `Developer working @batch — Passionate climber`,
-        author: `Johann Pardanaud`,
-        twitter: `johannpardanaud`,
+  siteMetadata: {
+    siteUrl: `https://johann.pardanaud.com`,
+    title: `Johann Pardanaud`,
+    description: `Developer working @batch — Passionate climber`,
+    author: `Johann Pardanaud`,
+    twitter: `johannpardanaud`,
+  },
+  plugins: [
+    "gatsby-plugin-react-helmet",
+    "gatsby-plugin-force-trailing-slashes",
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        path: `${__dirname}/src/assets/`,
+      },
     },
-    plugins: [
-        'gatsby-plugin-react-helmet',
-        'gatsby-plugin-force-trailing-slashes',
-        {
-            resolve: `gatsby-source-filesystem`,
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `posts`,
+        path: `${__dirname}/content/posts/`,
+      },
+    },
+    {
+      resolve: `gatsby-plugin-mdx`,
+      options: {
+        gatsbyRemarkPlugins: [
+          {
+            resolve: `gatsby-remark-images`,
             options: {
-                path: `${__dirname}/src/assets/`,
+              maxWidth: 850,
+              quality: 80,
+              withWebp: true,
             },
-        },
-        {
-            resolve: `gatsby-source-filesystem`,
+          },
+          {
+            resolve: `gatsby-remark-vscode`,
             options: {
-                name: `posts`,
-                path: `${__dirname}/content/posts/`,
+              theme: "One Dark Pro",
+              injectStyles: false,
+              extensions: ["material-theme", "Kotlin"],
+              languageAliases: {
+                kotlin: "kotlinscript",
+              },
             },
-        },
-        {
-            resolve: `gatsby-plugin-mdx`,
-            options: {
-                gatsbyRemarkPlugins: [
-                    {
-                        resolve: `gatsby-remark-images`,
-                        options: {
-                            maxWidth: 850,
-                            quality: 80,
-                            withWebp: true,
-                        },
-                    },
-                    {
-                        resolve: `gatsby-remark-vscode`,
-                        options: {
-                            theme: 'One Dark Pro',
-                            injectStyles: false,
-                            extensions: ['material-theme', 'Kotlin'],
-                            languageAliases: {
-                                kotlin: 'kotlinscript',
-                            },
-                        },
-                    },
-                ],
-            },
-        },
-        'gatsby-transformer-sharp',
-        {
-            resolve: `gatsby-plugin-sharp`,
-            options: {
-                defaultQuality: 80,
-            },
-        },
-        'gatsby-plugin-styled-components',
-        'gatsby-plugin-sitemap',
-        {
-            resolve: `gatsby-plugin-feed`,
-            options: {
-                query: `
+          },
+        ],
+      },
+    },
+    "gatsby-transformer-sharp",
+    {
+      resolve: `gatsby-plugin-sharp`,
+      options: {
+        defaultQuality: 80,
+      },
+    },
+    "gatsby-plugin-styled-components",
+    "gatsby-plugin-sitemap",
+    {
+      resolve: `gatsby-plugin-feed`,
+      options: {
+        query: `
                     {
                         site {
                             siteMetadata {
@@ -74,11 +74,11 @@ module.exports = {
                         }
                     }
                 `,
-                feeds: [
-                    {
-                        title: "Johann Pardanaud's RSS Feed",
-                        output: '/rss.xml',
-                        query: `
+        feeds: [
+          {
+            title: "Johann Pardanaud's RSS Feed",
+            output: "/rss.xml",
+            query: `
                             {
                                 allMdx(sort: { fields: [frontmatter___date], order: DESC }) {
                                     edges {
@@ -95,27 +95,27 @@ module.exports = {
                                 }
                             }
                         `,
-                        serialize: ({ query: { site, allMdx } }) => {
-                            return allMdx.edges.map((edge) => {
-                                const { siteUrl } = site.siteMetadata
-                                const { frontmatter } = edge.node
+            serialize: ({ query: { site, allMdx } }) => {
+              return allMdx.edges.map(edge => {
+                const { siteUrl } = site.siteMetadata
+                const { frontmatter } = edge.node
 
-                                return Object.assign({}, frontmatter, {
-                                    url: `${siteUrl}/${frontmatter.slug}`,
-                                    guid: `${siteUrl}/${frontmatter.slug}`,
-                                    date: frontmatter.date,
-                                    description: edge.node.excerpt,
-                                    custom_elements: [
-                                        {
-                                            'content:encoded': edge.node.html,
-                                        },
-                                    ],
-                                })
-                            })
-                        },
+                return Object.assign({}, frontmatter, {
+                  url: `${siteUrl}/${frontmatter.slug}`,
+                  guid: `${siteUrl}/${frontmatter.slug}`,
+                  date: frontmatter.date,
+                  description: edge.node.excerpt,
+                  custom_elements: [
+                    {
+                      "content:encoded": edge.node.html,
                     },
-                ],
+                  ],
+                })
+              })
             },
-        },
-    ],
+          },
+        ],
+      },
+    },
+  ],
 }
