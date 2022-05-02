@@ -1,6 +1,6 @@
 ---
-title: 'Ship an Android app with a pre-populated database'
-date: '2018-06-26'
+title: "Ship an Android app with a pre-populated database"
+date: "2018-06-26"
 slug: ship-an-android-app-with-a-pre-populated-database
 featuredImage: images/featured.png
 ---
@@ -133,12 +133,15 @@ class ActsDbHelper(val context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
 The `installDatabaseFromAssets` method:
 
--   opens an input stream for the database file in the assets (note the usage of the `ASSETS_PATH` constant);
--   opens an output stream to a file where the active databases of your app are located;
--   copies the data form the input stream to the output one;
--   closes the streams.
+- opens an input stream for the database file in the assets (note the usage of the `ASSETS_PATH` constant);
+- opens an output stream to a file where the active databases of your app are located;
+- copies the data form the input stream to the output one;
+- closes the streams.
 
-<Note>For readability, I'm commenting out the sections we have already treated and will provide the full code at the end of the article.</Note>
+<Note>
+  For readability, I'm commenting out the sections we have already treated and
+  will provide the full code at the end of the article.
+</Note>
 
 ## Checking the database status
 
@@ -193,8 +196,8 @@ On initialization, we create/open a new shared preference file to store the inst
 
 We have created two methods to check or update the database version:
 
--   `installedDatabaseIsOutdated` compares the version stored in the shared preferences and the version written in the companion object.
--   `writeDatabaseVersionInPreferences` saves the version written in the companion object to the shared preferences.
+- `installedDatabaseIsOutdated` compares the version stored in the shared preferences and the version written in the companion object.
+- `writeDatabaseVersionInPreferences` saves the version written in the companion object to the shared preferences.
 
 ## Installing the database automatically
 
@@ -262,9 +265,9 @@ class ActsDbHelper(val context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
 To install/update our database on read, we must override `getReadableDatabase` method to run `installOrUpdateIfNecessary` before returning the database. If our database is outdated (or not installed) we:
 
--   remove the current database with the same name;
--   install the latest database version;
--   write the new version in the shared preferences.
+- remove the current database with the same name;
+- install the latest database version;
+- write the new version in the shared preferences.
 
 <Note>
 

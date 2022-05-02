@@ -38,12 +38,15 @@ The widget is simply named "Rain Forecast", [it is published on Github](https://
 
 Here is a quote, from the README file, listing all the features of the widget:
 
-> - <span style={{fontStyle: 'normal'}}>☔️</span> Display of precise rain forecast for the next hour
-> - <span style={{fontStyle: 'normal'}}>📍</span> Can use your current location
-> - <span style={{fontStyle: 'normal'}}>🏙</span> Allows to configure a specific town to display
-> - <span style={{fontStyle: 'normal'}}>📏</span> Handles the three widget sizes
-> - <span style={{fontStyle: 'normal'}}>🌓</span> Custom UI for light and dark modes
-> - <span style={{fontStyle: 'normal'}}>🏴</span> Available in multiple languages
+> - <span style={{ fontStyle: "normal" }}>☔️</span> Display of precise rain forecast
+>   for the next hour
+> - <span style={{ fontStyle: "normal" }}>📍</span> Can use your current location
+> - <span style={{ fontStyle: "normal" }}>🏙</span> Allows to configure a specific
+>   town to display
+> - <span style={{ fontStyle: "normal" }}>📏</span> Handles the three widget sizes
+> - <span style={{ fontStyle: "normal" }}>🌓</span> Custom UI for light and dark
+>   modes
+> - <span style={{ fontStyle: "normal" }}>🏴</span> Available in multiple languages
 
 The hard part was the dark mode, I had no idea how to handle that because the [`Device.isUsingDarkAppearance()`](https://docs.scriptable.app/device/#isusingdarkappearance) method is not supported in widgets. I had to search for a solution with [WidgetKit](https://developer.apple.com/widgets/) to find [how to handle this](https://developer.apple.com/forums/thread/656457):
 

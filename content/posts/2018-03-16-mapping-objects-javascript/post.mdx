@@ -1,6 +1,6 @@
 ---
-title: 'Mapping objects in JavaScript'
-date: '2018-03-16'
+title: "Mapping objects in JavaScript"
+date: "2018-03-16"
 slug: mapping-objects-in-javascript
 featuredImage: images/featured.png
 ---
@@ -12,18 +12,18 @@ Here are some code examples for ES5, ES2015 and ES2017+.<!-- excerpt-end --> The
 For each example, the goal is to transform this object:
 
 ```js
-{
-    a: 1,
-    b: 2,
+const data = {
+  a: 1,
+  b: 2,
 }
 ```
 
 To this one:
 
 ```js
-{
-    _a: 2,
-    _b: 3,
+const newData = {
+  _a: 2,
+  _b: 3,
 }
 ```
 
@@ -31,47 +31,47 @@ To this one:
 
 ```js
 const data = {
-    a: 1,
-    b: 2,
+  a: 1,
+  b: 2,
 }
 
 const newData = Object.keys(data)
-    .map(function (key) {
-        return {
-            key: '_' + key,
-            value: data[key] + 1,
-        }
-    })
-    .reduce(function (obj, item) {
-        obj[item.key] = item.value
-        return obj
-    }, {})
+  .map(function (key) {
+    return {
+      key: "_" + key,
+      value: data[key] + 1,
+    }
+  })
+  .reduce(function (obj, item) {
+    obj[item.key] = item.value
+    return obj
+  }, {})
 ```
 
 ## ES2015 (ES6)
 
 ```js
 const data = {
-    a: 1,
-    b: 2,
+  a: 1,
+  b: 2,
 }
 
 const newData = Object.keys(data)
-    .map((key) => ({ [`_${key}`]: data[key] + 1 }))
-    .reduce((obj, item) => Object.assign(obj, item), {})
+  .map(key => ({ [`_${key}`]: data[key] + 1 }))
+  .reduce((obj, item) => Object.assign(obj, item), {})
 ```
 
 ## ES2017+
 
 ```js
 const data = {
-    a: 1,
-    b: 2,
+  a: 1,
+  b: 2,
 }
 
 const newData = Object.entries(data)
-    .map(([key, value]) => ({ [`_${key}`]: value + 1 }))
-    .reduce((obj, item) => Object.assign(obj, item), {})
+  .map(([key, value]) => ({ [`_${key}`]: value + 1 }))
+  .reduce((obj, item) => Object.assign(obj, item), {})
 ```
 
 ## In the future
@@ -80,12 +80,12 @@ const newData = Object.entries(data)
 
 ```js
 const data = {
-    a: 1,
-    b: 2,
+  a: 1,
+  b: 2,
 }
 
 const newData = Object.fromEntries(
-    Object.entries(data).map(([key, value]) => ({ [`_${key}`]: value + 1 })),
+  Object.entries(data).map(([key, value]) => ({ [`_${key}`]: value + 1 })),
 )
 ```
 
@@ -93,11 +93,11 @@ And it would be even better with [the pipeline operator (stage-1)](https://githu
 
 ```js
 const data = {
-    a: 1,
-    b: 2,
+  a: 1,
+  b: 2,
 }
 
 const newData =
-    Object.entries(data).map(([key, value]) => ({ [`_${key}`]: value + 1 }))
-    |> Object.fromEntries
+  Object.entries(data).map(([key, value]) => ({ [`_${key}`]: value + 1 }))
+  |> Object.fromEntries
 ```

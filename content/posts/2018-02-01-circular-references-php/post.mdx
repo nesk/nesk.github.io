@@ -1,7 +1,7 @@
 ---
-title: 'About circular references in PHP'
-date: '2018-02-01'
-slug: 'about-circular-references-in-php'
+title: "About circular references in PHP"
+date: "2018-02-01"
+slug: "about-circular-references-in-php"
 featuredImage: images/featured.png
 ---
 
@@ -41,8 +41,8 @@ This means the Node process will be kept alive until PHP shuts down because ther
 
 So, having a circular dependency in PHP can be harmful for two reasons:
 
--   **Memory allocation**: if your instances store large chunks of data (arrays with thousands of very long strings, etc…).
--   **Destruction**: if your instances needs to do some cleanup on destruction, the cleanup will only happen on PHP shutdown.
+- **Memory allocation**: if your instances store large chunks of data (arrays with thousands of very long strings, etc…).
+- **Destruction**: if your instances needs to do some cleanup on destruction, the cleanup will only happen on PHP shutdown.
 
 Ultimately, these issues will bother you essentially with long running processes, but even with simple web requests there could some side effects if your classes allocates a high volume of memory or needs to do proper cleaning at the right time.
 

@@ -1,6 +1,6 @@
 ---
-title: 'nesk.dev v2'
-date: '2020-06-30'
+title: "nesk.dev v2"
+date: "2020-06-30"
 slug: nesk-dev-v2
 featuredImage: images/featured.jpg
 ---
@@ -36,15 +36,16 @@ See by yourself:
 
 Additionally, _MDX_ allows you to replace some _DOM_ elements by custom components, which is great because I can use heading levels without thinking about <cite>What levels are already present in my layout that I should avoid when writing?</cite> I can use all 6 heading levels and [configure MDX to rewrite the headings](https://github.com/nesk/nesk.github.io/blob/ad18bf21fa07abd8a150712b1888b81d62a0afee/src/templates/post.js#L222-L230) to match the structure of my layout:
 
+<!-- prettier-ignore -->
 ```jsx
 // My layout already contains a <h1> tag and I don't want a
 // duplicate, I can replace the headings to avoid that.
 const components = {
-    h1: (props) => <h2 {...props} />,
-    h2: (props) => <h3 {...props} />,
-    h3: (props) => <h4 {...props} />,
-    h4: (props) => <h5 {...props} />,
-    h5: (props) => <h6 {...props} />,
+  h1: (props) => <h2 {...props} />,
+  h2: (props) => <h3 {...props} />,
+  h3: (props) => <h4 {...props} />,
+  h4: (props) => <h5 {...props} />,
+  h5: (props) => <h6 {...props} />,
 }
 
 <MDXProvider components={components}>

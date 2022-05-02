@@ -1,13 +1,13 @@
 ---
-title: 'Create a default error page with Laravel'
-date: '2018-01-16'
+title: "Create a default error page with Laravel"
+date: "2018-01-16"
 slug: create-a-default-error-page-with-laravel
 featuredImage: images/featured.png
 ---
 
 Defining a [custom page for HTTP errors](https://laravel.com/docs/5.5/errors#custom-http-error-pages) is pretty easy with Laravel:
 
->Laravel makes it easy to display custom error pages for various HTTP status codes. For example, if you wish to customize the error page for 404 HTTP status codes, create a `resources/views/errors/404.blade.php`.
+> Laravel makes it easy to display custom error pages for various HTTP status codes. For example, if you wish to customize the error page for 404 HTTP status codes, create a `resources/views/errors/404.blade.php`.
 
 However, this requires to create a Blade file for each HTTP status you want to handle. An ideal solution would be to create a default view to display a generic error page for unhandled HTTP error codes.
 
