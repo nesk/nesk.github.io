@@ -55,8 +55,8 @@ const StyledNote = styled(Aside)`
   background: var(--note-100);
   color: var(--note-700);
 `
-export const Note = withoutInlineContent(({ children }) => (
-  <StyledNote>
+export const Note = withoutInlineContent(({ children, ...props }) => (
+  <StyledNote {...props}>
     <AsideIcon icon={faInfoCircle} />
     <AsideContent>
       <span className="sr-only">Note:</span>
@@ -69,8 +69,8 @@ const StyledWarning = styled(Aside)`
   background: var(--warning-100);
   color: var(--warning-700);
 `
-export const Warning = withoutInlineContent(({ children }) => (
-  <StyledWarning>
+export const Warning = withoutInlineContent(({ children, ...props }) => (
+  <StyledWarning {...props}>
     <AsideIcon icon={faExclamationTriangle} />
     <AsideContent>
       <span className="sr-only">Warning:</span>
