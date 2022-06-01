@@ -1,0 +1,1205 @@
+---
+title: Modern Builder design pattern in JavaScript
+date: 2022-06-01
+slug: modern-builder-design-pattern-in-javascript
+featuredImage: images/featured.webp # https://unsplash.com/photos/XvNPUh6fWVk
+# TS is transpiled with: https://www.typescriptlang.org/play?useDefineForClassFields=true&target=99
+---
+
+[The Builder pattern](https://refactoring.guru/design-patterns/builder) is one of the best known design patterns among the developers. While it is abundantly used in some languages, like Java, it can be relatively absent in other languages, like JavaScript.
+
+There might be a few reasons this design pattern is not used in some language communities, here are two that come to my mind:
+
+- The language lacks access modifiers, making the built object exposed to mutability, annihilating the use of the builder.
+- The Builder pattern has a bad reputation inside the community, because it is seen as verbose for little to none advantages.
+
+# Why you _might_ want to use the Builder pattern
+
+Imagine, as an example, that we have the following `User` class in our code:
+
+<Tabs>
+<Tab label="TypeScript">
+
+```ts
+class User {
+  firstName = "(none)"
+  middleNames: string[] = []
+  lastName = "(none)"
+  email = "(none)"
+  birthDate = new Date()
+}
+
+// usage:
+
+const user = new User()
+user.firstName = "John"
+user.middleNames = ["Larry"]
+user.lastName = "Doe"
+user.email = "john@doe.com"
+user.birthDate = new Date("1990-01-01")
+```
+
+</Tab>
+<Tab label="JavaScript">
+
+```js
+class User {
+  firstName = "(none)"
+  middleNames = []
+  lastName = "(none)"
+  email = "(none)"
+  birthDate = new Date()
+}
+
+// usage:
+
+const user = new User()
+user.firstName = "John"
+user.middleNames = ["Larry"]
+user.lastName = "Doe"
+user.email = "john@doe.com"
+user.birthDate = new Date("1990-01-01")
+```
+
+</Tab>
+</Tabs>
+
+In its current state, this class is missing a few features:
+
+- **Immutability:** instances of the `User` class can be updated by foreign code, which brings _uncertainty_ about the integrity of the data.
+- **Convenience:** the API doesn't help much to build a `User` instance, everything has to be done by hand.
+- **Coherence:** invalid data can be defined in the fields—e.g. a blank string in the `lastName` field.
+
+The Builder design pattern can help us bring those features easily.
+
+<Note id="note-about-sql-query-builders">
+
+Instead of a _user builder_, we could have work on a _SQL query builder_, which would have been more useful—especially for the **Convenience** part—but also more complex.
+
+The _user builder_ is an example picked for its simplicity, but it might not be the best fit to show all the benefits of a builder.
+
+</Note>
+
+# Bringing immutability to our data
+
+The first step is to bring immutability, there are multiple ways to do that and they all come with pros and cons.
+
+## Freezing the object
+
+[The `Object` class has a static method named `freeze()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze) which forbids any further modifications on the provided object once it's called. According to the MDN, it has the following behavior:
+
+> A frozen object can no longer be changed; freezing an object prevents new properties from being added to it, existing properties from being removed, prevents changing the enumerability, configurability, or writability of existing properties, and prevents the values of existing properties from being changed.
+
+With this method, the builder could froze the `User` instance before returning it:
+
+<CodeFold>
+
+```js
+// highlight-start
+class User {
+  firstName = "(none)"
+}
+
+// highlight-end
+function buildUser() {
+  const user = new User()
+  user.firstName = "John"
+  return Object.freeze(user)
+}
+
+const user = buildUser()
+
+user.firstName = "Jane"
+// ❌ fails: no exception thrown, but the property is not updated
+
+console.log(user.firstName)
+// ✅ prints: John
+```
+
+</CodeFold>
+
+However, a major drawback is that anyone can instanciate the `User` class and fill it with arbitrary values, **only the instances returned by the builder are frozen.**
+
+## TypeScript's member visibility
+
+TypeScript provides keywords to specify the visibility of class members, [`private` is one them](https://www.typescriptlang.org/docs/handbook/2/classes.html#private). This allows us to restrict the access to our class fields and constructors.
+
+But we also want our class fields to be readable by anyone, to solve that we can add a [getter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get) for each private field.
+
+<CodeFold>
+
+```ts
+class User {
+  private _firstName = "(none)"
+  get firstName() {
+    return this._firstName
+  }
+
+  private constructor() {}
+}
+
+const user = new User()
+// ❌ TS error: Constructor of class 'User' is private and only accessible
+//              within the class declaration. ts(2673)
+
+// highlight-start
+declare const user: User
+
+// highlight-end
+console.log(user.firstName)
+// ✅ prints: (none)
+
+user.firstName = "John"
+// ❌ TS error: Cannot assign to 'firstName' because it is a read-only property. ts(2540)
+```
+
+</CodeFold>
+
+The class can't be instanciated, the fields can be read but not written, everything works as expected.
+
+However, there are two drawbacks:
+
+- You need to write your code in TypeScript, or provide [type declarations](https://www.typescriptlang.org/docs/handbook/2/type-declarations.html).
+- Once the code is transpiled to JavaScript, nothing forbids the usage of the private members. This is something you can totally choose to ignore—in a private codebase for example—but it's good to know.
+
+## Private fields
+
+You can exploit an equivalence of TypeScript's member visibility in pure JavaScript by using [private fields](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields#private_fields), also in conjunction with getters:
+
+```js
+class User {
+  #firstName = "(none)"
+  get firstName() {
+    return this.#firstName
+  }
+}
+
+const user = new User()
+
+console.log(user.firstName)
+// ✅ prints: (none)
+
+user.firstName = "John"
+// ❌ fails: no exception thrown, but the property is not updated
+
+user.#firstName = "John"
+// ❌ throws: Uncaught SyntaxError: reference to undeclared
+//            private field or method #firstName
+```
+
+The class can be instanciated but the fields cannot be written, whether you are writing your code in TypeScript or JavaScript.
+
+<Note>
+
+You might ask yourself if you can bypass field restrictions by overridding the instance prototype. I've already tried for you, [it's not possible!](https://twitter.com/johannpardanaud/status/1504443328368193544) 🎉
+
+</Note>
+
+## What to choose?
+
+So, what's the best option among the ones above? My personal choice is a combination of:
+
+- [private fields and getters](#private-fields) to ensure no instances can be updated by foreign code;
+- and, if you are using TypeScript, [set the visibility of the constructor to `private`](#typescript-s-member-visibility) to prevent instanciations of the class outside of the builder.
+
+That way you have the best of both worlds.
+
+# Grant the builder access to the private fields
+
+Now that you have immutable instances, you need to be able to build them by updating their private fields.
+
+The only way to update private fields is to trigger an update from a method inside the impacted class. However, we do not want our `User` class to provide methods used to update itself… So we need to create a `Builder` class which has access to the private fields of the `User` class.
+
+In Java, this is done by using [nested classes](https://docs.oracle.com/javase/tutorial/java/javaOO/nested.html):
+
+```java
+public class User {
+    private String firstName = "(none)";
+    public String getFirstName() {
+        return firstName;
+    }
+
+    private User() {} // private constructor
+
+    // declare a nested class `Builder` as a child of the `User` class
+    public static class Builder {
+        public User create(String firstName) {
+            var user = new User();
+            user.firstName = firstName; // the nested class can update private fields
+            return user;
+        }
+    }
+}
+
+System.out.println(new User.Builder().create("John").getFirstName());
+// ✅ prints: John
+```
+
+The nested `Builder` class can create a `User` instance and update its private fields, this would not be possible without nesting.
+
+JavaScript doesn't provide such a feature out of the box, however [it is possible to _emulate_ this behavior with anonymous classes](https://stackoverflow.com/a/32494175/1513045):
+
+<Tabs>
+<Tab label="TypeScript" isDefault>
+
+```ts
+class User {
+  #firstName = "(none)"
+  get firstName() {
+    return this.#firstName
+  }
+
+  private constructor() {}
+
+  static Builder = class {
+    create(firstName: string) {
+      const user = new User()
+      user.#firstName = firstName
+      return user
+    }
+  }
+}
+
+console.log(new User().firstName)
+// ✅ prints: (none)
+
+console.log(new User.Builder().create("John").firstName)
+// ✅ prints: John
+```
+
+</Tab>
+<Tab label="JavaScript">
+
+```js
+class User {
+  #firstName = "(none)"
+  get firstName() {
+    return this.#firstName
+  }
+
+  static Builder = class {
+    create(firstName) {
+      const user = new User()
+      user.#firstName = firstName
+      return user
+    }
+  }
+}
+
+console.log(new User().firstName)
+// ✅ prints: (none)
+
+console.log(new User.Builder().create("John").firstName)
+// ✅ prints: John
+```
+
+</Tab>
+</Tabs>
+
+Here, instead of creating the `Builder` class outside of the `User` class, we create **an anonymous class** and assign it **to the `Builder` field** (not to be confused with the class name).
+
+<Note>
+
+In a stack trace you might see the class being referenced as an _"anonymous class"_ or something similar. If you want to improve your debugging experience, you can name the class and still assign it to the private field anyway.
+
+<CodeFold>
+
+<!-- prettier-ignore -->
+```js
+class User { // highlight-line
+  static Builder = class Builder { /* ... */ }
+} // highlight-line
+```
+
+</CodeFold>
+
+</Note>
+
+# Writing the actual builder
+
+The builder has three jobs:
+
+- validating the values;
+- storing them;
+- use them to build an object.
+
+For each field of the object, we will create a method to validate and store the value. To build the actual object, we will create a `build()` method.
+
+Let's start with the `firstName` field:
+
+<Tabs>
+<Tab label="TypeScript" isDefault>
+
+<CodeFold>
+
+```ts
+type BuilderOperation = (user: User) => void
+
+// highlight-start
+function assert(value: boolean, message: string) {
+  if (value === false) {
+    throw new Error(message)
+  }
+}
+
+// highlight-end
+class User {
+  #firstName = "(none)"
+  // highlight-start
+  get firstName() {
+    return this.#firstName
+  }
+
+  private constructor() {}
+  // highlight-end
+
+  static Builder = class {
+    #operations: BuilderOperation[] = []
+
+    setFirstName(firstName: string) {
+      assert(firstName.length > 0, "must not be empty") // validate the value
+      this.#operations.push(user => (user.#firstName = firstName)) // store the value
+      return this // return the builder instance to provide method chaining
+    }
+  }
+}
+
+console.log(new User.Builder().setFirstName(""))
+// ❌ throws: Uncaught Error: must not be empty
+
+console.log(new User.Builder().setFirstName("John"))
+// ✅ validation passed
+```
+
+</CodeFold>
+
+</Tab>
+<Tab label="JavaScript">
+
+<CodeFold>
+
+```js
+// highlight-start
+function assert(value, message) {
+  if (value === false) {
+    throw new Error(message)
+  }
+}
+
+// highlight-end
+class User {
+  #firstName = "(none)"
+  // highlight-start
+  get firstName() {
+    return this.#firstName
+  }
+  // highlight-end
+
+  static Builder = class {
+    #operations = []
+
+    setFirstName(firstName) {
+      assert(firstName.length > 0, "must not be empty") // validate the value
+      this.#operations.push(user => (user.#firstName = firstName)) // store the value
+      return this // return the builder instance to provide method chaining
+    }
+  }
+}
+
+console.log(new User.Builder().setFirstName(""))
+// ❌ throws: Uncaught Error: must not be empty
+
+console.log(new User.Builder().setFirstName("John"))
+// ✅ validation passed
+```
+
+</CodeFold>
+
+</Tab>
+</Tabs>
+
+<Note>
+
+You might ask yourself: _what is this `#operations` field?_
+
+Its role is to contain a list of anonymous functions that will receive the new `User` instance and apply updates on it. It avoids field duplication in the builder and allows to build multiple instances of the final class with the same builder.
+
+</Note>
+
+We can already see how our builder can help to create valid objects without bloating them with methods. But let's move to another field example where the builder really shines: complex types.
+
+Let's create some methods for the `middleNames` field:
+
+<Tabs>
+<Tab label="TypeScript" isDefault>
+
+<CodeFold>
+
+```ts
+type BuilderOperation = (user: User) => void
+
+// highlight-start
+function assert(value: boolean, message: string) {
+  if (value === false) {
+    throw new Error(message)
+  }
+}
+
+// highlight-end
+class User {
+  #middleNames: string[] = []
+  // highlight-start
+  get middleNames() {
+    return this.#middleNames
+  }
+
+  private constructor() {}
+  // highlight-end
+
+  static Builder = class {
+    #operations: BuilderOperation[] = []
+
+    addMiddleNames(...middleNames: string[]) {
+      // validate the values
+      middleNames.forEach(val => assert(val.length > 0, "must not be empty"))
+
+      // store the values
+      this.#operations.push(user => {
+        user.#middleNames = user.#middleNames.concat(middleNames)
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+
+    removeMiddleNames(...middleNames: string[]) {
+      // remove the values
+      this.#operations.push(user => {
+        user.#middleNames = user.#middleNames.filter(val => {
+          // filter out the middle name if it's contained in the provided ones
+          return !middleNames.includes(val)
+        })
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+  }
+}
+
+new User.Builder()
+  .addMiddleNames("Jack")
+  .addMiddleNames("Larry", "Bruce")
+  .removeMiddleNames("Bruce")
+// ✅ middle names: ["Jack", "Larry"]
+```
+
+</CodeFold>
+
+</Tab>
+<Tab label="JavaScript">
+
+<CodeFold>
+
+```js
+// highlight-start
+function assert(value, message) {
+  if (value === false) {
+    throw new Error(message)
+  }
+}
+
+// highlight-end
+class User {
+  #middleNames = []
+  // highlight-start
+  get middleNames() {
+    return this.#middleNames
+  }
+  // highlight-end
+
+  static Builder = class {
+    #operations = []
+
+    addMiddleNames(...middleNames) {
+      // validate the values
+      middleNames.forEach(val => assert(val.length > 0, "must not be empty"))
+
+      // store the values
+      this.#operations.push(user => {
+        user.#middleNames = user.#middleNames.concat(middleNames)
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+
+    removeMiddleNames(...middleNames) {
+      // remove the values
+      this.#operations.push(user => {
+        user.#middleNames = user.#middleNames.filter(val => {
+          // filter out the middle name if it's contained in the provided ones
+          return !middleNames.includes(val)
+        })
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+  }
+}
+
+new User.Builder()
+  .addMiddleNames("Jack")
+  .addMiddleNames("Larry", "Bruce")
+  .removeMiddleNames("Bruce")
+// ✅ middle names: ["Jack", "Larry"]
+```
+
+</CodeFold>
+
+</Tab>
+</Tabs>
+
+As you can see, since we have a complex value, our builder can provide more methods to help the developer manipulate it.
+
+Now let's finish our builder by adding the `build()` method, all the other fields are also provided for the sake of completeness (only in the expanded code):
+
+<Tabs>
+<Tab label="TypeScript" isDefault>
+
+<CodeFold>
+
+```ts
+type BuilderOperation = (user: User) => void
+
+// highlight-start
+function assert(value: boolean, message: string) {
+  if (value === false) {
+    throw new Error(message)
+  }
+}
+
+// highlight-end
+class User {
+  // highlight-start
+  #firstName = "(none)"
+  get firstName() {
+    return this.#firstName
+  }
+
+  #middleNames: string[] = []
+  get middleNames() {
+    return this.#middleNames
+  }
+
+  #lastName = "(none)"
+  get lastName() {
+    return this.#lastName
+  }
+
+  #email = "(none)"
+  get email() {
+    return this.#email
+  }
+
+  #birthDate = new Date()
+  get birthDate() {
+    return this.#birthDate
+  }
+
+  private constructor() {}
+
+  // highlight-end
+  static Builder = class {
+    #operations: BuilderOperation[] = []
+
+    // highlight-start
+    setFirstName(firstName: string) {
+      assert(firstName.length > 0, "must not be empty") // validate the value
+      this.#operations.push(user => (user.#firstName = firstName)) // store the value
+      return this // return the builder instance to provide method chaining
+    }
+
+    addMiddleNames(...middleNames: string[]) {
+      // validate the values
+      middleNames.forEach(val => assert(val.length > 0, "must not be empty"))
+
+      // store the values
+      this.#operations.push(user => {
+        user.#middleNames = user.#middleNames.concat(middleNames)
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+
+    removeMiddleNames(...middleNames: string[]) {
+      // remove the values
+      this.#operations.push(user => {
+        user.#middleNames = user.#middleNames.filter(val => {
+          // filter out the middle name if it's contained in the provided ones
+          return !middleNames.includes(val)
+        })
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+
+    setLastName(lastName: string) {
+      assert(lastName.length > 0, "must not be empty") // validate the value
+      this.#operations.push(user => (user.#lastName = lastName)) // store the value
+      return this // return the builder instance to provide method chaining
+    }
+
+    setEmail(email: string) {
+      assert(email.length > 0, "must not be empty") // validate the value
+      this.#operations.push(user => (user.#email = email)) // store the value
+      return this // return the builder instance to provide method chaining
+    }
+
+    setBirthDate(birthDate: Date) {
+      // validate the value
+      assert(
+        birthDate.getTime() <= Date.now(),
+        "must be lower or equal to the current date",
+      )
+
+      // store the value and remove the hours, minutes, seconds and milliseconds
+      this.#operations.push(user => {
+        const b = birthDate
+        user.#birthDate = new Date(b.getFullYear(), b.getMonth(), b.getDate())
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+
+    // highlight-end
+    build(): User {
+      // create a new user
+      const user = new User()
+
+      // apply each operation to the new user
+      for (const applyOperation of this.#operations) {
+        applyOperation(user)
+      }
+
+      // return the user, altered by all the operations
+      return user
+    }
+  }
+}
+
+// usage:
+
+const user = new User.Builder()
+  .setFirstName("John")
+  .addMiddleNames("Larry")
+  .setLastName("Doe")
+  .setEmail("john@doe.com")
+  .setBirthDate(new Date("1990-01-01"))
+  .build()
+```
+
+</CodeFold>
+
+</Tab>
+<Tab label="JavaScript">
+
+<CodeFold>
+
+```js
+// highlight-start
+function assert(value, message) {
+  if (value === false) {
+    throw new Error(message)
+  }
+}
+
+// highlight-end
+class User {
+  // highlight-start
+  #firstName = "(none)"
+  get firstName() {
+    return this.#firstName
+  }
+
+  #middleNames = []
+  get middleNames() {
+    return this.#middleNames
+  }
+
+  #lastName = "(none)"
+  get lastName() {
+    return this.#lastName
+  }
+
+  #email = "(none)"
+  get email() {
+    return this.#email
+  }
+
+  #birthDate = new Date()
+  get birthDate() {
+    return this.#birthDate
+  }
+
+  // highlight-end
+  static Builder = class {
+    #operations = []
+
+    // highlight-start
+    setFirstName(firstName) {
+      assert(firstName.length > 0, "must not be empty") // validate the value
+      this.#operations.push(user => (user.#firstName = firstName)) // store the value
+      return this // return the builder instance to provide method chaining
+    }
+
+    addMiddleNames(...middleNames) {
+      // validate the values
+      middleNames.forEach(val => assert(val.length > 0, "must not be empty"))
+
+      // store the values
+      this.#operations.push(user => {
+        user.#middleNames = user.#middleNames.concat(middleNames)
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+
+    removeMiddleNames(...middleNames) {
+      // remove the values
+      this.#operations.push(user => {
+        user.#middleNames = user.#middleNames.filter(val => {
+          // filter out the middle name if it's contained in the provided ones
+          return !middleNames.includes(val)
+        })
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+
+    setLastName(lastName) {
+      assert(lastName.length > 0, "must not be empty") // validate the value
+      this.#operations.push(user => (user.#lastName = lastName)) // store the value
+      return this // return the builder instance to provide method chaining
+    }
+
+    setEmail(email) {
+      assert(email.length > 0, "must not be empty") // validate the value
+      this.#operations.push(user => (user.#email = email)) // store the value
+      return this // return the builder instance to provide method chaining
+    }
+
+    setBirthDate(birthDate) {
+      // validate the value
+      assert(
+        birthDate.getTime() <= Date.now(),
+        "must be lower or equal to the current date",
+      )
+
+      // store the value and remove the hours, minutes, seconds and milliseconds
+      this.#operations.push(user => {
+        const b = birthDate
+        user.#birthDate = new Date(b.getFullYear(), b.getMonth(), b.getDate())
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+
+    // highlight-end
+    build() {
+      // create a new user
+      const user = new User()
+
+      // apply each operation to the new user
+      for (const applyOperation of this.#operations) {
+        applyOperation(user)
+      }
+
+      // return the user, altered by all the operations
+      return user
+    }
+  }
+}
+
+// usage:
+
+const user = new User.Builder()
+  .setFirstName("John")
+  .addMiddleNames("Larry")
+  .setLastName("Doe")
+  .setEmail("john@doe.com")
+  .setBirthDate(new Date("1990-01-01"))
+  .build()
+```
+
+</CodeFold>
+
+</Tab>
+</Tabs>
+
+# Polish the API
+
+You might find this API a bit verbose an not very _JavaScript-like_. To improve this you can hide the builder instanciation and the call to the `build()` method in a function like this one:
+
+<Tabs>
+<Tab label="TypeScript" isDefault>
+
+<CodeFold>
+
+```ts
+// highlight-start
+type BuilderOperation = (user: User) => void
+
+function assert(value: boolean, message: string) {
+  if (value === false) {
+    throw new Error(message)
+  }
+}
+
+class User {
+  #firstName = "(none)"
+  get firstName() {
+    return this.#firstName
+  }
+
+  #middleNames: string[] = []
+  get middleNames() {
+    return this.#middleNames
+  }
+
+  #lastName = "(none)"
+  get lastName() {
+    return this.#lastName
+  }
+
+  #email = "(none)"
+  get email() {
+    return this.#email
+  }
+
+  #birthDate = new Date()
+  get birthDate() {
+    return this.#birthDate
+  }
+
+  private constructor() {}
+
+  static Builder = class {
+    #operations: BuilderOperation[] = []
+
+    setFirstName(firstName: string) {
+      assert(firstName.length > 0, "must not be empty") // validate the value
+      this.#operations.push(user => (user.#firstName = firstName)) // store the value
+      return this // return the builder instance to provide method chaining
+    }
+
+    addMiddleNames(...middleNames: string[]) {
+      // validate the values
+      middleNames.forEach(val => assert(val.length > 0, "must not be empty"))
+
+      // store the values
+      this.#operations.push(user => {
+        user.#middleNames = user.#middleNames.concat(middleNames)
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+
+    removeMiddleNames(...middleNames: string[]) {
+      // remove the values
+      this.#operations.push(user => {
+        user.#middleNames = user.#middleNames.filter(val => {
+          // filter out the middle name if it's contained in the provided ones
+          return !middleNames.includes(val)
+        })
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+
+    setLastName(lastName: string) {
+      assert(lastName.length > 0, "must not be empty") // validate the value
+      this.#operations.push(user => (user.#lastName = lastName)) // store the value
+      return this // return the builder instance to provide method chaining
+    }
+
+    setEmail(email: string) {
+      assert(email.length > 0, "must not be empty") // validate the value
+      this.#operations.push(user => (user.#email = email)) // store the value
+      return this // return the builder instance to provide method chaining
+    }
+
+    setBirthDate(birthDate: Date) {
+      // validate the value
+      assert(
+        birthDate.getTime() <= Date.now(),
+        "must be lower or equal to the current date",
+      )
+
+      // store the value and remove the hours, minutes, seconds and milliseconds
+      this.#operations.push(user => {
+        const b = birthDate
+        user.#birthDate = new Date(b.getFullYear(), b.getMonth(), b.getDate())
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+
+    build(): User {
+      // create a new user
+      const user = new User()
+
+      // apply each operation to the new user
+      for (const applyOperation of this.#operations) {
+        applyOperation(user)
+      }
+
+      // return the user, altered by all the operations
+      return user
+    }
+  }
+}
+
+// highlight-end
+type UserComposer = (builder: typeof User.Builder.prototype) => void
+
+function composeUser(userComposer: UserComposer) {
+  const builder = new User.Builder()
+  userComposer(builder)
+  return builder.build()
+}
+
+// usage:
+
+const user = composeUser(user => {
+  user
+    .setFirstName("John")
+    .addMiddleNames("Larry")
+    .setLastName("Doe")
+    .setEmail("john@doe.com")
+    .setBirthDate(new Date("1990-01-01"))
+})
+```
+
+</CodeFold>
+
+</Tab>
+<Tab label="JavaScript">
+
+<CodeFold>
+
+```js
+// highlight-start
+function assert(value, message) {
+  if (value === false) {
+    throw new Error(message)
+  }
+}
+
+class User {
+  #firstName = "(none)"
+  get firstName() {
+    return this.#firstName
+  }
+
+  #middleNames = []
+  get middleNames() {
+    return this.#middleNames
+  }
+
+  #lastName = "(none)"
+  get lastName() {
+    return this.#lastName
+  }
+
+  #email = "(none)"
+  get email() {
+    return this.#email
+  }
+
+  #birthDate = new Date()
+  get birthDate() {
+    return this.#birthDate
+  }
+
+  static Builder = class {
+    #operations = []
+
+    setFirstName(firstName) {
+      assert(firstName.length > 0, "must not be empty") // validate the value
+      this.#operations.push(user => (user.#firstName = firstName)) // store the value
+      return this // return the builder instance to provide method chaining
+    }
+
+    addMiddleNames(...middleNames) {
+      // validate the values
+      middleNames.forEach(val => assert(val.length > 0, "must not be empty"))
+
+      // store the values
+      this.#operations.push(user => {
+        user.#middleNames = user.#middleNames.concat(middleNames)
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+
+    removeMiddleNames(...middleNames) {
+      // remove the values
+      this.#operations.push(user => {
+        user.#middleNames = user.#middleNames.filter(val => {
+          // filter out the middle name if it's contained in the provided ones
+          return !middleNames.includes(val)
+        })
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+
+    setLastName(lastName) {
+      assert(lastName.length > 0, "must not be empty") // validate the value
+      this.#operations.push(user => (user.#lastName = lastName)) // store the value
+      return this // return the builder instance to provide method chaining
+    }
+
+    setEmail(email) {
+      assert(email.length > 0, "must not be empty") // validate the value
+      this.#operations.push(user => (user.#email = email)) // store the value
+      return this // return the builder instance to provide method chaining
+    }
+
+    setBirthDate(birthDate) {
+      // validate the value
+      assert(
+        birthDate.getTime() <= Date.now(),
+        "must be lower or equal to the current date",
+      )
+
+      // store the value and remove the hours, minutes, seconds and milliseconds
+      this.#operations.push(user => {
+        const b = birthDate
+        user.#birthDate = new Date(b.getFullYear(), b.getMonth(), b.getDate())
+      })
+
+      // return the builder instance to provide method chaining
+      return this
+    }
+
+    build() {
+      // create a new user
+      const user = new User()
+
+      // apply each operation to the new user
+      for (const applyOperation of this.#operations) {
+        applyOperation(user)
+      }
+
+      // return the user, altered by all the operations
+      return user
+    }
+  }
+}
+
+// highlight-end
+function composeUser(userComposer) {
+  const builder = new User.Builder()
+  userComposer(builder)
+  return builder.build()
+}
+
+// usage:
+
+const user = composeUser(user => {
+  user
+    .setFirstName("John")
+    .addMiddleNames("Larry")
+    .setLastName("Doe")
+    .setEmail("john@doe.com")
+    .setBirthDate(new Date("1990-01-01"))
+})
+```
+
+</CodeFold>
+
+</Tab>
+</Tabs>
+
+# One last thing
+
+[I told you earlier the `User` class is not a good example](#note-about-sql-query-builders), so let's explore a better one: a SQL query builder. We're not going to create our own but we're going to use [Knex.js](https://knexjs.org/).
+
+Imagine we have an HTTP API to list some books, the URL is `https://api.example.com/books`. When we query this URL, we return all the books we have in the database, the SQL query is really simple:
+
+```sql
+select `title`, `author`, `year` from `books`
+```
+
+But our API doesn't bring much here, what about supporting some filters and aggregators? We want to be able to search for a title or an author, and we want to be able to count without returning all the books.
+
+This is something you can do manually by building your own SQL query in a string, but it will become messier each time you add a new filter or a new aggregation. Here's how you can do by using Knex.js as your SQL query builder:
+
+<CodeFold>
+
+```ts
+// highlight-start
+declare const httpRequestParams: URLSearchParams
+
+const knex = require("knex")({
+  client: "sqlite3",
+  connection: {
+    filename: "./mydb.sqlite",
+  },
+  useNullAsDefault: true,
+})
+
+// highlight-end
+const query = knex.select("title", "author", "year").from("books")
+
+// if a title is provided in the URL parameters, filter only the matching ones
+if (httpRequestParams.has("title")) {
+  query.orWhere("title", "like", `%${httpRequestParams.get("title")}%`)
+}
+
+// if an author is provided in the URL parameters, filter only the matching ones
+if (httpRequestParams.has("author")) {
+  query.orWhere("author", "like", `%${httpRequestParams.get("author")}%`)
+}
+
+// if we only want to count, clear the selection and count on the `id` column
+if (httpRequestParams.has("shouldCount")) {
+  query.clear("select").count("id")
+}
+
+console.log(query.toString())
+
+// examples:
+
+// URL: https://api.example.com/books
+// ✅ prints: select `title`, `author`, `year` from `books`
+
+// URL: https://api.example.com/books?title=game
+// ✅ prints: select `title`, `author`, `year` from `books` where `title` like '%game%'
+
+// URL: https://api.example.com/books?title=game&author=George
+// ✅ prints: select `title`, `author`, `year` from `books` where `title` like '%game%' or `author` like '%George%'
+
+// URL: https://api.example.com/books?title=game&shouldCount=true
+// ✅ prints: select count(`id`) from `books` where `title` like '%game%'
+```
+
+</CodeFold>
+
+This is what the Builder design pattern is meant to do, help the developer build some complex values by providing an extensive API. It should allow to setup the various properties of the value in any order and ensure everything is properly configured to generate a valid value at the end.
+
+I hope I was able to help you understand how valuable this pattern could be, in all languages.
