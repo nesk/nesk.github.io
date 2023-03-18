@@ -23,6 +23,7 @@ import { CodeFold } from "../components/mdx/code-fold"
 import { Caption } from "../components/mdx/caption"
 import { MaxWidth } from "../components/mdx/max-width"
 import { IconButton } from "../components/button"
+import { Profile } from "../components/profile"
 
 const Header = styled.header`
   ${Content} {
@@ -45,6 +46,12 @@ const Metadata = styled.p`
   address {
     display: inline;
   }
+`
+
+const Footer = styled.footer`
+  border-top: 1px solid var(--grey-250);
+  margin-top: calc(var(--content-spacing) * 3);
+  padding-top: calc(var(--content-spacing) * 3);
 `
 
 const Share = styled(Content)`
@@ -299,6 +306,12 @@ const PostTemplate = ({ data }) => {
             />
           </div>
         </Share>
+
+        <Footer>
+          <address>
+            <Profile avatarSrc={data.file.childImageSharp.fluid} />
+          </address>
+        </Footer>
       </Post>
     </Layout>
   )
@@ -324,6 +337,13 @@ export const query = graphql`
         }
       }
       body
+    }
+    file(relativePath: { eq: "images/avatar.jpg" }) {
+      childImageSharp {
+        fluid {
+          ...GatsbyImageSharpFluid
+        }
+      }
     }
   }
 `
