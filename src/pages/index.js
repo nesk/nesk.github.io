@@ -101,12 +101,10 @@ const Speech = styled.p`
 
 const OriginalSpeech = () => (
   <Speech>
-    <em>I'm Johann Pardanaud</em>, developer at{" "}
-    <a href="https://batch.com">Batch</a>. I develop technical solutions for
-    back-end and front-end. I love the open source philosophy and try to
-    contribute whenever I have time (and motivation 😅). Although my skills are
-    mainly in web development, I appreciate working sometimes with other
-    environments and new languages.
+    I'm Johann Pardanaud, a <em>freelance Back-End developer</em> available to
+    work on your projects! I can help you architect and code your projects by
+    taking advantage of microservices, thoughtful database structures, and
+    asynchronous flows.
   </Speech>
 )
 
