@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { onlyText } from "react-children-utilities"
 import styled from "styled-components"
 import { graphql } from "gatsby"
@@ -8,15 +8,9 @@ import Img from "gatsby-image"
 import urlSlug from "url-slug"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faLink } from "@fortawesome/free-solid-svg-icons"
-import {
-  faTwitter,
-  faLinkedinIn,
-  faFacebookF,
-} from "@fortawesome/free-brands-svg-icons"
 import { Layout } from "../components/layout"
 import { Content } from "../components/content"
 import { Seo } from "../components/seo"
-import { useMatomo } from "@datapunt/matomo-tracker-react"
 import * as aside from "../components/mdx/aside"
 import * as tabs from "../components/mdx/tabs"
 import { CodeFold } from "../components/mdx/code-fold"
@@ -54,77 +48,6 @@ const Footer = styled.footer`
   padding-top: calc(var(--content-spacing) * 3);
 `
 
-const Share = styled(Content)`
-  position: sticky;
-  top: 25vh;
-
-  & > :first-child {
-    position: absolute;
-    left: 100%;
-  }
-
-  @media (max-width: 767.98px) {
-    display: none;
-  }
-
-  @media (min-width: 992px) {
-    & > :first-child {
-      left: calc(100% + var(--content-spacing) * 1.5);
-    }
-  }
-`
-
-const StyledShareButton = styled(IconButton)`
-  display: inline-block;
-  margin-bottom: 0.5rem;
-`
-
-const useIsClient = () => {
-  const [isClient, setIsClient] = React.useState(false)
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  return isClient
-}
-
-const ShareButton = ({ name, icon, urlTemplate }) => {
-  const { trackEvent } = useMatomo()
-  const isClient = useIsClient()
-  const title = `Share on ${name}`
-  const location = typeof window !== "undefined" ? window.location : {}
-  const sharedUrl = encodeURIComponent(location.href)
-  const url = urlTemplate.replace("{url}", sharedUrl)
-
-  const openSharePopup = event => {
-    event.preventDefault()
-
-    trackEvent({
-      category: "Share",
-      action: "Click Share Button",
-      name,
-    })
-
-    window.open(url, title, "width=500,height=500")
-  }
-
-  return (
-    <StyledShareButton
-      key={isClient}
-      as="a"
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      title={title}
-      aria-label={title}
-      onClick={openSharePopup}
-    >
-      <FontAwesomeIcon icon={icon} fixedWidth />
-    </StyledShareButton>
-  )
-}
-
 const Post = styled.article`
   display: flex;
   flex-direction: column;
@@ -132,14 +55,6 @@ const Post = styled.article`
 
   & > * {
     max-width: 100%;
-  }
-
-  /* Reorder the header and share links to display the links below the header without affecting tab order. */
-  ${Header} {
-    order: -2;
-  }
-  ${Share} {
-    order: -1;
   }
 
   h2 {
@@ -286,26 +201,6 @@ const PostTemplate = ({ data }) => {
             <MDXRenderer>{post.body}</MDXRenderer>
           </MDXProvider>
         </Content>
-
-        <Share>
-          <div>
-            <ShareButton
-              name="Twitter"
-              icon={faTwitter}
-              urlTemplate="https://twitter.com/intent/tweet?url={url}&amp;via=johannpardanaud"
-            />
-            <ShareButton
-              name="LinkedIn"
-              icon={faLinkedinIn}
-              urlTemplate="https://www.linkedin.com/sharing/share-offsite/?url={url}"
-            />
-            <ShareButton
-              name="Facebook"
-              icon={faFacebookF}
-              urlTemplate="https://www.facebook.com/sharer.php?u={url}"
-            />
-          </div>
-        </Share>
 
         <Footer>
           <address>
