@@ -1,10 +1,13 @@
 body {
   background: var(--grey-100);
   color: var(--grey-600);
+  overflow-x: hidden;
 }
 
 p:last-child,
-ul:last-child {
+p:last-of-type,
+ul:last-child,
+ul:last-of-type {
   margin-bottom: 0;
 }
 
