@@ -1,6 +1,8 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Helmet } from "react-helmet"
 import { useStaticQuery, graphql } from "gatsby"
+
+let hasInjectedPlausible = false
 
 export const Seo = ({
   title,
@@ -9,6 +11,8 @@ export const Seo = ({
   lang = "en",
   meta = [],
 }) => {
+  const canRunJavaScript = useIsClient()
+
   const { site } = useStaticQuery(
     graphql`
       query SeoQuery {
@@ -70,6 +74,29 @@ export const Seo = ({
       {meta.map(props => (
         <meta {...props} />
       ))}
+
+      {canRunJavaScript &&
+        (() => {
+          if (hasInjectedPlausible) return
+          hasInjectedPlausible = true
+          return (
+            <script
+              defer
+              data-domain="johann.pardanaud.com"
+              data-api="https://s.nesk.workers.dev/api/send"
+              src="https://s.nesk.workers.dev/init.js"
+            ></script>
+          )
+        })()}
     </Helmet>
   )
+}
+const useIsClient = () => {
+  const [isClient, setIsClient] = React.useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  return isClient
 }
