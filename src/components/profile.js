@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import styled from "styled-components"
 import Img from "gatsby-image"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -9,7 +9,6 @@ import {
 } from "@fortawesome/free-brands-svg-icons"
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons"
 import { Content } from "../components/content"
-import { useMatomo } from "@datapunt/matomo-tracker-react"
 import { IconButton } from "../components/button"
 import { useKonamiCode } from "../components/konami"
 
@@ -106,15 +105,6 @@ const OriginalSpeech = () => (
 )
 
 const KonamiSpeech = () => {
-  const { trackEvent } = useMatomo()
-  useEffect(() => {
-    trackEvent({
-      category: "Konami Code",
-      action: "Finish Full Sequence",
-      name: "Reddit quote",
-    })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
   return (
     <Speech
       as="blockquote"

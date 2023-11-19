@@ -1,8 +1,6 @@
 import React from "react"
 import styled from "styled-components"
 import { Seo } from "./seo"
-import { useMatomo } from "@datapunt/matomo-tracker-react"
-import { MatomoProvider } from "./matomo"
 import { Header } from "./header"
 import { DarkModeSwitch as BaseDarkModeSwitch } from "./dark-mode"
 
@@ -14,8 +12,6 @@ const Container = styled.div`
 `
 
 const DarkModeSwitch = () => {
-  const { trackEvent } = useMatomo()
-
   const onDarkModeChange = state => {
     const classList = document.querySelector("html").classList
     classList.remove("light-theme")
@@ -25,12 +21,6 @@ const DarkModeSwitch = () => {
     if (theme !== "auto") {
       classList.add(`${theme}-theme`)
     }
-
-    trackEvent({
-      category: "Visual Theme",
-      action: "Change Visual Theme",
-      value: theme,
-    })
   }
 
   return <BaseDarkModeSwitch onChange={onDarkModeChange} />
@@ -49,7 +39,7 @@ export const Layout = ({
   autoTopHeading = true,
   centeredBody = false,
 }) => (
-  <MatomoProvider>
+  <>
     {seo || <Seo />}
     <Container>
       <Header autoTopHeading={autoTopHeading}>
@@ -59,5 +49,5 @@ export const Layout = ({
         {children}
       </Body>
     </Container>
-  </MatomoProvider>
+  </>
 )
