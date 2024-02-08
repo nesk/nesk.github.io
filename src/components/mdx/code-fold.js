@@ -40,6 +40,7 @@ const StyledCodeFold = styled.div`
   --button-offset: 0.35; // percentage unit
 
   position: relative;
+  margin-top: 1.2rem;
 
   pre {
     // Modify the padding top of the code block to make space for the button.
