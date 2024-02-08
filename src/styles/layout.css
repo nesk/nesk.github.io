@@ -5,9 +5,7 @@ body {
 }
 
 p:last-child,
-p:last-of-type,
-ul:last-child,
-ul:last-of-type {
+ul:last-child {
   margin-bottom: 0;
 }
 
