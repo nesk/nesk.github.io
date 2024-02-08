@@ -28,8 +28,15 @@ const Header = styled.header`
   h1 {
     font-size: 2.5rem;
     letter-spacing: 0.015rem;
-    line-height: 3.5rem;
+    line-height: 1.3;
     margin: 0.5rem 0 2.5rem;
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 768px) {
+    h1 {
+      line-height: 1.4;
+    }
   }
 `
 

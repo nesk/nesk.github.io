@@ -13,6 +13,13 @@ const Post = styled.article`
   h2 {
     font-size: 2rem;
     letter-spacing: 0.02rem;
+    line-height: 1.3;
+  }
+
+  @media (min-width: 768px) {
+    h2 {
+      line-height: 1.5;
+    }
   }
 
   &:not(:last-child) {
