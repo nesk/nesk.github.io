@@ -28,7 +28,7 @@
       "",
       "<CodeFold>",
       "",
-      "${TM_SELECTED_TEXT:${1:Code folding content}}",
+      "${TM_SELECTED_TEXT:${1:```text\n// highlight-start\ninvisible\nblock\n\n// highlight-end\n\ninvisible line // highlight-line\n\n// highlight-next-line\ninvisible next line\n\nvisible line\n```}}",
       "",
       "</CodeFold>",
       "",
