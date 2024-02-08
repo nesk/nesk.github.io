@@ -222,7 +222,7 @@ export const query = graphql`
         formattedDate: date(formatString: "Do MMMM YYYY")
         featuredImage {
           childImageSharp {
-            fixed(width: 1200, height: 630, cropFocus: $cropFocus) {
+            fixed(width: 1200, height: 450, cropFocus: $cropFocus) {
               ...GatsbyImageSharpFixed
             }
             fluid(maxWidth: 2560, quality: $quality) {
