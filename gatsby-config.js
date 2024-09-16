@@ -80,7 +80,10 @@ module.exports = {
             output: "/rss.xml",
             query: `
                             {
-                                allMdx(sort: { fields: [frontmatter___date], order: DESC }) {
+                                allMdx(
+                                  sort: { fields: [frontmatter___date], order: DESC }
+                                  filter: { frontmatter: { hidden: { ne: true } } }
+                                ) {
                                     edges {
                                         node {
                                             frontmatter {
