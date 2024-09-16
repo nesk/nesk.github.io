@@ -1,0 +1,411 @@
+---
+title: Use generators in JavaScript to iterate over a paginated API
+date: 2024-09-16
+slug: javascript-generators-iterate-over-paginated-api
+hidden: false
+featuredImage: images/featured.webp # https://unsplash.com/photos/9BoqXzEeQqM
+---
+
+Many APIs allow you to retrieve a list of entities. However, returning the whole list in a single response could be an heavy task for the servers, and do you even need the whole list? To mitigate this issue, APIs often use pagination. <!-- excerpt-end -->
+
+For example, when you list user repositories with GitHub's API, [you receive a `Link` header:](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api)
+
+```
+$ curl https://api.github.com/users/nesk/repos -v 2>&1 | grep -i link:
+< link: <https://api.github.com/user/817508/repos?page=2>; rel="next", <https://api.github.com/user/817508/repos?page=3>; rel="last"
+```
+
+The link with `rel="next"` contains the URL to retrieve the next page of the repositories:
+
+```
+https://api.github.com/user/817508/repos?page=2
+```
+
+Let's explore how we can iterate over this pagination with JavaScript.
+
+# The Bad: Returning all the values in an array
+
+We want to log all the repository names of a user. With a naive approach you might end up with code looking like this:
+
+<CodeFold>
+
+```javascript
+// highlight-start
+/**
+ * Extracts and returns the next page of a fetch response.
+ * If unavailable, `null` is returned.
+ */
+function getNextPageFromResponse(response) {
+  const links = response.headers.get("Link") || "" // Retrieve the "Link" header
+
+  const urls = links
+    .split(",") /* Put each link in a dedicated string */
+    .filter(link => link.includes(`rel="next"`)) /* Select the next page */
+    .map(link => {
+      /* Extract the URL */
+      return link.slice(link.indexOf("<") + 1, link.indexOf(">"))
+    })
+
+  return urls[0] || null /* Return the first URL */
+}
+
+// highlight-end
+async function getAllRepositoriesForOwner(owner) {
+  let nextUrl = `https://api.github.com/users/${owner}/repos`
+  let repositories = []
+
+  // Iterate until there is no longer a "next URL" to visit
+  while (nextUrl) {
+    const response = await fetch(nextUrl)
+
+    // Store each repository in a buffer
+    repositories = repositories.concat(await response.json())
+
+    // Store the next URL in the variable, or `null` if unavailable.
+    nextUrl = getNextPageFromResponse(response)
+  }
+
+  return repositories
+}
+
+// Iterate over the repositories returned by `getAllRepositoriesForOwner()`
+for (const repository of await getAllRepositoriesForOwner("nesk")) {
+  console.log(repository.name) // Logs the repository name
+}
+```
+
+</CodeFold>
+
+While this code can seem _fine_ at first glance, it will not scale at all.
+
+**We fetch all the repositories before we start logging their names.** If the pagination is big, a few dozen pages for example, you will have to wait _minutes_ before displaying anything. See for yourself:
+
+<CodeFold>
+
+```javascript
+// highlight-start
+/**
+ * Extracts and returns the next page of a fetch response.
+ * If unavailable, `null` is returned.
+ */
+function getNextPageFromResponse(response) {
+  const links = response.headers.get("Link") || "" // Retrieve the "Link" header
+
+  const urls = links
+    .split(",") /* Put each link in a dedicated string */
+    .filter(link => link.includes(`rel="next"`)) /* Select the next page */
+    .map(link => {
+      /* Extract the URL */
+      return link.slice(link.indexOf("<") + 1, link.indexOf(">"))
+    })
+
+  return urls[0] || null /* Return the first URL */
+}
+
+async function getAllRepositoriesForOwner(owner) {
+  let nextUrl = `https:\/\/api.github.com/users/${owner}/repos`
+  let repositories = []
+
+  while (nextUrl) {
+    const response = await fetch(nextUrl)
+    repositories = repositories.concat(await response.json())
+    nextUrl = getNextPageFromResponse(response)
+  }
+
+  return repositories
+}
+
+// highlight-end
+const startTime = Date.now()
+const repositories = await getAllRepositoriesForOwner("nesk")
+for (const repository of repositories) {
+  const elaspedMilliseconds = Date.now() - startTime
+  console.log(`[elapsed: ${elaspedMilliseconds}ms] ${repository.name}`)
+}
+
+// Outputs all the repository names after a few seconds
+```
+
+</CodeFold>
+
+**We store all the repositories in memory before displaying them.** Again, if the pagination is big, you will end up storing a lot of data in memory; [_and memory is money._](https://docs.aws.amazon.com/lambda/latest/operatorguide/computing-power.html)
+
+# The Ugly: Resort to callbacks
+
+Those two issues could be adressed by using a callback executed for each repository:
+
+<CodeFold>
+
+```javascript
+// highlight-start
+/**
+ * Extracts and returns the next page of a fetch response.
+ * If unavailable, `null` is returned.
+ */
+function getNextPageFromResponse(response) {
+  const links = response.headers.get("Link") || "" // Retrieve the "Link" header
+
+  const urls = links
+    .split(",") /* Put each link in a dedicated string */
+    .filter(link => link.includes(`rel="next"`)) /* Select the next page */
+    .map(link => {
+      /* Extract the URL */
+      return link.slice(link.indexOf("<") + 1, link.indexOf(">"))
+    })
+
+  return urls[0] || null /* Return the first URL */
+}
+
+// highlight-end
+async function getAllRepositoriesForOwner(owner, callback) {
+  let nextUrl = `https:\/\/api.github.com/users/${owner}/repos`
+
+  // Iterate until there is no longer a "next URL" to visit
+  while (nextUrl) {
+    const response = await fetch(nextUrl)
+
+    // Execute the callback for each repository in the response
+    const repositories = await response.json()
+    repositories.forEach(callback)
+
+    // Store the next URL in the variable, or `null` if unavailable.
+    nextUrl = getNextPageFromResponse(response)
+  }
+}
+
+// Iterate over the repositories returned by `getAllRepositoriesForOwner()`
+getAllRepositoriesForOwner("nesk", repository => {
+  console.log(repository.name)
+})
+
+// Outputs the first repository names in a matter of a few hundred milliseconds
+```
+
+</CodeFold>
+
+With this new version of our code, we have reduced the log delay since we immediately execute the callback _after each page response_. Meanwhile, the memory usage went down because we don't need anymore to store the whole repository list in a variable.
+
+A lot of libraries are designed around callbacks and, mostly, it's fine. But we can do better, because this version of **our code has three more issues.**
+
+**1. Cancelation.** Using callbacks for asynchronous tasks doesn't natively provide an interruption mecanism. After all, you might not need to fetch the whole repository list. This could be done by handling a specific value returned by the callback but, bear with me, there are better alternatives.
+
+**2. No consecutive asynchronous subtasks.** If you execute an async subtask inside the callback, the latter will return before the subtask ends. For example, if you want to fetch [the latest release of each repository,](https://docs.github.com/en/rest/releases/releases#get-the-latest-release) all the requests to fetch the latest release will run at the same time, which will probably lead you [to exceed your rate limit.](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api) A preferable solution would be _for the callback to wait until all the subtasks are done,_ running all the requests consecutively.
+
+**3. Callback hell.** Designing a JavaScript API around callbacks is not _the modern way_ anymore. Those days, developers tend to prefer promises, [mainly to avoid nested callback functions.](https://blog.avenuecode.com/callback-hell-promises-and-async/await)
+
+# The Good: Embrace _Asynchronous Generators_
+
+You've probably heard about generators in JavaScript, maybe you've even used them! But have you ever heard ~~about our lord and savior~~ [about asynchronous generators?](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncGenerator)
+
+This feature allows you to produce some values inside the generator function and consume them outside of it with a [`for-await...of`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of) loop:
+
+<CodeFold>
+
+```javascript
+// highlight-start
+function getNextPageFromResponse(response) {
+  const links = response.headers.get("Link") || "" // Retrieve the "Link" header
+
+  const urls = links
+    .split(",") /* Put each link in a dedicated string */
+    .filter(link => link.includes(`rel="next"`)) /* Select the next page */
+    .map(link => {
+      /* Extract the URL */
+      return link.slice(link.indexOf("<") + 1, link.indexOf(">"))
+    })
+
+  return urls[0] || null /* Return the first URL */
+}
+
+// highlight-end
+async function* getAllRepositoriesForOwner(owner) {
+  let nextUrl = `https://api.github.com/users/${owner}/repos`
+
+  while (nextUrl) {
+    const response = await fetch(nextUrl)
+    yield* await response.json() // Produce each repository
+    nextUrl = getNextPageFromResponse(response)
+  }
+}
+
+// Iterate over the repositories returned by `getAllRepositoriesForOwner()`
+for await (const repository of getAllRepositoriesForOwner("nesk")) {
+  console.log(repository.name)
+}
+```
+
+</CodeFold>
+
+See? No more callbacks!
+
+Even better, if you break out of the loop, then no more requests will be sent:
+
+<CodeFold>
+
+```javascript
+// highlight-start
+function getNextPageFromResponse(response) {
+  const links = response.headers.get("Link") || "" // Retrieve the "Link" header
+
+  const urls = links
+    .split(",") /* Put each link in a dedicated string */
+    .filter(link => link.includes(`rel="next"`)) /* Select the next page */
+    .map(link => {
+      /* Extract the URL */
+      return link.slice(link.indexOf("<") + 1, link.indexOf(">"))
+    })
+
+  return urls[0] || null /* Return the first URL */
+}
+
+async function* getAllRepositoriesForOwner(owner) {
+  let nextUrl = `https:\/\/api.github.com/users/${owner}/repos`
+
+  while (nextUrl) {
+    const response = await fetch(nextUrl)
+    yield* await response.json() // Produce each repository
+    nextUrl = getNextPageFromResponse(response)
+  }
+}
+
+// highlight-end
+let count = 0
+for await (const repository of getAllRepositoriesForOwner("nesk")) {
+  console.log(repository.name)
+
+  // We break out of the loop once we have logged 5 repository names.
+  // No more requests will be sent afterwards, only the first page is fetched.
+  if (count++ >= 5) {
+    break
+  }
+}
+```
+
+</CodeFold>
+
+And what about making asynchronous calls inside the loop? Just use the `await` keyword:
+
+<CodeFold>
+
+```javascript
+// highlight-start
+function getNextPageFromResponse(response) {
+  const links = response.headers.get("Link") || "" // Retrieve the "Link" header
+
+  const urls = links
+    .split(",") /* Put each link in a dedicated string */
+    .filter(link => link.includes(`rel="next"`)) /* Select the next page */
+    .map(link => {
+      /* Extract the URL */
+      return link.slice(link.indexOf("<") + 1, link.indexOf(">"))
+    })
+
+  return urls[0] || null /* Return the first URL */
+}
+
+async function* getAllRepositoriesForOwner(owner) {
+  let nextUrl = `https:\/\/api.github.com/users/${owner}/repos`
+
+  while (nextUrl) {
+    const response = await fetch(nextUrl)
+    yield* await response.json() // Produce each repository
+    nextUrl = getNextPageFromResponse(response)
+  }
+}
+
+// highlight-end
+async function getLatestReleaseForRepository(owner, repository) {
+  const url = `https:\/\/api.github.com/repos/${owner}/${repository}/releases/latest`
+  const response = await fetch(url)
+  return await response.json()
+}
+
+let count = 0
+for await (const repository of getAllRepositoriesForOwner("nesk")) {
+  console.log(repository.name)
+
+  const release = await getLatestReleaseForRepository(
+    repository.owner.login,
+    repository.name,
+  )
+  console.log(`Latest release: ${release.url || "<none>"}`)
+
+  // The rate limit is quite low while unauthenticated, so I've limited the requests.
+  // Feel free to remove the following lines in your own code.
+  if (count++ >= 3) {
+    break
+  }
+}
+```
+
+</CodeFold>
+
+By using asynchronous generators, you make **your JavaScript library behave like a simple array to iterate over,** thus [improving Developer Experience,](https://en.wikipedia.org/wiki/User_experience#Developer_experience) without sacrificing performance.
+
+The only flaw I can see with this approach is when you need to apply functional programming to the result, because generators don't provide any method to map, filter, or aggregate the values.
+
+However, 2 proposals that could help us are making their way through the TC39 process:
+
+- [Iterator Helpers](https://github.com/tc39/proposal-iterator-helpers) (stage 3)
+- [Async Iterator Helpers](https://github.com/tc39/proposal-async-iterator-helpers) (stage 2)
+
+With the latter, we could rewrite the code above in a functional way:
+
+<CodeFold>
+
+```javascript
+// highlight-start
+function getNextPageFromResponse(response) {
+  const links = response.headers.get("Link") || "" // Retrieve the "Link" header
+
+  const urls = links
+    .split(",") /* Put each link in a dedicated string */
+    .filter(link => link.includes(`rel="next"`)) /* Select the next page */
+    .map(link => {
+      /* Extract the URL */
+      return link.slice(link.indexOf("<") + 1, link.indexOf(">"))
+    })
+
+  return urls[0] || null /* Return the first URL */
+}
+
+async function* getAllRepositoriesForOwner(owner) {
+  let nextUrl = `https:\/\/api.github.com/users/${owner}/repos`
+
+  while (nextUrl) {
+    const response = await fetch(nextUrl)
+    yield* await response.json() // Produce each repository
+    nextUrl = getNextPageFromResponse(response)
+  }
+}
+
+async function getLatestReleaseForRepository(owner, repository) {
+  const url = `https:\/\/api.github.com/repos/${owner}/${repository}/releases/latest`
+  const response = await fetch(url)
+  return await response.json()
+}
+
+// highlight-end
+getAllRepositoriesForOwner("nesk")
+  .take(5)
+  .flatMap(async repo => [
+    repo.name,
+    await getLatestReleaseForRepository(repo.owner.login, repo.name),
+  ])
+  .forEach(([name, releaseUrl]) => {
+    console.log(name)
+    console.log(releaseUrl)
+  })
+```
+
+</CodeFold>
+
+If you want to try functional programming with generators, see the polyfills provided by the core-js library for [`Iterator` helpers](https://github.com/zloirock/core-js#iterator-helpers) and [`AsyncIterator` helpers.](https://github.com/zloirock/core-js#asynciterator-helpers)
+
+# Closing thoughts
+
+Asynchronous generators provide the best Developer Experience, however they lack native methods to write functional programming code.
+
+If you really need to provide FP abilities, my advice is to keep the asynchronous generators in your library, and provide a helper to convert the generator to an array.
+
+That way, if your users already use the core-js library, they can use the polyfills with the generators, otherwise they can use your helper.
