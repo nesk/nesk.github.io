@@ -7,7 +7,7 @@ module.exports = {
   siteMetadata: {
     siteUrl: `https://johann.pardanaud.com`,
     title: `Johann Pardanaud`,
-    description: `Developer working @batch — Passionate climber`,
+    description: `API Strategy Consultant  — Passionate climber`,
     author: `Johann Pardanaud`,
     twitter: `johannpardanaud`,
   },
